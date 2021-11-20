@@ -1,6 +1,6 @@
 # Name of the experiment for saving files
 experiment_name: replicate_best_mult_
-save_folder: /media/giancarlo/Samsung_T5/personal/master_thesis/cvpr/results/
+save_folder: /kaggle/working/results/
 
 # Define training strategy
 training_strategy:
@@ -28,7 +28,7 @@ diss_pretrained:
 
 # logger options
 logger:
-  results_dir: /media/giancarlo/Samsung_T5/personal/master_thesis/cvpr/logs
+  results_dir: /kaggle/working/logs
   save_epoch_freq: 50 #frequency of saving checkpoints at the end of epochs
 
 # loss options (remove tasks not needed)
@@ -50,7 +50,7 @@ optimizer:
 # parameters for dataloaders
 train_dataloader:
   dataset_args:
-    dataroot: /media/giancarlo/Samsung_T5/data/thesis/final_dataset/cityscapes_processed
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/cityscapes_processed
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
