@@ -44,8 +44,8 @@ if not os.path.isdir(logs_fdr):
     os.mkdir(logs_fdr)
     
 train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
-#val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
-#test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
+val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
+test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
 
 # Save config file use for experiment
 shutil.copy(opts.config, os.path.join(logs_fdr, exp_name, 'config.yaml'))
@@ -56,30 +56,30 @@ gpu_info = trainer_util.activate_gpus(config)
 
 # Get data loaders
 cfg_train_loader = config['train_dataloader']
-#cfg_val_loader = config['val_dataloader']
-#cfg_test_loader1 = config['test_dataloader1']
-#cfg_test_loader2 = config['test_dataloader2']
-#cfg_test_loader3 = config['test_dataloader3']
-#cfg_test_loader4 = config['test_dataloader4']
+cfg_val_loader = config['val_dataloader']
+cfg_test_loader1 = config['test_dataloader1']
+cfg_test_loader2 = config['test_dataloader2']
+cfg_test_loader3 = config['test_dataloader3']
+cfg_test_loader4 = config['test_dataloader4']
 
 # checks if we are using prior images
 prior = config['model']['prior']
 
 # adds logic to dataloaders (avoid repetition in config file)
 cfg_train_loader['dataset_args']['prior'] = prior
-#cfg_val_loader['dataset_args']['prior'] = prior
-#cfg_test_loader1['dataset_args']['prior'] = prior
-#cfg_test_loader2['dataset_args']['prior'] = prior
-#cfg_test_loader3['dataset_args']['prior'] = prior
-#cfg_test_loader4['dataset_args']['prior'] = prior
+cfg_val_loader['dataset_args']['prior'] = prior
+cfg_test_loader1['dataset_args']['prior'] = prior
+cfg_test_loader2['dataset_args']['prior'] = prior
+cfg_test_loader3['dataset_args']['prior'] = prior
+cfg_test_loader4['dataset_args']['prior'] = prior
     
     
 train_loader = trainer_util.get_dataloader(cfg_train_loader['dataset_args'], cfg_train_loader['dataloader_args'])
-#val_loader = trainer_util.get_dataloader(cfg_val_loader['dataset_args'], cfg_val_loader['dataloader_args'])
-#test_loader1 = trainer_util.get_dataloader(cfg_test_loader1['dataset_args'], cfg_test_loader1['dataloader_args'])
-#test_loader2 = trainer_util.get_dataloader(cfg_test_loader2['dataset_args'], cfg_test_loader2['dataloader_args'])
-#test_loader3 = trainer_util.get_dataloader(cfg_test_loader3['dataset_args'], cfg_test_loader3['dataloader_args'])
-#test_loader4 = trainer_util.get_dataloader(cfg_test_loader4['dataset_args'], cfg_test_loader4['dataloader_args'])
+val_loader = trainer_util.get_dataloader(cfg_val_loader['dataset_args'], cfg_val_loader['dataloader_args'])
+test_loader1 = trainer_util.get_dataloader(cfg_test_loader1['dataset_args'], cfg_test_loader1['dataloader_args'])
+test_loader2 = trainer_util.get_dataloader(cfg_test_loader2['dataset_args'], cfg_test_loader2['dataloader_args'])
+test_loader3 = trainer_util.get_dataloader(cfg_test_loader3['dataset_args'], cfg_test_loader3['dataloader_args'])
+test_loader4 = trainer_util.get_dataloader(cfg_test_loader4['dataset_args'], cfg_test_loader4['dataloader_args'])
 
 if config['training_strategy']['image_visualization']:
     cfg_image_loader = config['img_dataloader']
@@ -88,9 +88,9 @@ if config['training_strategy']['image_visualization']:
     image_logger = ImgLogging(cfg_image_loader['dataset_args']['preprocess_mode'])
 
 # Getting parameters for test
-#dataset = cfg_test_loader1['dataset_args']
-#h = int((dataset['crop_size']/dataset['aspect_ratio']))
-#w = int(dataset['crop_size'])
+dataset = cfg_test_loader1['dataset_args']
+h = int((dataset['crop_size']/dataset['aspect_ratio']))
+w = int(dataset['crop_size'])
 
 # create trainer for our model
 print('Loading Model')
