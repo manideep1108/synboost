@@ -81,6 +81,8 @@ class DissimilarityTrainer():
                 full_loader = trainer_util.loader(label_path, batch_size='all')
                 print('Getting class weights for cross entropy loss. This might take some time.')
                 class_weights = trainer_util.get_class_weights(full_loader, num_classes=2)
+                print("class weights are")
+                print(class_weights)
             else:
                 if config['train_dataloader']['dataset_args']['void']:
                     class_weights = [1.54843156, 8.03912212]
