@@ -8,7 +8,7 @@ from PIL import Image
 
 import torch.backends.cudnn as cudnn
 import torch
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import make_grid
 from torchvision.transforms import ToPILImage, ToTensor
 
@@ -43,9 +43,9 @@ if not os.path.isdir(save_fdr):
 if not os.path.isdir(logs_fdr):
     os.mkdir(logs_fdr)
     
-train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
-val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
-test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
+#train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
+#val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
+#test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
 
 # Save config file use for experiment
 shutil.copy(opts.config, os.path.join(logs_fdr, exp_name, 'config.yaml'))
@@ -83,7 +83,7 @@ test_loader4 = trainer_util.get_dataloader(cfg_test_loader4['dataset_args'], cfg
 
 if config['training_strategy']['image_visualization']:
     cfg_image_loader = config['img_dataloader']
-    image_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'images'), flush_secs=30)
+    #image_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'images'), flush_secs=30)
     image_loader = trainer_util.get_dataloader(cfg_image_loader['dataset_args'], cfg_image_loader['dataloader_args'])
     image_logger = ImgLogging(cfg_image_loader['dataset_args']['preprocess_mode'])
 
@@ -153,7 +153,7 @@ for epoch in iter_counter.training_epochs():
         iter+=1
         
     avg_train_loss = train_loss / len(train_loader)
-    train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
+    #train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
     
     print('Training Loss: %f' % (avg_train_loss))
     print('Starting Validation')
@@ -181,7 +181,7 @@ for epoch in iter_counter.training_epochs():
         avg_val_loss = val_loss / len(val_loader)
         print('Validation Loss: %f' % avg_val_loss)
 
-        val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
+        #val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
         
         if avg_val_loss < best_val_loss:
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
@@ -229,10 +229,10 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
 
         avg_val_loss = val_loss / len(test_loader1)
-        test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
-        test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['AP'], epoch)
-        test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['FPR@95%TPR'], epoch)
-        test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), avg_val_loss, epoch)
+       # test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
+       # test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['AP'], epoch)
+       # test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['FPR@95%TPR'], epoch)
+       # test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), avg_val_loss, epoch)
         cumul_map_sum += results['AP']
         # Starts Testing (Test Set 2)
         print('Starting Testing For %s' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']))
@@ -276,14 +276,14 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
 
         cumul_map_sum += results['AP']
-        test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
-                               results['auroc'], epoch)
-        test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']), results['AP'],
-                               epoch)
-        test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
-                               results['FPR@95%TPR'], epoch)
-        test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
-                               avg_val_loss, epoch)
+        #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
+                               #results['auroc'], epoch)
+        #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']), results['AP'],
+                               #epoch)
+        #test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
+                               #results['FPR@95%TPR'], epoch)
+        #test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
+                               #avg_val_loss, epoch)
 
         # Starts Testing (Test Set 3)
         print('Starting Testing For %s' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']))
@@ -326,14 +326,14 @@ for epoch in iter_counter.training_epochs():
         cumul_map_sum += results['AP']
         avg_val_loss = val_loss / len(test_loader3)
 
-        test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
-                               results['auroc'], epoch)
-        test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']), results['AP'],
-                               epoch)
-        test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
-                               results['FPR@95%TPR'], epoch)
-        test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
-                               avg_val_loss, epoch)
+        #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
+                               #results['auroc'], epoch)
+        #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']), results['AP'],
+                               #epoch)
+        #test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
+                               #results['FPR@95%TPR'], epoch)
+        #test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
+                               #avg_val_loss, epoch)
 
         if cumul_map_sum > best_map_metric:
             print('Cumulative mAP for epoch %d (%f) is better than previous best mAP (%f). Saving best model.'
@@ -381,14 +381,14 @@ for epoch in iter_counter.training_epochs():
 
         avg_val_loss = val_loss / len(test_loader4)
 
-        test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
-                               results['auroc'], epoch)
-        test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']), results['AP'],
-                               epoch)
-        test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
-                               results['FPR@95%TPR'], epoch)
-        test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
-                               avg_val_loss, epoch)
+        #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
+                               #results['auroc'], epoch)
+        #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']), results['AP'],
+                               #epoch)
+        #test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
+                               #results['FPR@95%TPR'], epoch)
+        #test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
+                               #avg_val_loss, epoch)
 
         # Starts Image Visualization Module
         if config['training_strategy']['image_visualization']:
@@ -446,7 +446,7 @@ for epoch in iter_counter.training_epochs():
                     all_images[idx*5+3, :, :, :] = label_img
                     all_images[idx*5+4, :, :, :] = predictions_img
                 grid = make_grid(all_images, 5)
-            image_writer.add_image('results', grid, epoch)
+            #image_writer.add_image('results', grid, epoch)
 
     print('saving the latest model (epoch %d, total_steps %d)' %
           (epoch, iter_counter.total_steps_so_far))
@@ -460,9 +460,9 @@ for epoch in iter_counter.training_epochs():
               (epoch, iter_counter.total_steps_so_far))
         trainer.save(save_fdr, epoch, exp_name)
         
-train_writer.close()
-val_writer.close()
-test_writer.close()
-if config['training_strategy']['image_visualization']:
-    image_writer.close()
+#train_writer.close()
+#val_writer.close()
+#test_writer.close()
+# if config['training_strategy']['image_visualization']:
+#     image_writer.close()
 print('Training was successfully finished.')
