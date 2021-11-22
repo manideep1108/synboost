@@ -8,7 +8,7 @@ from PIL import Image
 import gc
 import torch.backends.cudnn as cudnn
 import torch
-#from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import make_grid
 from torchvision.transforms import ToPILImage, ToTensor
 
@@ -43,9 +43,9 @@ if not os.path.isdir(save_fdr):
 if not os.path.isdir(logs_fdr):
     os.mkdir(logs_fdr)
     
-#train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
-#val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
-#test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
+train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
+val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
+test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
 
 # Save config file use for experiment
 shutil.copy(opts.config, os.path.join(logs_fdr, exp_name, 'config.yaml'))
