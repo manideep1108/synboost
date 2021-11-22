@@ -103,6 +103,19 @@ iter_counter = IterationCounter(config, len(train_loader), batch_size)
 # Softmax layer for testing
 softmax = torch.nn.Softmax(dim=1)
 
+def memReport(): 
+    for obj in gc.get_objects(): 
+        if torch.is_tensor(obj): 
+            print(type(obj), obj.size()) 
+
+def cpuStats(): 
+    print(sys.version) 
+    print(psutil.cpu_percent()) 
+    print(psutil.virtual_memory()) # physical memory usage 
+    pid = os.getpid() 
+    py = psutil.Process(pid) 
+    memoryUse = py.memory_info()[0] / 2.0 ** 30 # memory use in GB
+
 print('Starting Training...')
 best_val_loss = float('inf')
 best_map_metric = 0
@@ -128,7 +141,13 @@ for epoch in iter_counter.training_epochs():
             model_loss, _ = trainer.run_model_one_step_prior(original, synthesis, semantic, label, entropy, mae, distance)
         else:
             model_loss, _ = trainer.run_model_one_step(original, synthesis, semantic, label)
-            
+        
+        print("####################")
+        print(i)
+        memReport()
+        cpuStats() 
+        print("####################")  
+
         train_loss += model_loss
         #train_writer.add_scalar('Loss_iter', model_loss, iter)
         iter+=1
