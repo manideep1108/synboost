@@ -83,6 +83,7 @@ class DissimilarityTrainer():
                 class_weights = trainer_util.get_class_weights(full_loader, num_classes=2)
                 print("class weights are")
                 print(class_weights)
+                torch.save(class_weights,"class_weights.pth")
             else:
                 if config['train_dataloader']['dataset_args']['void']:
                     class_weights = [1.54843156, 8.03912212]

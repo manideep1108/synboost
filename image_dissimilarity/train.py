@@ -103,6 +103,8 @@ iter_counter = IterationCounter(config, len(train_loader), batch_size)
 # Softmax layer for testing
 softmax = torch.nn.Softmax(dim=1)
 
+import sys
+import psutil
 def memReport(): 
     for obj in gc.get_objects(): 
         if torch.is_tensor(obj): 
