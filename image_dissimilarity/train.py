@@ -130,7 +130,7 @@ for epoch in iter_counter.training_epochs():
             model_loss, _ = trainer.run_model_one_step(original, synthesis, semantic, label)
             
         train_loss += model_loss
-        train_writer.add_scalar('Loss_iter', model_loss, iter)
+        #train_writer.add_scalar('Loss_iter', model_loss, iter)
         iter+=1
         
     avg_train_loss = train_loss / len(train_loader)
