@@ -81,8 +81,8 @@ class DissimilarityTrainer():
                 full_loader = trainer_util.loader(label_path, batch_size='all')
                 print('Getting class weights for cross entropy loss. This might take some time.')
                 class_weights = trainer_util.get_class_weights(full_loader, num_classes=2)
-                print("class weights are")
-                print(class_weights)
+                #print("class weights are")
+                #print(class_weights)
                 torch.save(class_weights,"class_weights.pth")
             else:
                 if config['train_dataloader']['dataset_args']['void']:
@@ -102,12 +102,12 @@ class DissimilarityTrainer():
         self.optimizer.step()
         self.model_losses = model_loss
         self.generated = predictions
-        return model_loss, predictions
+        return model_loss.item(), predictions
         
     def run_validation(self, original, synthesis, semantic, label):
         predictions = self.diss_model(original, synthesis, semantic)
         model_loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1).cuda())
-        return model_loss, predictions
+        return model_loss.item(), predictions
 
     def run_model_one_step_prior(self, original, synthesis, semantic, label, entropy, mae, distance):
         self.optimizer.zero_grad()
@@ -117,12 +117,12 @@ class DissimilarityTrainer():
         self.optimizer.step()
         self.model_losses = model_loss
         self.generated = predictions
-        return model_loss, predictions
+        return model_loss.item(), predictions
 
     def run_validation_prior(self, original, synthesis, semantic, label, entropy, mae, distance):
         predictions = self.diss_model(original, synthesis, semantic, entropy, mae, distance)
         model_loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1).cuda())
-        return model_loss, predictions
+        return model_loss.item(), predictions
 
     def get_latest_losses(self):
         return {**self.model_loss}
