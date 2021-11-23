@@ -3,6 +3,7 @@ import os
 import torch.nn as nn
 import torch.backends.cudnn as cudnn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import wandb
 
 import sys
 sys.path.append("..")
@@ -16,7 +17,7 @@ class DissimilarityTrainer():
     and the latest visuals to visualize the progress in training.
     """
 
-    def __init__(self, config, seed=0):
+    def __init__(self, config, seed=0, resume=False, epoch=None):
         
         trainer_util.set_seed(seed)
         
@@ -36,15 +37,14 @@ class DissimilarityTrainer():
             raise NotImplementedError()
 
         # get pre-trained model
-        pretrain_config = config['diss_pretrained']
-        if pretrain_config['load']:
-            epoch = pretrain_config['which_epoch']
-            save_ckpt_fdr = pretrain_config['save_folder']
-            ckpt_name = pretrain_config['experiment_name']
+        if config["wandb_config"]["wandb"] and resume:
+            wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
+            wandb.restore(file_path)
+            checkpoint = torch.load(checkpoint_fpath)
+            full_model_path = config["wandb_config"]["model_path_base"] + wandb_load_file_path
 
-            print('Loading pretrained weights from %s (epoch: %s)' % (ckpt_name, epoch))
-            model_path = os.path.join(save_ckpt_fdr, ckpt_name, '%s_net_%s.pth' % (epoch, ckpt_name))
-            model_weights = torch.load(model_path)
+            print('Loading pretrained weights from %s (epoch: %s)' % (full_model_path, epoch))
+            model_weights = torch.load(full_model_path)
             self.diss_model.load_state_dict(model_weights, strict=False)
             # NOTE: For old models, there were some correlation weights created that were not used in the foward pass. That's the reason to include strict=False
             

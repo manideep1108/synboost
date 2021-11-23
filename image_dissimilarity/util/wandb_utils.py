@@ -3,25 +3,25 @@ import os
 import numpy as np
 
 
-def init_wandb(model, config) -> None:
+def init_wandb(model, config, key, wandb_project, wandb_run, wandb_run, wandb_run_id, wandb_resume) -> None:
     """
     Initialize project on Weights & Biases
     Args:
         model (Torch Model): Model for Training
         args (TrainOptions,optional): TrainOptions class (refer options/train_options.py). Defaults to None.
+        key (Wandb_API_Key): Find it on your wandb account
     """
-
-    print("Wandb api key provided...")
-    wandb.login(key=config.wandb_id)
-
-
-    # Not sure if config object could be logged
-    wandb.init(
-        name=config.exp_name,
-        config=config,
-        project=config.wandb_project,
-    )
-
+    os.environ["WANDB_API_KEY"] = key
+    if wandb_resume:
+        wandb.login()
+        wandb.init(project = wandb_project, name = wandb_run, id = wandb_run_id, resume = True )
+        print("---------------------------------------------------------------------------------------------------")
+        print("Session Resumed")
+        print("---------------------------------------------------------------------------------------------------")
+    else:
+        wandb.init(project = wandb_project, name = wandb_run, config = config)
+    
+    if config["wandb_config"]["wandb_watch"]:
     wandb.watch(model, log="all")
 
 

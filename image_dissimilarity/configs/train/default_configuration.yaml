@@ -144,14 +144,8 @@ test_dataloader4:
     num_workers: 1
     shuffle: False
 wandb_config:
-  wandb: True
-  wandb_project: MLRC_Synboost
-  wandb_run: Test_1
   wandb_watch: True
   wandb_watch_freq: 50
-  wandb_resume: True
-  wandb_run_id: xxx
   model_path_base: /kaggle/working/wandb/latest-run/files/
-  model_path_file: checkpoints/Epoch_100.pth
 
   

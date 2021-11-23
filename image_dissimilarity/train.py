@@ -18,22 +18,36 @@ from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
 from util.image_logging import ImgLogging
 from util import visualization
+from util import wandb_utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 parser.add_argument('--seed', type=str, default='0', help='seed for experiment')
+parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
+parser.add_argument('--wandb_resume', tyep=bool, default=False, help='Resume Training')
+parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
+parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
+parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
+parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
+parser.add_argument('--pre_epoch', type=int, default=None, help='Previous epoch Number to resume training')
 opts = parser.parse_args()
 cudnn.benchmark = True
 
 # Load experiment setting
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
-    
+
+wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
+
+#init_wandb(model, config, opt.wandb_Api_key, opt.wandb_project, opt.wandb_run, opt.wandb_run_id, opt.wandb_resume)
+
 # get experiment information
 exp_name = config['experiment_name'] + opts.seed
 save_fdr = config['save_folder']
 logs_fdr = config['logger']['results_dir']
+
+
 
 print('Starting experiment named: %s'%exp_name)
 
@@ -43,12 +57,12 @@ if not os.path.isdir(save_fdr):
 if not os.path.isdir(logs_fdr):
     os.mkdir(logs_fdr)
     
-train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
-val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
-test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
+#train_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'train'), flush_secs=30)
+#val_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'validation'), flush_secs=30)
+#test_writer = SummaryWriter(os.path.join(logs_fdr, exp_name, 'test'), flush_secs=30)
 
 # Save config file use for experiment
-shutil.copy(opts.config, os.path.join(logs_fdr, exp_name, 'config.yaml'))
+#shutil.copy(opts.config, os.path.join(logs_fdr, exp_name, 'config.yaml'))
 
 # Activate GPUs
 config['gpu_ids'] = opts.gpu_ids
