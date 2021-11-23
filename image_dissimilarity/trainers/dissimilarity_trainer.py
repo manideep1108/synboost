@@ -130,13 +130,22 @@ class DissimilarityTrainer():
     def get_latest_generated(self):
         return self.generated
 
-    def save(self, save_dir, epoch, name):
+    def save(self, save_dir, name, epoch):
+
+        checkpoint = {
+            'epoch': epoch,
+            'state_dict': self.diss_model.state_dict(),
+            'optimizer': self.optimizer.state_dict(),
+            'scheduler': self.scheduler.state_dict(),
+            'criterion': self.criterion.state_dict()
+        }
+
         if not os.path.isdir(os.path.join(save_dir, name)):
             os.mkdir(os.path.join(save_dir, name))
         
         save_filename = '%s_net_%s.pth' % (epoch, name)
         save_path = os.path.join(save_dir, name, save_filename)
-        torch.save(self.diss_model.state_dict(), save_path)  # net.cpu() -> net
+        torch.save(checkpoint, save_path)  # net.cpu() -> net
 
     ##################################################################
     # Helper functions
