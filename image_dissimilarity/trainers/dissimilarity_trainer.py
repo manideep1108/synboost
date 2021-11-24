@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.backends.cudnn as cudnn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import wandb
+from util.load import load_ckp
 
 import sys
 sys.path.append("..")
@@ -17,7 +18,7 @@ class DissimilarityTrainer():
     and the latest visuals to visualize the progress in training.
     """
 
-    def __init__(self, config, seed=0, resume=False, epoch=None):
+    def __init__(self, config, seed=0, wandb=True, resume=False, epoch=None):
         
         trainer_util.set_seed(seed)
         
@@ -36,20 +37,6 @@ class DissimilarityTrainer():
         else:
             raise NotImplementedError()
 
-        # get pre-trained model
-        if config["wandb_config"]["wandb"] and resume:
-            wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
-            wandb.restore(file_path)
-            checkpoint = torch.load(checkpoint_fpath)
-            full_model_path = config["wandb_config"]["model_path_base"] + wandb_load_file_path
-
-            print('Loading pretrained weights from %s (epoch: %s)' % (full_model_path, epoch))
-            model_weights = torch.load(full_model_path)
-            self.diss_model.load_state_dict(model_weights, strict=False)
-            # NOTE: For old models, there were some correlation weights created that were not used in the foward pass. That's the reason to include strict=False
-            
-        print('Printing Model Parameters')
-        print(self.diss_model.parameters)
         
         lr_config = config['optimizer']
         lr_options = lr_config['parameters']
@@ -63,6 +50,7 @@ class DissimilarityTrainer():
                                               betas=(lr_options['beta1'], lr_options['beta2']))
         else:
             raise NotImplementedError
+
         
         if lr_options['lr_policy'] == 'ReduceLROnPlateau':
             self.scheduler = ReduceLROnPlateau(self.optimizer, 'min', patience=lr_options['patience'], factor=lr_options['factor'])
@@ -93,6 +81,20 @@ class DissimilarityTrainer():
             self.criterion = nn.CrossEntropyLoss(ignore_index=255, weight=torch.FloatTensor(class_weights).to("cuda")).cuda(self.gpu)
         else:
             self.criterion = nn.CrossEntropyLoss(ignore_index=255).cuda(self.gpu)
+
+
+       # get pre-trained model
+        if wandb and resume:
+            checkpoint = load_ckp(wandb_base_path, name, epoch)
+            self.diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
+            self.optimizer.load_state_dict(checkpoint['optimizer'])
+            self.scheduler.load_state_dict(checkpoint['scheduler'])
+            self.criterion.load_state_dict(checkpoint['criterion'])
+            
+            # NOTE: For old models, there were some correlation weights created that were not used in the foward pass. That's the reason to include strict=False
+            
+        print('Printing Model Parameters')
+        print(self.diss_model.parameters)
         
     def run_model_one_step(self, original, synthesis, semantic, label):
         self.optimizer.zero_grad()
@@ -130,7 +132,7 @@ class DissimilarityTrainer():
     def get_latest_generated(self):
         return self.generated
 
-    def save(self, save_dir, name, epoch):
+    def save(self, save_dir, base_dir, name, epoch, wandb_bool):
 
         checkpoint = {
             'epoch': epoch,
@@ -143,9 +145,12 @@ class DissimilarityTrainer():
         if not os.path.isdir(os.path.join(save_dir, name)):
             os.mkdir(os.path.join(save_dir, name))
         
-        save_filename = '%s_net_%s.pth' % (epoch, name)
+        save_filename = '%s_%s.pth' % (name, epoch)
         save_path = os.path.join(save_dir, name, save_filename)
         torch.save(checkpoint, save_path)  # net.cpu() -> net
+        wandb.save()
+        if wandb_bool:
+          wandb.save(save_path, base_path = base_dir, policy = 'live')
 
     ##################################################################
     # Helper functions

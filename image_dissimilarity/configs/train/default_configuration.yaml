@@ -1,6 +1,7 @@
 # Name of the experiment for saving files
 experiment_name: replicate_best_mult_
 save_folder: /kaggle/working/results/
+save_base_dir: /kaggle/working/
 
 # Define training strategy
 training_strategy:

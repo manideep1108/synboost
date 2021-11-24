@@ -45,6 +45,7 @@ wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
 # get experiment information
 exp_name = config['experiment_name'] + opts.seed
 save_fdr = config['save_folder']
+base_fdr = config['save_base_dir']
 logs_fdr = config['logger']['results_dir']
 
 
@@ -183,7 +184,8 @@ for epoch in iter_counter.training_epochs():
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
                   %(epoch, avg_val_loss, best_val_loss))
             best_val_loss = avg_val_loss
-            trainer.save(save_fdr, 'best', exp_name)
+            trainer.save(save_fdr, base_fdr, 'best', epoch, opts.wandb)
+            
     
     # Starts Testing (Test Set 1)
         print('Starting Testing For %s' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']))
@@ -335,7 +337,7 @@ for epoch in iter_counter.training_epochs():
             print('Cumulative mAP for epoch %d (%f) is better than previous best mAP (%f). Saving best model.'
                   % (epoch, cumul_map_sum, best_map_metric))
             best_map_metric = cumul_map_sum
-            trainer.save(save_fdr, 'best_map', exp_name)
+            trainer.save(save_fdr, base_fdr, 'best_map', epoch, opts.wandb)
 
         # Starts Testing (Test Set 4)
         print('Starting Testing For %s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']))
@@ -446,15 +448,16 @@ for epoch in iter_counter.training_epochs():
 
     print('saving the latest model (epoch %d, total_steps %d)' %
           (epoch, iter_counter.total_steps_so_far))
-    trainer.save(save_fdr, 'latest', exp_name)
+    trainer.save(save_fdr, base_fdr, 'latest', epoch, opts.wandb)
 
     trainer.update_learning_rate_schedule(avg_val_loss)
     iter_counter.record_epoch_end()
     
-    if (epoch % config['logger']['save_epoch_freq'] == 0 or epoch == iter_counter.total_epochs):
-        print('saving the model at the end of epoch %d, iters %d' %
-              (epoch, iter_counter.total_steps_so_far))
-        trainer.save(save_fdr, epoch, exp_name)
+    #if (epoch % config['logger']['save_epoch_freq'] == 0 or epoch == iter_counter.total_epochs):
+    #   print('saving the model at the end of epoch %d, iters %d' %
+    #        (epoch, iter_counter.total_steps_so_far))
+    #  trainer.save(save_fdr, epoch, exp_name)
+        
         
 #train_writer.close()
 #val_writer.close()
