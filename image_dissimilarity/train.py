@@ -122,6 +122,15 @@ print('Starting Training...')
 best_val_loss = float('inf')
 best_map_metric = 0
 iter = 0
+
+"""
+start = 1
+if opts.wandb and opts.wandb_resume:
+    start = opts.pre_epoch + start
+stop = epochs + start_epoch
+
+for epoch in tqdm(range(start, (stop+1))):
+"""
 for epoch in iter_counter.training_epochs():
     
     print('Starting Epoch #%i for experiment %s'% (epoch, exp_name))
