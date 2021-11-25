@@ -30,7 +30,7 @@ parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run
 parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
 parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
-parser.add_argument('--pre_epoch', type=int, default=None, help='Previous epoch Number to resume training')
+parser.add_argument('--pre_epoch', type=int, default=0, help='Previous epoch Number to resume training')
 parser.add_argument('--epochs', type=int, default=16, help='No. of epochs to run ')
 parser.add_argument('--name', type=str, default='latest', help='file Name of the resuming run')
 opts = parser.parse_args()
@@ -39,10 +39,6 @@ cudnn.benchmark = True
 # Load experiment setting
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
-
-wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
-
-
 
 
 # get experiment information
@@ -114,8 +110,8 @@ w = int(dataset['crop_size'])
 print('Loading Model')
 trainer = DissimilartiyTrainer(config, seed=int(opts.seed), opts.wandb, opts.wandb_resume, opts.pre_epoch, opts.name)
 
-
-wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
+if opts.wandb:
+    wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
 
 
 # create tool for counting iterations
@@ -158,12 +154,14 @@ for epoch in iter_counter.training_epochs():
 
         train_loss += model_loss
         #train_writer.add_scalar('Loss_iter', model_loss, iter)
-        wandb.log("Loss_iter_train": model_loss, "train_idx": i)
+        if opts.wandb:
+            wandb.log("Loss_iter_train": model_loss, "train_idx": i)
         iter+=1
         
     avg_train_loss = train_loss / len(train_loader)
     #train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
-    wandb.log("Loss_epoch_train":avg_train_loss, "train_epoch": epoch)
+    if opts.wandb:
+        wandb.log("Loss_epoch_train":avg_train_loss, "epoch": epoch)
     
     print('Training Loss: %f' % (avg_train_loss))
     print('Starting Validation')
@@ -187,13 +185,15 @@ for epoch in iter_counter.training_epochs():
                 loss, _ = trainer.run_validation(original, synthesis, semantic, label)
                 
             val_loss += loss
-            wandb.log("Loss_iter_val": loss, "Val_idx": i)
+            if opts.wandb:
+                wandb.log("Loss_iter_val": loss, "Val_idx": i)
             
         avg_val_loss = val_loss / len(val_loader)
         print('Validation Loss: %f' % avg_val_loss)
 
         #val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
-        wandb.log("Loss_epoch_val": avg_val_loss, "Val_epoch": epoch )
+        if opts.wandb:
+            wandb.log("Loss_epoch_val": avg_val_loss)
         
         if avg_val_loss < best_val_loss:
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
@@ -243,12 +243,13 @@ for epoch in iter_counter.training_epochs():
 
         avg_val_loss = val_loss / len(test_loader1)
 
-        wandb.log(
-            "AU_ROC_Test_1": results['auroc'],
-            "mAP_Test_1": results['AP'],
-            "FPR@95TPR_Test_1": results["FPR@95TPR"]
-            "Test_1_Avg_Loss": avg_val_loss
-        )
+        if opts.wandb:
+            wandb.log(
+                "AU_ROC_Test_1": results['auroc'],
+                "mAP_Test_1": results['AP'],
+                "FPR@95TPR_Test_1": results["FPR@95TPR"]
+                "Test_1_Avg_Loss": avg_val_loss
+            )
        # test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
        # test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['AP'], epoch)
        # test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['FPR@95%TPR'], epoch)
@@ -296,13 +297,13 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
 
         cumul_map_sum += results['AP']
-
-        wandb.log(
-            "AU_ROC_Test_2": results['auroc'],
-            "mAP_Test_2": results['AP'],
-            "FPR@95TPR_Test_2": results["FPR@95TPR"]
-            "Test_2_Avg_Loss": avg_val_loss
-        )
+        if opts.wandb:
+            wandb.log(
+                "AU_ROC_Test_2": results['auroc'],
+                "mAP_Test_2": results['AP'],
+                "FPR@95TPR_Test_2": results["FPR@95TPR"]
+                "Test_2_Avg_Loss": avg_val_loss
+            )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
         #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']), results['AP'],
@@ -352,12 +353,13 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
         cumul_map_sum += results['AP']
         avg_val_loss = val_loss / len(test_loader3)
-        wandb.log(
-            "AU_ROC_Test_3": results['auroc'],
-            "mAP_Test_3": results['AP'],
-            "FPR@95TPR_Test_3": results["FPR@95TPR"]
-            "Test_3_Avg_Loss": avg_val_loss
-        )
+        if opts.wandb:
+            wandb.log(
+                "AU_ROC_Test_3": results['auroc'],
+                "mAP_Test_3": results['AP'],
+                "FPR@95TPR_Test_3": results["FPR@95TPR"]
+                "Test_3_Avg_Loss": avg_val_loss
+            )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
         #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']), results['AP'],
@@ -371,7 +373,8 @@ for epoch in iter_counter.training_epochs():
             print('Cumulative mAP for epoch %d (%f) is better than previous best mAP (%f). Saving best model.'
                   % (epoch, cumul_map_sum, best_map_metric))
             best_map_metric = cumul_map_sum
-            trainer.save(save_fdr, base_fdr, 'best_map', epoch, opts.wandb)
+            if opts.wandb:
+                trainer.save(save_fdr, base_fdr, 'best_map', epoch, opts.wandb)
 
         # Starts Testing (Test Set 4)
         print('Starting Testing For %s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']))
@@ -421,12 +424,13 @@ for epoch in iter_counter.training_epochs():
                                #results['FPR@95%TPR'], epoch)
         #test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
                                #avg_val_loss, epoch)
-        wandb.log(
-            "AU_ROC_Test_4": results['auroc'],
-            "mAP_Test_4": results['AP'],
-            "FPR@95TPR_Test_4": results["FPR@95TPR"]
-            "Test_4_Avg_Loss": avg_val_loss
-        )
+        if opts.wandb:
+            wandb.log(
+                "AU_ROC_Test_4": results['auroc'],
+                "mAP_Test_4": results['AP'],
+                "FPR@95TPR_Test_4": results["FPR@95TPR"]
+                "Test_4_Avg_Loss": avg_val_loss
+            )
         # Starts Image Visualization Module
         if config['training_strategy']['image_visualization']:
             print('Starting Visualization For %s' % os.path.basename(cfg_image_loader['dataset_args']['dataroot']))
@@ -487,7 +491,8 @@ for epoch in iter_counter.training_epochs():
 
     print('saving the latest model (epoch %d, total_steps %d)' %
           (epoch, iter_counter.total_steps_so_far))
-    trainer.save(save_fdr, base_fdr, 'latest', epoch, opts.wandb)
+    if opts.wandb:
+        trainer.save(save_fdr, base_fdr, 'latest', epoch, opts.wandb)
 
     trainer.update_learning_rate_schedule(avg_val_loss)
     iter_counter.record_epoch_end()
