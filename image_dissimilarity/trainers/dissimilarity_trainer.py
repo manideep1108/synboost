@@ -18,7 +18,7 @@ class DissimilarityTrainer():
     and the latest visuals to visualize the progress in training.
     """
 
-    def __init__(self, config, seed=0, wandb=True, resume=False, epoch=None, name="latest"):
+    def __init__(self, config, wandb=True, resume=False, epoch=0, name="latest",seed=0):
         
         trainer_util.set_seed(seed)
         

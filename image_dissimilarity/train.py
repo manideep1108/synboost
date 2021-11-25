@@ -108,7 +108,7 @@ w = int(dataset['crop_size'])
 
 # create trainer for our model
 print('Loading Model')
-trainer = DissimilartiyTrainer(config, seed=int(opts.seed), opts.wandb, opts.wandb_resume, opts.pre_epoch, opts.name)
+trainer = DissimilartiyTrainer(config, opts.wandb, opts.wandb_resume, opts.pre_epoch, opts.name, seed=int(opts.seed))
 
 if opts.wandb:
     wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
