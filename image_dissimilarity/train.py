@@ -40,8 +40,6 @@ with open(opts.config, 'r') as stream:
 
 wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
 
-#init_wandb(model, config, opt.wandb_Api_key, opt.wandb_project, opt.wandb_run, opt.wandb_run_id, opt.wandb_resume)
-
 # get experiment information
 exp_name = config['experiment_name'] + opts.seed
 save_fdr = config['save_folder']
@@ -109,11 +107,13 @@ w = int(dataset['crop_size'])
 
 # create trainer for our model
 print('Loading Model')
-trainer = DissimilarityTrainer(config, seed=int(opts.seed))
+trainer = DissimilartiyTrainer(config, seed=int(opts.seed), opts.wandb, opts.wandb_resume, opts.pre_epoch)
 
 # create tool for counting iterations
 batch_size = config['train_dataloader']['dataloader_args']['batch_size']
-iter_counter = IterationCounter(config, len(train_loader), batch_size)
+#iter_counter = IterationCounter(config, len(train_loader), batch_size)
+iter_counter = IterationCounter(config, len(train_loader), batch_size,  opts.wandb, opts.wandb_resume, opts.pre_epoch)
+
 
 # Softmax layer for testing
 softmax = torch.nn.Softmax(dim=1)
@@ -123,14 +123,7 @@ best_val_loss = float('inf')
 best_map_metric = 0
 iter = 0
 
-"""
-start = 1
-if opts.wandb and opts.wandb_resume:
-    start = opts.pre_epoch + start
-stop = epochs + start_epoch
 
-for epoch in tqdm(range(start, (stop+1))):
-"""
 for epoch in iter_counter.training_epochs():
     
     print('Starting Epoch #%i for experiment %s'% (epoch, exp_name))
@@ -156,10 +149,12 @@ for epoch in iter_counter.training_epochs():
 
         train_loss += model_loss
         #train_writer.add_scalar('Loss_iter', model_loss, iter)
+        wandb.log("Loss_iter_train": model_loss, "train_idx": i)
         iter+=1
         
     avg_train_loss = train_loss / len(train_loader)
     #train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
+    wandb.log("Loss_epoch_train":avg_train_loss, "train_epoch": epoch)
     
     print('Training Loss: %f' % (avg_train_loss))
     print('Starting Validation')
@@ -183,11 +178,13 @@ for epoch in iter_counter.training_epochs():
                 loss, _ = trainer.run_validation(original, synthesis, semantic, label)
                 
             val_loss += loss
+            wandb.log("Loss_iter_val": loss, "Val_idx": i)
             
         avg_val_loss = val_loss / len(val_loader)
         print('Validation Loss: %f' % avg_val_loss)
 
         #val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
+        wandb.log("Loss_epoch_val": avg_val_loss, "Val_epoch": epoch )
         
         if avg_val_loss < best_val_loss:
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'

@@ -4,7 +4,7 @@ import numpy as np
 
 ## Helper class that keeps track of training iterations
 class IterationCounter():
-    def __init__(self, config, dataset_size, batch_size, print_freq=100, display_freq=100, epochs, wandb_bool, wandb_resume, wandb_epoch):
+    def __init__(self, config, dataset_size, batch_size, epochs, wandb_bool, wandb_resume, wandb_epoch, print_freq=100, display_freq=100):
         self.batch_size = batch_size
         self.config = config
         self.dataset_size = dataset_size
