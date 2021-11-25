@@ -40,6 +40,9 @@ with open(opts.config, 'r') as stream:
 
 wandb_load_file_path = "checkpoints/Epoch_" + str(opts.pre_epoch) + "pth"
 
+
+
+
 # get experiment information
 exp_name = config['experiment_name'] + opts.seed
 save_fdr = config['save_folder']
@@ -108,6 +111,9 @@ w = int(dataset['crop_size'])
 # create trainer for our model
 print('Loading Model')
 trainer = DissimilartiyTrainer(config, seed=int(opts.seed), opts.wandb, opts.wandb_resume, opts.pre_epoch)
+
+wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
+
 
 # create tool for counting iterations
 batch_size = config['train_dataloader']['dataloader_args']['batch_size']
