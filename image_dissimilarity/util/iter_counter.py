@@ -13,7 +13,7 @@ class IterationCounter():
         self.total_epochs = epochs
         if wandb_bool and wandb_resume:
             self.first_epoch = self.first_epoch + wandb_epoch
-            self.total_epochs = self.total_epochs + epochs
+            self.total_epochs = wandb_epoch + epochs
         #self.total_epochs = config['training_strategy']['niter'] + config['training_strategy']['niter_decay']
         self.epoch_iter = 0  # iter number within each epoch
         
