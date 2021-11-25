@@ -18,7 +18,7 @@ class DissimilarityTrainer():
     and the latest visuals to visualize the progress in training.
     """
 
-    def __init__(self, config, seed=0, wandb=True, resume=False, epoch=None):
+    def __init__(self, config, seed=0, wandb=True, resume=False, epoch=None, name="latest"):
         
         trainer_util.set_seed(seed)
         
@@ -85,7 +85,7 @@ class DissimilarityTrainer():
 
        # get pre-trained model
         if wandb and resume:
-            checkpoint = load_ckp(wandb_base_path, name, epoch)
+            checkpoint = load_ckp(config["wandb_config"]["model_path_base"], name, epoch)
             self.diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
             self.optimizer.load_state_dict(checkpoint['optimizer'])
             self.scheduler.load_state_dict(checkpoint['scheduler'])

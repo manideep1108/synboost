@@ -31,6 +31,8 @@ parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb r
 parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
 parser.add_argument('--pre_epoch', type=int, default=None, help='Previous epoch Number to resume training')
+parser.add_argument('--epochs', type=int, default=16, help='No. of epochs to run ')
+parser.add_argument('--name', type=str, default='latest', help='file Name of the resuming run')
 opts = parser.parse_args()
 cudnn.benchmark = True
 
@@ -110,7 +112,8 @@ w = int(dataset['crop_size'])
 
 # create trainer for our model
 print('Loading Model')
-trainer = DissimilartiyTrainer(config, seed=int(opts.seed), opts.wandb, opts.wandb_resume, opts.pre_epoch)
+trainer = DissimilartiyTrainer(config, seed=int(opts.seed), opts.wandb, opts.wandb_resume, opts.pre_epoch, opts.name)
+
 
 wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
 
@@ -118,7 +121,7 @@ wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, 
 # create tool for counting iterations
 batch_size = config['train_dataloader']['dataloader_args']['batch_size']
 #iter_counter = IterationCounter(config, len(train_loader), batch_size)
-iter_counter = IterationCounter(config, len(train_loader), batch_size,  opts.wandb, opts.wandb_resume, opts.pre_epoch)
+iter_counter = IterationCounter(config, len(train_loader), batch_size, opts.epochs, opts.wandb, opts.wandb_resume, opts.pre_epoch)
 
 
 # Softmax layer for testing
