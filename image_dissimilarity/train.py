@@ -244,11 +244,12 @@ for epoch in iter_counter.training_epochs():
         avg_val_loss = val_loss / len(test_loader1)
 
         if opts.wandb:
-            wandb.log(
+            wandb.log({
                 "AU_ROC_Test_1": results['auroc'],
                 "mAP_Test_1": results['AP'],
                 "FPR@95TPR_Test_1": results["FPR@95TPR"]
                 "Test_1_Avg_Loss": avg_val_loss
+            }
             )
        # test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
        # test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['AP'], epoch)
