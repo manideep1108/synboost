@@ -11,13 +11,12 @@ sys.path.append("..")
 from image_dissimilarity.util import trainer_util
 from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior
 
-class DissimilarityTrainer():
+class DissimilarityTrainer:
     """
     Trainer creates the model and optimizers, and uses them to
     updates the weights of the network while reporting losses
     and the latest visuals to visualize the progress in training.
     """
-
     def __init__(self, config, wandb=True, resume=False, epoch=0, name="latest",seed=0):
         
         trainer_util.set_seed(seed)
