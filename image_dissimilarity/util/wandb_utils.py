@@ -22,7 +22,7 @@ def init_wandb(model, config, key, wandb_project, wandb_run, wandb_run_id, wandb
         wandb.init(project = wandb_project, name = wandb_run, config = config)
     
     if config["wandb_config"]["wandb_watch"]:
-    wandb.watch(model, log="all")
+        wandb.watch(model, log="all")
 
 
 def wandb_log(train_loss, val_loss, epoch):
