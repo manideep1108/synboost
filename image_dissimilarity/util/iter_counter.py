@@ -4,16 +4,17 @@ import numpy as np
 
 ## Helper class that keeps track of training iterations
 class IterationCounter():
-    def __init__(self, config, dataset_size, batch_size, print_freq=100, display_freq=100, wandb_bool, wandb_resume, wandb_epoch):
+    def __init__(self, config, dataset_size, batch_size, print_freq=100, display_freq=100, epochs, wandb_bool, wandb_resume, wandb_epoch):
         self.batch_size = batch_size
         self.config = config
         self.dataset_size = dataset_size
         
         self.first_epoch = 1
+        self.total_epochs = epochs
         if wandb_bool and wandb_resume:
             self.first_epoch = self.first_epoch + wandb_epoch
-            # PENDING WORK -- PLS FINISH BEFORE USE
-        self.total_epochs = config['training_strategy']['niter'] + config['training_strategy']['niter_decay']
+            self.total_epochs = self.total_epochs + epochs
+        #self.total_epochs = config['training_strategy']['niter'] + config['training_strategy']['niter_decay']
         self.epoch_iter = 0  # iter number within each epoch
         
         self.total_steps_so_far = (self.first_epoch - 1) * dataset_size + self.epoch_iter
