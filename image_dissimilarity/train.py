@@ -233,6 +233,13 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
 
         avg_val_loss = val_loss / len(test_loader1)
+
+        wandb.log(
+            "AU_ROC_Test_1": results['auroc'],
+            "mAP_Test_1": results['AP'],
+            "FPR@95TPR_Test_1": results["FPR@95TPR"]
+            "Test_1_Avg_Loss": avg_val_loss
+        )
        # test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
        # test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['AP'], epoch)
        # test_writer.add_scalar('%s FPR@95TPR' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['FPR@95%TPR'], epoch)
@@ -280,6 +287,13 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
 
         cumul_map_sum += results['AP']
+
+        wandb.log(
+            "AU_ROC_Test_2": results['auroc'],
+            "mAP_Test_2": results['AP'],
+            "FPR@95TPR_Test_2": results["FPR@95TPR"]
+            "Test_2_Avg_Loss": avg_val_loss
+        )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
         #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']), results['AP'],
@@ -329,7 +343,12 @@ for epoch in iter_counter.training_epochs():
         print('FPR@95TPR: %f' % results['FPR@95%TPR'])
         cumul_map_sum += results['AP']
         avg_val_loss = val_loss / len(test_loader3)
-
+        wandb.log(
+            "AU_ROC_Test_3": results['auroc'],
+            "mAP_Test_3": results['AP'],
+            "FPR@95TPR_Test_3": results["FPR@95TPR"]
+            "Test_3_Avg_Loss": avg_val_loss
+        )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
         #test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']), results['AP'],
@@ -393,7 +412,12 @@ for epoch in iter_counter.training_epochs():
                                #results['FPR@95%TPR'], epoch)
         #test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
                                #avg_val_loss, epoch)
-
+        wandb.log(
+            "AU_ROC_Test_4": results['auroc'],
+            "mAP_Test_4": results['AP'],
+            "FPR@95TPR_Test_4": results["FPR@95TPR"]
+            "Test_4_Avg_Loss": avg_val_loss
+        )
         # Starts Image Visualization Module
         if config['training_strategy']['image_visualization']:
             print('Starting Visualization For %s' % os.path.basename(cfg_image_loader['dataset_args']['dataroot']))
