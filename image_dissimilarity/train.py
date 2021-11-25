@@ -155,13 +155,13 @@ for epoch in iter_counter.training_epochs():
         train_loss += model_loss
         #train_writer.add_scalar('Loss_iter', model_loss, iter)
         if opts.wandb:
-            wandb.log("Loss_iter_train": model_loss, "train_idx": i)
+            wandb.log({"Loss_iter_train": model_loss, "train_idx": i})
         iter+=1
         
     avg_train_loss = train_loss / len(train_loader)
     #train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
     if opts.wandb:
-        wandb.log("Loss_epoch_train":avg_train_loss, "epoch": epoch)
+        wandb.log({"Loss_epoch_train":avg_train_loss, "epoch": epoch})
     
     print('Training Loss: %f' % (avg_train_loss))
     print('Starting Validation')
@@ -186,14 +186,14 @@ for epoch in iter_counter.training_epochs():
                 
             val_loss += loss
             if opts.wandb:
-                wandb.log("Loss_iter_val": loss, "Val_idx": i)
+                wandb.log({"Loss_iter_val": loss, "Val_idx": i})
             
         avg_val_loss = val_loss / len(val_loader)
         print('Validation Loss: %f' % avg_val_loss)
 
         #val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
         if opts.wandb:
-            wandb.log("Loss_epoch_val": avg_val_loss)
+            wandb.log({"Loss_epoch_val": avg_val_loss})
         
         if avg_val_loss < best_val_loss:
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
@@ -298,11 +298,12 @@ for epoch in iter_counter.training_epochs():
 
         cumul_map_sum += results['AP']
         if opts.wandb:
-            wandb.log(
+            wandb.log({
                 "AU_ROC_Test_2": results['auroc'],
                 "mAP_Test_2": results['AP'],
                 "FPR@95TPR_Test_2": results["FPR@95TPR"]
                 "Test_2_Avg_Loss": avg_val_loss
+            }
             )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
@@ -354,11 +355,12 @@ for epoch in iter_counter.training_epochs():
         cumul_map_sum += results['AP']
         avg_val_loss = val_loss / len(test_loader3)
         if opts.wandb:
-            wandb.log(
+            wandb.log({
                 "AU_ROC_Test_3": results['auroc'],
                 "mAP_Test_3": results['AP'],
                 "FPR@95TPR_Test_3": results["FPR@95TPR"]
                 "Test_3_Avg_Loss": avg_val_loss
+            }
             )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
@@ -425,11 +427,12 @@ for epoch in iter_counter.training_epochs():
         #test_writer.add_scalar('val_loss_%s' % os.path.basename(cfg_test_loader4['dataset_args']['dataroot']),
                                #avg_val_loss, epoch)
         if opts.wandb:
-            wandb.log(
+            wandb.log({
                 "AU_ROC_Test_4": results['auroc'],
                 "mAP_Test_4": results['AP'],
                 "FPR@95TPR_Test_4": results["FPR@95TPR"]
                 "Test_4_Avg_Loss": avg_val_loss
+            }
             )
         # Starts Image Visualization Module
         if config['training_strategy']['image_visualization']:
