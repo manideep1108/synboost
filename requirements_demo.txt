@@ -11,3 +11,4 @@ imgaug
 sklearn
 tqdm
 natsort
+wandb
