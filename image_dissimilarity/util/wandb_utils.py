@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 
-def init_wandb(config, key, wandb_project, wandb_run, wandb_run_id, wandb_resume,team_name='dl-segmentation') -> None:
+def init_wandb(config, key, wandb_project, wandb_run, wandb_run_id, wandb_resume,user_name='shanmukh09') -> None:
     """
     Initialize project on Weights & Biases
     Args:
@@ -14,12 +14,12 @@ def init_wandb(config, key, wandb_project, wandb_run, wandb_run_id, wandb_resume
     os.environ["WANDB_API_KEY"] = key
     if wandb_resume:
         wandb.login()
-        wandb.init(project = wandb_project, entity=team_name, name = wandb_run, id = wandb_run_id, resume = True )
+        wandb.init(project = wandb_project, entity=user_name, name = wandb_run, id = wandb_run_id, resume = True )
         print("---------------------------------------------------------------------------------------------------")
         print("Session Resumed")
         print("---------------------------------------------------------------------------------------------------")
     else:
-        wandb.init(project = wandb_project, entity=team_name, name = wandb_run, config = config)
+        wandb.init(project = wandb_project, entity=user_name, name = wandb_run, config = config)
     
     #if config["wandb_config"]["wandb_watch"]:
     #    wandb.watch(model, log="all")
