@@ -108,6 +108,7 @@ w = int(dataset['crop_size'])
 
 #initializing wandb
 if opts.wandb:
+    print(opts.wandb_resume)
     wandb_utils.init_wandb(config=config, key=opts.wandb_Api_key,wandb_project= opts.wandb_project, wandb_run=opts.wandb_run, wandb_run_id=opts.wandb_run_id, wandb_resume=opts.wandb_resume)
 
 # create trainer for our model
