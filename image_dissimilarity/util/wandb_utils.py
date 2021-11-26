@@ -12,7 +12,9 @@ def init_wandb(config, key, wandb_project, wandb_run, wandb_run_id, wandb_resume
         key (Wandb_API_Key): Find it on your wandb account
     """
     #os.environ["WANDB_API_KEY"] = key
-    
+    print("*********************")
+    print(wandb_resume)
+    print("*********************")
     wandb.login()
     if wandb_resume:
         wandb.init(project = wandb_project, name = wandb_run, id = wandb_run_id, resume = True )
