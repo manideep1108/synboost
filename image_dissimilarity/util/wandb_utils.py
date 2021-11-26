@@ -11,7 +11,7 @@ def init_wandb(config, key, wandb_project, wandb_run, wandb_run_id, wandb_resume
         args (TrainOptions,optional): TrainOptions class (refer options/train_options.py). Defaults to None.
         key (Wandb_API_Key): Find it on your wandb account
     """
-    os.environ["WANDB_API_KEY"] = key
+    #os.environ["WANDB_API_KEY"] = key
     
     wandb.login()
     if wandb_resume:
