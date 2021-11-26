@@ -113,7 +113,7 @@ if opts.wandb:
 
 # create trainer for our model
 print('Loading Model')
-trainer = DissimilarityTrainer(config, opts.wandb, opts.wandb_resume, opts.pre_epoch, opts.name, seed=int(opts.seed))
+trainer = DissimilarityTrainer(config=config, wandb=opts.wandb, resume=opts.wandb_resume, epoch=opts.pre_epoch, name=opts.name, seed=int(opts.seed))
 
 #if opts.wandb:
 #    wandb_utils.init_wandb(config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
