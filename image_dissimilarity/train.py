@@ -33,6 +33,7 @@ parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
 parser.add_argument('--pre_epoch', type=int, default=0, help='Previous epoch Number to resume training')
 parser.add_argument('--epochs', type=int, default=16, help='No. of epochs to run ')
 parser.add_argument('--name', type=str, default='latest', help='file Name of the resuming run')
+parser.add_argument('--team_name', type=str, default='dl-segmentation', help='User name / team name where u want to log')
 opts = parser.parse_args()
 cudnn.benchmark = True
 
@@ -108,7 +109,7 @@ w = int(dataset['crop_size'])
 
 #initializing wandb
 if opts.wandb:
-    wandb_utils.init_wandb(config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
+    wandb_utils.init_wandb(config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume, opts.team_name)
 
 
 # create trainer for our model
