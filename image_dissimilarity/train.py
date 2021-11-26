@@ -253,7 +253,7 @@ for epoch in iter_counter.training_epochs():
             wandb.log({
                 "AU_ROC_Test_1": results['auroc'],
                 "mAP_Test_1": results['AP'],
-                "FPR@95TPR_Test_1": results["FPR@95TPR"],
+                "FPR@95TPR_Test_1": results["FPR@95%TPR"],
                 "Test_1_Avg_Loss": avg_val_loss
             }
             )
@@ -308,7 +308,7 @@ for epoch in iter_counter.training_epochs():
             wandb.log({
                 "AU_ROC_Test_2": results['auroc'],
                 "mAP_Test_2": results['AP'],
-                "FPR@95TPR_Test_2": results["FPR@95TPR"],
+                "FPR@95TPR_Test_2": results["FPR@95%TPR"],
                 "Test_2_Avg_Loss": avg_val_loss
             }
             )
@@ -365,7 +365,7 @@ for epoch in iter_counter.training_epochs():
             wandb.log({
                 "AU_ROC_Test_3": results['auroc'],
                 "mAP_Test_3": results['AP'],
-                "FPR@95TPR_Test_3": results["FPR@95TPR"],
+                "FPR@95TPR_Test_3": results["FPR@95%TPR"],
                 "Test_3_Avg_Loss": avg_val_loss
             }
             )
@@ -437,7 +437,7 @@ for epoch in iter_counter.training_epochs():
             wandb.log({
                 "AU_ROC_Test_4": results['auroc'],
                 "mAP_Test_4": results['AP'],
-                "FPR@95TPR_Test_4": results["FPR@95TPR"],
+                "FPR@95TPR_Test_4": results["FPR@95%TPR"],
                 "Test_4_Avg_Loss": avg_val_loss
             }
             )

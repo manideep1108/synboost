@@ -147,7 +147,6 @@ class DissimilarityTrainer:
         save_filename = '%s_%s.pth' % (name, epoch)
         save_path = os.path.join(save_dir, name, save_filename)
         torch.save(checkpoint, save_path)  # net.cpu() -> net
-        wandb.save()
         if wandb_bool:
           wandb.save(save_path, base_path = base_dir, policy = 'live')
 
