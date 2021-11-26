@@ -11,4 +11,4 @@ imgaug
 sklearn
 tqdm
 natsort
-wandb
+wandb --upgrade
