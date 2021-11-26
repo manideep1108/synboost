@@ -106,12 +106,17 @@ dataset = cfg_test_loader1['dataset_args']
 h = int((dataset['crop_size']/dataset['aspect_ratio']))
 w = int(dataset['crop_size'])
 
+#initializing wandb
+if opts.wandb:
+    wandb_utils.init_wandb(config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
+
+
 # create trainer for our model
 print('Loading Model')
 trainer = DissimilarityTrainer(config, opts.wandb, opts.wandb_resume, opts.pre_epoch, opts.name, seed=int(opts.seed))
 
-if opts.wandb:
-    wandb_utils.init_wandb(trainer, config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
+#if opts.wandb:
+#    wandb_utils.init_wandb(config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
 
 
 # create tool for counting iterations
