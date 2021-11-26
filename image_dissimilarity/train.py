@@ -11,6 +11,7 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import make_grid
 from torchvision.transforms import ToPILImage, ToTensor
+import wandb
 
 from trainers.dissimilarity_trainer import DissimilarityTrainer
 from util import trainer_util
