@@ -87,10 +87,10 @@ class DissimilarityTrainer:
        # get pre-trained model
         if self.wandb and self.resume:
             self.checkpoint = load_ckp(config["wandb_config"]["model_path_base"], name, epoch)
-            self.diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
-            self.optimizer.load_state_dict(checkpoint['optimizer'])
-            self.scheduler.load_state_dict(checkpoint['scheduler'])
-            self.criterion.load_state_dict(checkpoint['criterion'])
+            self.diss_model.load_state_dict(self.checkpoint['state_dict'], strict=False)
+            self.optimizer.load_state_dict(self.checkpoint['optimizer'])
+            self.scheduler.load_state_dict(self.checkpoint['scheduler'])
+            self.criterion.load_state_dict(self.checkpoint['criterion'])
             
             # NOTE: For old models, there were some correlation weights created that were not used in the foward pass. That's the reason to include strict=False
             
