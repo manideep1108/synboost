@@ -135,6 +135,8 @@ best_map_metric = 0
 iter = 0
 
 
+idx_train = 1 + trainer.return_iter()
+
 for epoch in iter_counter.training_epochs():
     
     print('Starting Epoch #%i for experiment %s'% (epoch, exp_name))
@@ -161,8 +163,9 @@ for epoch in iter_counter.training_epochs():
         train_loss += model_loss
         #train_writer.add_scalar('Loss_iter', model_loss, iter)
         if opts.wandb:
-            wandb.log({"Loss_iter_train": model_loss, "train_idx": i})
+            wandb.log({"Loss_iter_train": model_loss, "train_idx": idx_train})
         iter+=1
+        idx_train +=1
         
     avg_train_loss = train_loss / len(train_loader)
     #train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
@@ -191,8 +194,6 @@ for epoch in iter_counter.training_epochs():
                 loss, _ = trainer.run_validation(original, synthesis, semantic, label)
                 
             val_loss += loss
-            if opts.wandb:
-                wandb.log({"Loss_iter_val": loss, "Val_idx": i})
             
         avg_val_loss = val_loss / len(val_loader)
         print('Validation Loss: %f' % avg_val_loss)

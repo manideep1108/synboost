@@ -23,6 +23,8 @@ class DissimilarityTrainer:
         
         cudnn.enabled = True
         self.config = config
+        self.wandb = wandb
+        self.resume = resume
         
         if config['gpu_ids'] != -1:
             self.gpu = 'cuda'
@@ -83,7 +85,7 @@ class DissimilarityTrainer:
 
 
        # get pre-trained model
-        if wandb and resume:
+        if self.wandb and self.resume:
             checkpoint = load_ckp(config["wandb_config"]["model_path_base"], name, epoch)
             self.diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
             self.optimizer.load_state_dict(checkpoint['optimizer'])
@@ -94,6 +96,14 @@ class DissimilarityTrainer:
             
         print('Printing Model Parameters')
         print(self.diss_model.parameters)
+
+    def return_iter(self):
+        if self.wandb and self.resume:
+             return checkpoint["idx_train"]
+        else:
+            return 0
+        
+
         
     def run_model_one_step(self, original, synthesis, semantic, label):
         self.optimizer.zero_grad()
@@ -131,14 +141,16 @@ class DissimilarityTrainer:
     def get_latest_generated(self):
         return self.generated
 
-    def save(self, save_dir, base_dir, name, epoch, wandb_bool):
+    def save(self, save_dir, base_dir, name, epoch, idx_train, wandb_bool):
 
         checkpoint = {
             'epoch': epoch,
             'state_dict': self.diss_model.state_dict(),
             'optimizer': self.optimizer.state_dict(),
             'scheduler': self.scheduler.state_dict(),
-            'criterion': self.criterion.state_dict()
+            'criterion': self.criterion.state_dict(),
+            'idx_train': idx_train,
+
         }
 
         if not os.path.isdir(os.path.join(save_dir, name)):
