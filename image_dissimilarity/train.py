@@ -200,7 +200,8 @@ for epoch in iter_counter.training_epochs():
 
         #val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
         if opts.wandb:
-            wandb.log({"Loss_epoch_val": avg_val_loss})
+            wandb.log({"Loss_epoch_val": avg_val_loss,
+                "epoch": epoch})
         
         if avg_val_loss < best_val_loss:
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
@@ -255,7 +256,8 @@ for epoch in iter_counter.training_epochs():
                 "AU_ROC_Test_1": results['auroc'],
                 "mAP_Test_1": results['AP'],
                 "FPR@95TPR_Test_1": results["FPR@95%TPR"],
-                "Test_1_Avg_Loss": avg_val_loss
+                "Test_1_Avg_Loss": avg_val_loss,
+                "epoch": epoch
             }
             )
        # test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
@@ -310,7 +312,8 @@ for epoch in iter_counter.training_epochs():
                 "AU_ROC_Test_2": results['auroc'],
                 "mAP_Test_2": results['AP'],
                 "FPR@95TPR_Test_2": results["FPR@95%TPR"],
-                "Test_2_Avg_Loss": avg_val_loss
+                "Test_2_Avg_Loss": avg_val_loss,
+                "epoch": epoch
             }
             )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
@@ -367,7 +370,8 @@ for epoch in iter_counter.training_epochs():
                 "AU_ROC_Test_3": results['auroc'],
                 "mAP_Test_3": results['AP'],
                 "FPR@95TPR_Test_3": results["FPR@95%TPR"],
-                "Test_3_Avg_Loss": avg_val_loss
+                "Test_3_Avg_Loss": avg_val_loss,
+                "epoch": epoch
             }
             )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
