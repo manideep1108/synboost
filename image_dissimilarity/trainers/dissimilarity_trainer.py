@@ -141,7 +141,7 @@ class DissimilarityTrainer:
     def get_latest_generated(self):
         return self.generated
 
-    def save(self, save_dir, base_dir, name, epoch, idx_train, wandb_bool):
+    def save(self, save_dir, base_dir, name, epoch, wandb_bool, idx_train=None):
 
         checkpoint = {
             'epoch': epoch,

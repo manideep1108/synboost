@@ -206,7 +206,7 @@ for epoch in iter_counter.training_epochs():
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
                   %(epoch, avg_val_loss, best_val_loss))
             best_val_loss = avg_val_loss
-            trainer.save(save_fdr, base_fdr, 'best', epoch, opts.wandb)
+            trainer.save(save_fdr, base_fdr, 'best', epoch, opts.wandb, idx_train)
             
     
     # Starts Testing (Test Set 1)
@@ -503,7 +503,7 @@ for epoch in iter_counter.training_epochs():
     print('saving the latest model (epoch %d, total_steps %d)' %
           (epoch, iter_counter.total_steps_so_far))
     if opts.wandb:
-        trainer.save(save_fdr, base_fdr, 'latest', epoch, opts.wandb)
+        trainer.save(save_fdr, base_fdr, 'latest', epoch, opts.wandb, idx_train)
 
     trainer.update_learning_rate_schedule(avg_val_loss)
     iter_counter.record_epoch_end()
