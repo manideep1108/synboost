@@ -440,6 +440,7 @@ for epoch in iter_counter.training_epochs():
                 "mAP_Test_4": results['AP'],
                 "FPR@95TPR_Test_4": results["FPR@95%TPR"],
                 "Test_4_Avg_Loss": avg_val_loss
+                "epoch": epoch
             }
             )
         # Starts Image Visualization Module
@@ -499,6 +500,8 @@ for epoch in iter_counter.training_epochs():
                     all_images[idx*5+4, :, :, :] = predictions_img
                 grid = make_grid(all_images, 5)
             #image_writer.add_image('results', grid, epoch)
+    if opts.wandb:
+        wandb.log({"epoch": epoch})    
 
     print('saving the latest model (epoch %d, total_steps %d)' %
           (epoch, iter_counter.total_steps_so_far))
