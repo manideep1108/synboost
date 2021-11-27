@@ -86,7 +86,7 @@ class DissimilarityTrainer:
 
        # get pre-trained model
         if self.wandb and self.resume:
-            checkpoint = load_ckp(config["wandb_config"]["model_path_base"], name, epoch)
+            self.checkpoint = load_ckp(config["wandb_config"]["model_path_base"], name, epoch)
             self.diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
             self.optimizer.load_state_dict(checkpoint['optimizer'])
             self.scheduler.load_state_dict(checkpoint['scheduler'])
@@ -99,7 +99,7 @@ class DissimilarityTrainer:
 
     def return_iter(self):
         if self.wandb and self.resume:
-             return checkpoint["idx_train"]
+             return self.checkpoint["idx_train"]
         else:
             return 0
         
