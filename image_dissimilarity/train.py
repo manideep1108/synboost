@@ -163,14 +163,14 @@ for epoch in iter_counter.training_epochs():
         train_loss += model_loss
         #train_writer.add_scalar('Loss_iter', model_loss, iter)
         if opts.wandb:
-            wandb.log({"Loss_iter_train": model_loss, "train_idx": idx_train})
+            wandb.log({"Loss_iter_train": model_loss, "train_idx": idx_train}, step = idx_train)
         iter+=1
         idx_train +=1
         
     avg_train_loss = train_loss / len(train_loader)
     #train_writer.add_scalar('Loss_epoch', avg_train_loss, epoch)
     if opts.wandb:
-        wandb.log({"Loss_epoch_train":avg_train_loss, "epoch": epoch})
+        wandb.log({"Loss_epoch_train":avg_train_loss, "epoch": epoch}, step=epoch)
     
     print('Training Loss: %f' % (avg_train_loss))
     print('Starting Validation')
@@ -200,7 +200,7 @@ for epoch in iter_counter.training_epochs():
 
         #val_writer.add_scalar('Loss_epoch', avg_val_loss, epoch)
         if opts.wandb:
-            wandb.log({"Loss_epoch_val": avg_val_loss})
+            wandb.log({"Loss_epoch_val": avg_val_loss}, step=epoch)
         
         if avg_val_loss < best_val_loss:
             print('Validation loss for epoch %d (%f) is better than previous best loss (%f). Saving best model.'
@@ -256,7 +256,7 @@ for epoch in iter_counter.training_epochs():
                 "mAP_Test_1": results['AP'],
                 "FPR@95TPR_Test_1": results["FPR@95%TPR"],
                 "Test_1_Avg_Loss": avg_val_loss
-            }
+            }, step=epoch
             )
        # test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['auroc'], epoch)
        # test_writer.add_scalar('%s mAP' % os.path.basename(cfg_test_loader1['dataset_args']['dataroot']), results['AP'], epoch)
@@ -311,7 +311,7 @@ for epoch in iter_counter.training_epochs():
                 "mAP_Test_2": results['AP'],
                 "FPR@95TPR_Test_2": results["FPR@95%TPR"],
                 "Test_2_Avg_Loss": avg_val_loss
-            }
+            }, step=epoch
             )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader2['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
@@ -368,7 +368,7 @@ for epoch in iter_counter.training_epochs():
                 "mAP_Test_3": results['AP'],
                 "FPR@95TPR_Test_3": results["FPR@95%TPR"],
                 "Test_3_Avg_Loss": avg_val_loss
-            }
+            }, step=epoch
             )
         #test_writer.add_scalar('%s AUC_ROC' % os.path.basename(cfg_test_loader3['dataset_args']['dataroot']),
                                #results['auroc'], epoch)
@@ -440,7 +440,7 @@ for epoch in iter_counter.training_epochs():
                 "mAP_Test_4": results['AP'],
                 "FPR@95TPR_Test_4": results["FPR@95%TPR"],
                 "Test_4_Avg_Loss": avg_val_loss
-            }
+            }, step=epoch
             )
         # Starts Image Visualization Module
         if config['training_strategy']['image_visualization']:
