@@ -439,7 +439,7 @@ for epoch in iter_counter.training_epochs():
                 "AU_ROC_Test_4": results['auroc'],
                 "mAP_Test_4": results['AP'],
                 "FPR@95TPR_Test_4": results["FPR@95%TPR"],
-                "Test_4_Avg_Loss": avg_val_loss
+                "Test_4_Avg_Loss": avg_val_loss,
                 "epoch": epoch
             }
             )
