@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 import torchvision.models
+import pytorch_lightning as pl
 
 import sys
 sys.path.append("..")
@@ -9,7 +10,7 @@ from image_dissimilarity.models.vgg_features import VGGFeatures, VGGSPADE
 from image_dissimilarity.models.resnet_features import resnet
 from image_dissimilarity.models.normalization import SPADE, FILM, GuideCorrelation, GuideNormalization
 
-class DissimNet(nn.Module):
+class DissimNet(pl.LightningModule):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, prior = False, spade='',
                  num_semantic_classes = 19):
         super(DissimNet, self).__init__()
@@ -163,7 +164,7 @@ class DissimNet(nn.Module):
         return logits
 
 
-class DissimNetPrior(nn.Module):
+class DissimNetPrior(pl.LightningModule):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
                  num_semantic_classes=19):
         super(DissimNetPrior, self).__init__()
@@ -327,7 +328,7 @@ class DissimNetPrior(nn.Module):
         return logits
 
 
-class ResNetDissimNet(nn.Module):
+class ResNetDissimNet(pl.LightningModule):
     def __init__(self, architecture='resnet18', semantic=True, pretrained=True, correlation=True, spade='',
                  num_semantic_classes = 19):
         super(ResNetDissimNet, self).__init__()
@@ -488,7 +489,7 @@ class ResNetDissimNet(nn.Module):
         
         return self.final_prediction
 
-class GuidedDissimNet(nn.Module):
+class GuidedDissimNet(pl.LightningModule):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, spade=True,
                  num_semantic_classes = 19):
         super(GuidedDissimNet, self).__init__()
@@ -727,7 +728,7 @@ class GuidedDissimNet(nn.Module):
         
         return self.final_prediction
 
-class CorrelatedDissimNet(nn.Module):
+class CorrelatedDissimNet(pl.LightningModule):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, spade=True,
                  num_semantic_classes = 19):
         super(CorrelatedDissimNet, self).__init__()
@@ -961,7 +962,7 @@ class CorrelatedDissimNet(nn.Module):
         
         return self.final_prediction
 
-class CorrelatedDissimNetGuide(nn.Module):
+class CorrelatedDissimNetGuide(pl.LightningModule):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, spade='decoder',
                  num_semantic_classes=19):
         super(CorrelatedDissimNetGuide, self).__init__()
@@ -1167,7 +1168,7 @@ class CorrelatedDissimNetGuide(nn.Module):
 
         return self.final_prediction
 
-class SPADEDecoderLayer(nn.Module):
+class SPADEDecoderLayer(pl.LightningModule):
     def __init__(self, nc=256, label_nc=19):
         super(SPADEDecoderLayer, self).__init__()
 
@@ -1182,7 +1183,7 @@ class SPADEDecoderLayer(nn.Module):
         out = self.selu2(self.norm2(self.conv(self.selu1(self.norm1(x, seg))), seg))
         return out
     
-class GuideEncoderLayer(nn.Module):
+class GuideEncoderLayer(pl.LightningModule):
     def __init__(self, nc_in=3, nc_out=64):
         super(GuideEncoderLayer, self).__init__()
 

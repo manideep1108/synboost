@@ -1,12 +1,13 @@
+import pytorch_lightning as pl
 import torch.nn as nn
 import torchvision.models
 import torch
 import sys
-from torch.nn.modules.upsampling import Upsample
+from torch.pl.LightningModules.upsampling import Upsample
 sys.path.append("..")
 from image_dissimilarity.models.normalization import SPADE
 
-class VGGFeatures(nn.Module):
+class VGGFeatures(pl.LightningModule):
 
 	def __init__(self, architecture='vgg16', pretrained=True):
 		super(VGGFeatures, self).__init__()
@@ -49,7 +50,7 @@ def make_layers(cfg, batch_norm=False):
 	return nn.Sequential(*layers)
 
 
-class VGGSPADE(torch.nn.Module):
+class VGGSPADE(torch.pl.LightningModule):
 	def __init__(self, pretrained=True, label_nc=19):
 		
 		super(VGGSPADE, self).__init__()
@@ -121,7 +122,7 @@ class VGGSPADE(torch.nn.Module):
 		
 		return out
 
-class VGG19_difference(torch.nn.Module):
+class VGG19_difference(torch.pl.LightningModule):
 	def __init__(self, requires_grad=False):
 		super().__init__()
 		vgg_pretrained_features = torchvision.models.vgg19(pretrained=True).features

@@ -1,6 +1,7 @@
 # CODE FROM NVIDIA Segmentation repositories
 import torch.nn as nn
 import torch.nn.functional as F
+import pytorch_lightning as pl
 
 ## Creates SPADE normalization layer based on the given configuration
 ## SPADE consists of two steps. First, it normalizes the activations using
@@ -9,7 +10,7 @@ import torch.nn.functional as F
 ## the segmentation map.
 ## |norm_nc|: the #channels of the normalized activations, hence the output dim of SPADE
 ## |label_nc|: the #channels of the input semantic map, hence the input dim of SPADE
-class SPADE(nn.Module):
+class SPADE(pl.LightningModule):
     def __init__(self, norm_nc, label_nc):
         super().__init__()
         
@@ -43,7 +44,7 @@ class SPADE(nn.Module):
         return out
 
 
-class FILM(nn.Module):
+class FILM(pl.LightningModule):
     def __init__(self, nc, guide_nc):
         super().__init__()
         
@@ -71,7 +72,7 @@ class FILM(nn.Module):
         return out
 
 
-class GuideCorrelation(nn.Module):
+class GuideCorrelation(pl.LightningModule):
     def __init__(self, nc, guide_nc):
         super().__init__()
         
@@ -97,7 +98,7 @@ class GuideCorrelation(nn.Module):
         
         return gamma, beta
 
-class GuideNormalization(nn.Module):
+class GuideNormalization(pl.LightningModule):
     def __init__(self, nc):
         super().__init__()
         
