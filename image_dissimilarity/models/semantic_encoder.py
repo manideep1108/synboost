@@ -7,7 +7,7 @@ class SemanticEncoder(pl.LightningModule):
 	def __init__(self, architecture='vgg16', in_channels=19, num_hidden_layers=4, base_feature_size=32):
 		super(SemanticEncoder, self).__init__()
 		
-		self.hidden_layers = pl.LightningModuleList()
+		self.hidden_layers = nn.ModuleList()
 		
 		if 'bn' in architecture:
 			for idx in range(num_hidden_layers):
@@ -68,7 +68,7 @@ class ResNetSemanticEncoder(pl.LightningModule):
 	def __init__(self, in_channels=19, num_hidden_layers=4):
 		super(ResNetSemanticEncoder, self).__init__()
 		
-		self.hidden_layers = pl.LightningModuleList()
+		self.hidden_layers = nn.ModuleList()
 		base_feature_size = 32
 		
 		for idx in range(num_hidden_layers):
