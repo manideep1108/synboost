@@ -7,6 +7,11 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 softmax = torch.nn.Softmax(dim=1)
 
 
+#for now I have hard coded this should look over it once
+with open("manideep1108/synboost/image_dissimilarity/configs/train/default_configuration.yaml", 'r') as stream:
+    config = yaml.load(stream, Loader=yaml.FullLoader)
+
+cfg_test_loader1 = config['test_dataloader1']   
 dataset = cfg_test_loader1['dataset_args']
 h = int((dataset['crop_size']/dataset['aspect_ratio']))
 w = int(dataset['crop_size'])   #should figure this out
@@ -14,7 +19,7 @@ w = int(dataset['crop_size'])   #should figure this out
 
 
 class SynboostDataModule(pl.LightningDataModule):
-    def __init__(cfg):
+    def __init__(config):
         super().__init__()
     
         self.cfg= config
@@ -61,7 +66,7 @@ class SynboostDataModule(pl.LightningDataModule):
 
 
 class Synboost_trainer(pl.LightningModule):
-    def __init__(self,cfg):
+    def __init__(self,config):
         super().__init__()
 
         self.cfg = config
@@ -75,13 +80,13 @@ class Synboost_trainer(pl.LightningModule):
         self.flat_labels = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size),np.zeros(h*w*self.test_loader4_size)]
         
         if cfg['model']['prior']:
-            self.diss_model = DissimNetPrior(**config['model'])
-        elif 'vgg' in config['model']['architecture']:
-            self.diss_model = DissimNet(**config['model'])
+            self.diss_model = DissimNetPrior(**self.cfg['model'])
+        elif 'vgg' in self.cfg['model']['architecture']:
+            self.diss_model = DissimNet(**self.cfg['model'])
 
-        if config['training_strategy']['class_weight']:
-            if not config['training_strategy']['class_weight_cityscapes']:
-                if config['train_dataloader']['dataset_args']['void']:
+        if self.cfg['training_strategy']['class_weight']:
+            if not self.cfg['training_strategy']['class_weight_cityscapes']:
+                if self.cfg['train_dataloader']['dataset_args']['void']:
                     label_path = os.path.join(self.cfg['train_dataloader']['dataset_args']['dataroot'], 'labels_with_void_no_ego/')
                 else:
                     label_path = os.path.join(self.cfg['train_dataloader']['dataset_args']['dataroot'], 'labels/')
@@ -93,7 +98,7 @@ class Synboost_trainer(pl.LightningModule):
                 #print(class_weights)
                 torch.save(class_weights,"class_weights.pth")
             else:
-                if config['train_dataloader']['dataset_args']['void']:
+                if self.cfg['train_dataloader']['dataset_args']['void']:
                     class_weights = [1.54843156, 8.03912212]
                 else:
                     class_weights = [1.46494611, 16.5204619]
