@@ -23,13 +23,13 @@ class SynboostDataModule(pl.LightningDataModule):
     def setup(self):
         # Assign train/val/test datasets for use in dataloaders
         #if stage == "fit" or stage is None:
-        self.train_dataset = CityscapesDataset(self.cfg["train_dataloader"]['dataset_args'])
+        self.train_dataset = CityscapesDataset(**self.cfg["train_dataloader"]['dataset_args'])
 
          #if stage == "val" or stage is None:
-        self.validation_dataset = CityscapesDataset(self.cfg["val_dataloader"]['dataset_args'])
-        self.test_dataset1 = CityscapesDataset(self.cfg["test_dataloader1"]['dataset_args'])
-        self.test_dataset2 = CityscapesDataset(self.cfg["test_dataloader2"]['dataset_args'])
-        self.test_dataset3 = CityscapesDataset(self.cfg["test_dataloader3"]['dataset_args'])
+        self.validation_dataset = CityscapesDataset(**self.cfg["val_dataloader"]['dataset_args'])
+        self.test_dataset1 = CityscapesDataset(**self.cfg["test_dataloader1"]['dataset_args'])
+        self.test_dataset2 = CityscapesDataset(**self.cfg["test_dataloader2"]['dataset_args'])
+        self.test_dataset3 = CityscapesDataset(**self.cfg["test_dataloader3"]['dataset_args'])
            # self.test_dataset4 = CityscapesDataset(self.cfg["test_dataloader4"]['dataset_args'])
 
         # if stage == "test" or stage is None:
@@ -40,13 +40,13 @@ class SynboostDataModule(pl.LightningDataModule):
 
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, self.cfg["train_dataloader"]['dataloader_args'])
+        return DataLoader(self.train_dataset, **self.cfg["train_dataloader"]['dataloader_args'])
     
     def val_dataloader(self):
-        return [ DataLoader(self.validation_dataset, self.cfg["val_dataloader"]['dataloader_args']),
-            DataLoader(self.test_dataset1, self.cfg["test_dataloader1"]['dataloader_args']),
-            DataLoader(self.test_dataset2, self.cfg["test_dataloader2"]['dataloader_args']),
-            DataLoader(self.test_dataset3, self.cfg["test_dataloader3"]['dataloader_args']),
+        return [ DataLoader(self.validation_dataset, **self.cfg["val_dataloader"]['dataloader_args']),
+            DataLoader(self.test_dataset1, **self.cfg["test_dataloader1"]['dataloader_args']),
+            DataLoader(self.test_dataset2, **self.cfg["test_dataloader2"]['dataloader_args']),
+            DataLoader(self.test_dataset3, **self.cfg["test_dataloader3"]['dataloader_args']),
             #DataLoader(self.test_dataset4, self.cfg["test_dataloader4"]['dataloader_args'])
         ]
 
@@ -69,7 +69,7 @@ class Synboost_trainer(pl.LightningModule):
         self.data_module = SynboostDataModule(self.cfg)
         self.test_dataset1 = CityscapesDataset(**self.cfg["test_dataloader1"]['dataset_args']) # only for debugging
         print(self.data_module)
-        print(len(DataLoader(self.test_dataset1, self.cfg["test_dataloader1"]['dataloader_args']))) #for debugging
+        print(len(DataLoader(self.test_dataset1, **self.cfg["test_dataloader1"]['dataloader_args']))) #for debugging
         print(self.data_module.test_dataloader())  #just for debugging
 
         self.test_loader1_size = len(self.data_module.test_dataloader()[0])
