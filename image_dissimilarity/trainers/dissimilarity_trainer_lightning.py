@@ -15,7 +15,7 @@ w = 512   #should figure this out for now I have hard coded this
 
 
 class SynboostDataModule(pl.LightningDataModule):
-    def __init__(config):
+    def __init__(self,config):
         super().__init__()
     
         self.cfg= config
