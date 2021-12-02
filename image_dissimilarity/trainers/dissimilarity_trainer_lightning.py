@@ -67,6 +67,7 @@ class Synboost_trainer(pl.LightningModule):
 
         self.cfg = config
         self.data_module = SynboostDataModule(self.cfg)
+        self.test_dataset1 = CityscapesDataset(self.cfg["test_dataloader1"]['dataset_args']) # only for debugging
         print(self.data_module)
         print(len(DataLoader(self.test_dataset1, self.cfg["test_dataloader1"]['dataloader_args']))) #for debugging
         print(self.data_module.test_dataloader())  #just for debugging
