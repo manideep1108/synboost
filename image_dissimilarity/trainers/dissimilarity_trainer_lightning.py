@@ -12,10 +12,9 @@ softmax = torch.nn.Softmax(dim=1)
 with open(config_file, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
 
-cfg_test_loader1 = config['test_dataloader1']   
-dataset = cfg_test_loader1['dataset_args']
-h = int((dataset['crop_size']/dataset['aspect_ratio']))
-w = int(dataset['crop_size'])   #should figure this out
+
+h = 256
+w = 512   #should figure this out
 
 
 
