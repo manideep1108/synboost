@@ -3,6 +3,7 @@ from torch.utils.data import DataLoader
 from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior
 import torch.nn as nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import torch
 
 softmax = torch.nn.Softmax(dim=1)
 
