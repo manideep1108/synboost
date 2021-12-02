@@ -4,12 +4,12 @@ from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetP
 import torch.nn as nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch
-import image_dissimilarity.configs.train.default_configuration.yaml
+import image_dissimilarity.configs.train.default_configuration.yaml as config_file
 softmax = torch.nn.Softmax(dim=1)
 
 
 #for now I have hard coded this should look over it once
-with open("manideep1108/synboost/image_dissimilarity/configs/train/default_configuration.yaml", 'r') as stream:
+with open(config_file, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
 
 cfg_test_loader1 = config['test_dataloader1']   
