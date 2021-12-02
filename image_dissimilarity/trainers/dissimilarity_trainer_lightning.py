@@ -107,7 +107,7 @@ class Synboost_trainer(pl.LightningModule):
             print('Using the following weights for each respective class [0,1]:', class_weights)
             self.criterion = nn.CrossEntropyLoss(ignore_index=255, weight=torch.FloatTensor(class_weights))
         else:
-            self.criterion = nn.CrossEntropyLoss(ignore_index=255).cuda(self.gpu)
+            self.criterion = nn.CrossEntropyLoss(ignore_index=255)
 
 
     def  training_step(self,batch,batch_idx):
