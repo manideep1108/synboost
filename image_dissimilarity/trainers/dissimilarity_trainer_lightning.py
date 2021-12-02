@@ -67,13 +67,13 @@ class Synboost_trainer(pl.LightningModule):
 
         self.cfg = config
         self.data_module = SynboostDataModule(self.cfg)
-        self.test_loader1_size = len(self.datamodule.test_dataloader()[0])
-        self.test_loader2_size = len(self.datamodule.test_dataloader()[1])
-        self.test_loader3_size = len(self.datamodule.test_dataloader()[2])
+        self.test_loader1_size = len(self.data_module.test_dataloader()[0])
+        self.test_loader2_size = len(self.data_module.test_dataloader()[1])
+        self.test_loader3_size = len(self.data_module.test_dataloader()[2])
         #self.test_loader4_size = len(self.datamodule.test_dataloader()[3])
         
-        self.flat_pred = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size),np.zeros(h*w*self.test_loader4_size)]
-        self.flat_labels = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size),np.zeros(h*w*self.test_loader4_size)]
+        self.flat_pred = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
+        self.flat_labels = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
         
         if cfg['model']['prior']:
             self.diss_model = DissimNetPrior(**self.cfg['model'])
