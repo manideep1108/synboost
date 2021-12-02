@@ -70,11 +70,11 @@ class Synboost_trainer(pl.LightningModule):
         self.test_dataset1 = CityscapesDataset(**self.cfg["test_dataloader1"]['dataset_args']) # only for debugging
         print(self.data_module)
         print(len(DataLoader(self.test_dataset1, **self.cfg["test_dataloader1"]['dataloader_args']))) #for debugging
-        print(self.data_module.test_dataloader())  #just for debugging
+        print(self.data_module.val_dataloader())  #just for debugging
 
-        self.test_loader1_size = len(self.data_module.test_dataloader()[0])
-        self.test_loader2_size = len(self.data_module.test_dataloader()[1])
-        self.test_loader3_size = len(self.data_module.test_dataloader()[2])
+        self.test_loader1_size = len(self.data_module.val_dataloader()[0])
+        self.test_loader2_size = len(self.data_module.val_dataloader()[1])
+        self.test_loader3_size = len(self.data_module.val_dataloader()[2])
         #self.test_loader4_size = len(self.datamodule.test_dataloader()[3])
         
         self.flat_pred = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
