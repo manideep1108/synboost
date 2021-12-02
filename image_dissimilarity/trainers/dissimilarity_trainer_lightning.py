@@ -19,44 +19,44 @@ class SynboostDataModule(pl.LightningDataModule):
     def __init__(self,config):
         super().__init__()
     
-        self.cfg= config
+        self.config= config
 
     #def setup(self):
         # Assign train/val/test datasets for use in dataloaders
         #if stage == "fit" or stage is None:
-        self.train_dataset = CityscapesDataset(**self.cfg["train_dataloader"]['dataset_args'])
+        self.train_dataset = CityscapesDataset(**self.config["train_dataloader"]['dataset_args'])
 
          #if stage == "val" or stage is None:
-        self.validation_dataset = CityscapesDataset(**self.cfg["val_dataloader"]['dataset_args'])
-        self.test_dataset1 = CityscapesDataset(**self.cfg["test_dataloader1"]['dataset_args'])
-        self.test_dataset2 = CityscapesDataset(**self.cfg["test_dataloader2"]['dataset_args'])
-        self.test_dataset3 = CityscapesDataset(**self.cfg["test_dataloader3"]['dataset_args'])
-           # self.test_dataset4 = CityscapesDataset(self.cfg["test_dataloader4"]['dataset_args'])
+        self.validation_dataset = CityscapesDataset(**self.config["val_dataloader"]['dataset_args'])
+        self.test_dataset1 = CityscapesDataset(**self.config["test_dataloader1"]['dataset_args'])
+        self.test_dataset2 = CityscapesDataset(**self.config["test_dataloader2"]['dataset_args'])
+        self.test_dataset3 = CityscapesDataset(**self.config["test_dataloader3"]['dataset_args'])
+           # self.test_dataset4 = CityscapesDataset(self.config["test_dataloader4"]['dataset_args'])
 
         # if stage == "test" or stage is None:
-        #     self.test_dataset1 = CityscapesDataset(self.cfg["test_dataloader1"]['dataset_args'])
-        #     self.test_dataset2 = CityscapesDataset(self.cfg["test_dataloader2"]['dataset_args'])
-        #     self.test_dataset3 = CityscapesDataset(self.cfg["test_dataloader3"]['dataset_args'])
-        #     self.test_dataset4 = CityscapesDataset(self.cfg["test_dataloader4"]['dataset_args'])
+        #     self.test_dataset1 = CityscapesDataset(self.config["test_dataloader1"]['dataset_args'])
+        #     self.test_dataset2 = CityscapesDataset(self.config["test_dataloader2"]['dataset_args'])
+        #     self.test_dataset3 = CityscapesDataset(self.config["test_dataloader3"]['dataset_args'])
+        #     self.test_dataset4 = CityscapesDataset(self.config["test_dataloader4"]['dataset_args'])
 
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, **self.cfg["train_dataloader"]['dataloader_args'])
+        return DataLoader(self.train_dataset, **self.config["train_dataloader"]['dataloader_args'])
     
     def val_dataloader(self):
-        return [ DataLoader(self.validation_dataset, **self.cfg["val_dataloader"]['dataloader_args']),
-            DataLoader(self.test_dataset1, **self.cfg["test_dataloader1"]['dataloader_args']),
-            DataLoader(self.test_dataset2, **self.cfg["test_dataloader2"]['dataloader_args']),
-            DataLoader(self.test_dataset3, **self.cfg["test_dataloader3"]['dataloader_args']),
-            #DataLoader(self.test_dataset4, self.cfg["test_dataloader4"]['dataloader_args'])
+        return [ DataLoader(self.validation_dataset, **self.config["val_dataloader"]['dataloader_args']),
+            DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']),
+            DataLoader(self.test_dataset2, **self.config["test_dataloader2"]['dataloader_args']),
+            DataLoader(self.test_dataset3, **self.config["test_dataloader3"]['dataloader_args']),
+            #DataLoader(self.test_dataset4, self.config["test_dataloader4"]['dataloader_args'])
         ]
 
     # def test_dataloader(self):
     #     return [
-    #         DataLoader(self.test_dataset1, self.cfg["test_dataloader1"]['dataloader_args']),
-    #         DataLoader(self.test_dataset2, self.cfg["test_dataloader2"]['dataloader_args']),
-    #         DataLoader(self.test_dataset3, self.cfg["test_dataloader3"]['dataloader_args']),
-    #         DataLoader(self.test_dataset4, self.cfg["test_dataloader4"]['dataloader_args'])
+    #         DataLoader(self.test_dataset1, self.config["test_dataloader1"]['dataloader_args']),
+    #         DataLoader(self.test_dataset2, self.config["test_dataloader2"]['dataloader_args']),
+    #         DataLoader(self.test_dataset3, self.config["test_dataloader3"]['dataloader_args']),
+    #         DataLoader(self.test_dataset4, self.config["test_dataloader4"]['dataloader_args'])
     #     ]
 
 
@@ -66,11 +66,11 @@ class Synboost_trainer(pl.LightningModule):
     def __init__(self,config):
         super().__init__()
 
-        self.cfg = config
-        self.data_module = SynboostDataModule(self.cfg)
-        self.test_dataset1 = CityscapesDataset(**self.cfg["test_dataloader1"]['dataset_args']) # only for debugging
+        self.config = config
+        self.data_module = SynboostDataModule(self.config)
+        self.test_dataset1 = CityscapesDataset(**self.config["test_dataloader1"]['dataset_args']) # only for debugging
         print(self.data_module)
-        print(len(DataLoader(self.test_dataset1, **self.cfg["test_dataloader1"]['dataloader_args']))) #for debugging
+        print(len(DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']))) #for debugging
         print(self.data_module.val_dataloader())  #just for debugging
 
         self.test_loader1_size = len(self.data_module.val_dataloader()[0])
@@ -81,17 +81,17 @@ class Synboost_trainer(pl.LightningModule):
         self.flat_pred = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
         self.flat_labels = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
         
-        if cfg['model']['prior']:
-            self.diss_model = DissimNetPrior(**self.cfg['model'])
-        elif 'vgg' in self.cfg['model']['architecture']:
-            self.diss_model = DissimNet(**self.cfg['model'])
+        if self.config['model']['prior']:
+            self.diss_model = DissimNetPrior(**self.config['model'])
+        elif 'vgg' in self.config['model']['architecture']:
+            self.diss_model = DissimNet(**self.config['model'])
 
-        if self.cfg['training_strategy']['class_weight']:
-            if not self.cfg['training_strategy']['class_weight_cityscapes']:
-                if self.cfg['train_dataloader']['dataset_args']['void']:
-                    label_path = os.path.join(self.cfg['train_dataloader']['dataset_args']['dataroot'], 'labels_with_void_no_ego/')
+        if self.config['training_strategy']['class_weight']:
+            if not self.config['training_strategy']['class_weight_cityscapes']:
+                if self.config['train_dataloader']['dataset_args']['void']:
+                    label_path = os.path.join(self.config['train_dataloader']['dataset_args']['dataroot'], 'labels_with_void_no_ego/')
                 else:
-                    label_path = os.path.join(self.cfg['train_dataloader']['dataset_args']['dataroot'], 'labels/')
+                    label_path = os.path.join(self.config['train_dataloader']['dataset_args']['dataroot'], 'labels/')
                     
                 full_loader = trainer_util.loader(label_path, batch_size='all')
                 print('Getting class weights for cross entropy loss. This might take some time.')
@@ -100,7 +100,7 @@ class Synboost_trainer(pl.LightningModule):
                 #print(class_weights)
                 torch.save(class_weights,"class_weights.pth")
             else:
-                if self.cfg['train_dataloader']['dataset_args']['void']:
+                if self.config['train_dataloader']['dataset_args']['void']:
                     class_weights = [1.54843156, 8.03912212]
                 else:
                     class_weights = [1.46494611, 16.5204619]
@@ -118,7 +118,7 @@ class Synboost_trainer(pl.LightningModule):
         label = batch['label']
         
         # Training
-        if prior:
+        if self.config['model']['prior']:
             entropy = batch['entropy']
             mae = batch['mae']
             distance = batch['distance']
@@ -149,7 +149,7 @@ class Synboost_trainer(pl.LightningModule):
         synthesis = batch['synthesis']   
         label = batch['label']
             
-        if prior:
+        if self.config['model']['prior']:
             entropy = batch['entropy']
             mae = batch['mae']
             distance = batch['distance']
@@ -184,21 +184,21 @@ class Synboost_trainer(pl.LightningModule):
     
 
     def configure_optimizers(self):
-        if self.cfg['optimizer']['algorithm'] == 'SGD':
-                optimizer = torch.optim.SGD(self.diss_model.parameters(), lr=self.cfg['optimizer']['parameters']['lr'],
-                                        weight_decay=self.cfg['optimizer']['parameters']['weight_decay'],)
-        elif self.cfg['optimizer']['algorithm'] == 'Adam':
+        if self.config['optimizer']['algorithm'] == 'SGD':
+                optimizer = torch.optim.SGD(self.diss_model.parameters(), lr=self.config['optimizer']['parameters']['lr'],
+                                        weight_decay=self.config['optimizer']['parameters']['weight_decay'],)
+        elif self.config['optimizer']['algorithm'] == 'Adam':
                 optimizer = torch.optim.Adam(self.diss_model.parameters(),
-                                        lr=self.cfg['optimizer']['parameters']['lr'],
-                                        weight_decay=self.cfg['optimizer']['parameters']['weight_decay'],
-                                        betas=(self.cfg['optimizer']['parameters']['beta1'], self.cfg['optimizer']['parameters']['beta2']))
+                                        lr=self.config['optimizer']['parameters']['lr'],
+                                        weight_decay=self.config['optimizer']['parameters']['weight_decay'],
+                                        betas=(self.config['optimizer']['parameters']['beta1'], self.config['optimizer']['parameters']['beta2']))
         else:
                 raise NotImplementedError
 
         return {
             "optimizer": optimizer,
             "lr_scheduler": {
-                "scheduler": ReduceLROnPlateau(optimizer, 'min', patience=self.cfg['optimizer']['parameters']['patience'], factor=self.cfg['optimizer']['parameters']['factor']),
+                "scheduler": ReduceLROnPlateau(optimizer, 'min', patience=self.config['optimizer']['parameters']['patience'], factor=self.config['optimizer']['parameters']['factor']),
                 "monitor": self.val_loss ,     #should check if I should change the variable name
                 "interval": "epoch",
                 "frequency": 1  
