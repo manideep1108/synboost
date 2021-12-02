@@ -2,7 +2,7 @@ import torch.nn as nn
 import torchvision.models
 import torch
 import sys
-from torch.nn.LightningModules.upsampling import Upsample
+from torch.nn.modules.upsampling import Upsample
 import pytorch_lightning as pl
 sys.path.append("..")
 from image_dissimilarity.models.normalization import SPADE
