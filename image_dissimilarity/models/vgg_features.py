@@ -50,7 +50,7 @@ def make_layers(cfg, batch_norm=False):
 	return nn.Sequential(*layers)
 
 
-class VGGSPADE(torch.pl.LightningModule):
+class VGGSPADE(pl.LightningModule):
 	def __init__(self, pretrained=True, label_nc=19):
 		
 		super(VGGSPADE, self).__init__()
@@ -122,7 +122,7 @@ class VGGSPADE(torch.pl.LightningModule):
 		
 		return out
 
-class VGG19_difference(torch.pl.LightningModule):
+class VGG19_difference(pl.LightningModule):
 	def __init__(self, requires_grad=False):
 		super().__init__()
 		vgg_pretrained_features = torchvision.models.vgg19(pretrained=True).features
