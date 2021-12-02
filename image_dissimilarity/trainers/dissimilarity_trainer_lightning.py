@@ -7,13 +7,10 @@ import torch
 softmax = torch.nn.Softmax(dim=1)
 
 
-#for now I have hard coded this should look over it once
-with open(config_file, 'r') as stream:
-    config = yaml.load(stream, Loader=yaml.FullLoader)
 
 
 h = 256
-w = 512   #should figure this out
+w = 512   #should figure this out for now I have hard coded this
 
 
 
