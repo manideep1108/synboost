@@ -20,7 +20,7 @@ class SynboostDataModule(pl.LightningDataModule):
     
         self.cfg= config
 
-    def setup(self):
+    #def setup(self):
         # Assign train/val/test datasets for use in dataloaders
         #if stage == "fit" or stage is None:
         self.train_dataset = CityscapesDataset(**self.cfg["train_dataloader"]['dataset_args'])
