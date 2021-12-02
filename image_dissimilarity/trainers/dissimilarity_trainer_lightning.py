@@ -47,7 +47,7 @@ class SynboostDataModule(pl.LightningDataModule):
         return DataLoader(self.train_dataset, self.cfg["train_dataloader"]['dataloader_args'])
     
     def val_dataloader(self):
-        return [ DataLoader(self.validation_dataset, self.cfg["val_dataloader"]['dataloader_args'])
+        return [ DataLoader(self.validation_dataset, self.cfg["val_dataloader"]['dataloader_args']),
             DataLoader(self.test_dataset1, self.cfg["test_dataloader1"]['dataloader_args']),
             DataLoader(self.test_dataset2, self.cfg["test_dataloader2"]['dataloader_args']),
             DataLoader(self.test_dataset3, self.cfg["test_dataloader3"]['dataloader_args']),
