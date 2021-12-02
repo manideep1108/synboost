@@ -22,14 +22,14 @@ class SynboostDataModule(pl.LightningDataModule):
 
     def setup(self):
         # Assign train/val/test datasets for use in dataloaders
-        if stage == "fit" or stage is None:
-            self.train_dataset = CityscapesDataset(self.cfg["train_dataloader"]['dataset_args'])
+        #if stage == "fit" or stage is None:
+        self.train_dataset = CityscapesDataset(self.cfg["train_dataloader"]['dataset_args'])
 
-        if stage == "val" or stage is None:
-            self.validation_dataset = CityscapesDataset(self.cfg["val_dataloader"]['dataset_args'])
-            self.test_dataset1 = CityscapesDataset(self.cfg["test_dataloader1"]['dataset_args'])
-            self.test_dataset2 = CityscapesDataset(self.cfg["test_dataloader2"]['dataset_args'])
-            self.test_dataset3 = CityscapesDataset(self.cfg["test_dataloader3"]['dataset_args'])
+         #if stage == "val" or stage is None:
+        self.validation_dataset = CityscapesDataset(self.cfg["val_dataloader"]['dataset_args'])
+        self.test_dataset1 = CityscapesDataset(self.cfg["test_dataloader1"]['dataset_args'])
+        self.test_dataset2 = CityscapesDataset(self.cfg["test_dataloader2"]['dataset_args'])
+        self.test_dataset3 = CityscapesDataset(self.cfg["test_dataloader3"]['dataset_args'])
            # self.test_dataset4 = CityscapesDataset(self.cfg["test_dataloader4"]['dataset_args'])
 
         # if stage == "test" or stage is None:
