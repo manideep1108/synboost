@@ -65,7 +65,8 @@ class SynboostDataModule(pl.LightningDataModule):
 class Synboost_trainer(pl.LightningModule):
     def __init__(self,config):
         super().__init__()
-
+        
+        self.val_loss
         self.config = config
         self.data_module = SynboostDataModule(self.config)
         self.test_dataset1 = CityscapesDataset(**self.config["test_dataloader1"]['dataset_args']) # only for debugging
@@ -174,6 +175,7 @@ class Synboost_trainer(pl.LightningModule):
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
         
         if  dataloader_idx==0:
+            self.val_loss = validation_step_outputs.mean()
             self.log('avg_loss_val', validation_step_outputs.mean())
 
         elif dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
