@@ -70,7 +70,7 @@ class Synboost_trainer(pl.LightningModule):
         super().__init__()
 
         self.cfg = config
-        self.data_module = SDataModule()
+        self.data_module = SynboostDataModule()
         self.test_loader1_size = len(self.datamodule.test_dataloader()[0])
         self.test_loader2_size = len(self.datamodule.test_dataloader()[1])
         self.test_loader3_size = len(self.datamodule.test_dataloader()[2])

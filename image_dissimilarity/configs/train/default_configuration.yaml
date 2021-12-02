@@ -8,7 +8,7 @@ training_strategy:
   niter: 50 # of iter at starting learning rate. Total #epochs is niter + niter_decay'
   niter_decay: 0 # of iter to linearly decay learning rate to zero
   is_train: True
-  class_weight: True
+  class_weight: False  #just for testing purpose as this takes time to load
   class_weight_cityscapes: False
   image_visualization: False
 
