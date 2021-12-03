@@ -125,8 +125,8 @@ class Synboost_trainer(pl.LightningModule):
             distance = batch['distance']
             predictions = self.diss_model(original, synthesis, semantic, entropy, mae, distance)
             print(predictions.get_device())  #for debugging
-            print(label.type(torch.LongTensor).squeeze(dim=1).get_device())
-            loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1))
+            print(label.type(torch.LongTensor).squeeze(dim=1).get_device().cuda())
+            loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1).cuda())
             
         else:
             predictions = self.diss_model(original, synthesis, semantic)
@@ -159,10 +159,10 @@ class Synboost_trainer(pl.LightningModule):
     
             # Evaluating
             predictions = self.diss_model(original, synthesis, semantic, entropy, mae, distance)
-            loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1))
+            loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1).cuda())
         else:
             predictions = self.diss_model(original, synthesis, semantic)
-            loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1))
+            loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1).cuda())
 
 
         if(dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3 ):
