@@ -166,7 +166,7 @@ class Synboost_trainer(pl.LightningModule):
 
 
         if(dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3 ):
-            outputs = softmax(outputs)
+            outputs = softmax(predictions)
             (softmax_pred, predictions) = torch.max(outputs, dim=1)
             self.flat_pred[dataloader_idx][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(outputs[:, 1, :, :])
             self.flat_labels[dataloader_idx][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(label)
@@ -183,6 +183,7 @@ class Synboost_trainer(pl.LightningModule):
         elif dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
             log_dic = {"test_loss": validation_step_outputs.mean(), "mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
+            self.log("test_epoch", log_dic)
             self.flat_pred[dataloader_idx] = np.zeros(h*w*self.test_loader%f_size)%dataloader_idx
             self.flat_labels[dataloader_idx] = np.zeros(h*w*self.test_loader%f_size)%dataloader_idx
     
