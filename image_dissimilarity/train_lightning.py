@@ -64,7 +64,7 @@ from trainers.dissimilarity_trainer_lightning import SynboostDataModule,Synboost
 datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 
-trainer = Trainer(max_epochs=2, gpus=config['gpu_ids'])
+trainer = Trainer(max_epochs=2, gpus=1)
 trainer.fit(model, datamodule=datamodule)
 
 
