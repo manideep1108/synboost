@@ -188,7 +188,7 @@ class Synboost_trainer(pl.LightningModule):
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
         
         print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-        print(validation_step_outputs.shape)
+        print(len(validation_step_outputs))
         print(validation_step_outputs[0].shape) 
         print(validation_step_outputs[1].shape) 
         print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
