@@ -189,7 +189,7 @@ class Synboost_trainer(pl.LightningModule):
         
         print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
         print(len(validation_step_outputs))
-        print(validation_step_outputs[0].shape) 
+        print(len(validation_step_outputs[0]))
         print(validation_step_outputs[1].shape) 
         print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
         if  dataloader_idx==0:
