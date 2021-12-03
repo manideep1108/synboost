@@ -187,6 +187,11 @@ class Synboost_trainer(pl.LightningModule):
 
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
         
+        print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        print(validation_step_outputs.shape)
+        print(validation_step_outputs[0].shape) 
+        print(validation_step_outputs[1].shape) 
+        print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
         if  dataloader_idx==0:
             self.val_loss = validation_step_outputs[0].mean()
             self.log('avg_loss_val', validation_step_outputs[0].mean())
