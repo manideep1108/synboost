@@ -137,6 +137,7 @@ class CityscapesDataset(Dataset):
 
         # get augmentations
         base_transforms, augmentations = get_transform(image_size, self.preprocess_mode)
+        print("applied")  #for debugging
 
         # apply base transformations
         label_tensor = base_transforms(label)*255
