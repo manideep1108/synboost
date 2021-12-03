@@ -142,6 +142,7 @@ class CityscapesDataset(Dataset):
         label_tensor = base_transforms(label)*255
         semantic_tensor = base_transforms(semantic)*255
         syn_image_tensor = base_transforms(syn_image)
+        print(self.prior)
         if self.prior:
             mae_tensor = base_transforms(mae_image)
             print("applied")  #for debugging
