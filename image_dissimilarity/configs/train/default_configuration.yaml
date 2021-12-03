@@ -61,6 +61,7 @@ train_dataloader:
     light_data: False
     num_semantic_classes: 19
     is_train: True
+    prior: True
   dataloader_args:
     batch_size: 4
     num_workers: 2
@@ -76,6 +77,7 @@ val_dataloader:
     light_data: False
     num_semantic_classes: 19
     is_train: False
+    prior: True
   dataloader_args:
     batch_size: 1
     num_workers: 1
@@ -92,6 +94,7 @@ test_dataloader1:
     roi: False
     num_semantic_classes: 19
     is_train: False
+    prior: True
   dataloader_args:
     batch_size: 1
     num_workers: 1
@@ -108,6 +111,7 @@ test_dataloader2:
     roi: True
     num_semantic_classes: 19
     is_train: False
+    prior: True
   dataloader_args:
     batch_size: 1
     num_workers: 1
@@ -124,6 +128,7 @@ test_dataloader3:
     roi: True
     num_semantic_classes: 19
     is_train: False
+    prior: True
   dataloader_args:
     batch_size: 1
     num_workers: 1
@@ -140,6 +145,7 @@ test_dataloader4:
     roi: False
     num_semantic_classes: 19
     is_train: False
+    prior: True
   dataloader_args:
     batch_size: 1
     num_workers: 1
