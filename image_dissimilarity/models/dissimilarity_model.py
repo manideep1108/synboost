@@ -247,6 +247,8 @@ class DissimNetPrior(pl.LightningModule):
 
     def forward(self, original_img, synthesis_img, semantic_img, entropy, mae, distance, softmax_out=False):
         # get all the image encodings
+        print(type(entropy))
+        print(type(mae))   #just for debigging
         prior_img = torch.cat((entropy, mae, distance), dim=1)
         if self.spade == 'encoder' or self.spade == 'both':
             encoding_og = self.vgg_encoder(original_img, semantic_img)
