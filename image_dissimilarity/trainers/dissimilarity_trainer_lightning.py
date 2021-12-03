@@ -124,6 +124,8 @@ class Synboost_trainer(pl.LightningModule):
             mae = batch['mae']
             distance = batch['distance']
             predictions = self.diss_model(original, synthesis, semantic, entropy, mae, distance)
+            print(predictions.get_device())  #for debugging
+            print(label.type(torch.LongTensor).squeeze(dim=1).get_device())
             loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1))
             
         else:
