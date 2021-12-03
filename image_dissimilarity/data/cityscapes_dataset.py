@@ -137,7 +137,6 @@ class CityscapesDataset(Dataset):
 
         # get augmentations
         base_transforms, augmentations = get_transform(image_size, self.preprocess_mode)
-        print("applied")  #for debugging
 
         # apply base transformations
         label_tensor = base_transforms(label)*255
@@ -145,8 +144,10 @@ class CityscapesDataset(Dataset):
         syn_image_tensor = base_transforms(syn_image)
         if self.prior:
             mae_tensor = base_transforms(mae_image)
+            print("applied")  #for debugging
             entropy_tensor = base_transforms(entropy_image)
             distance_tensor = base_transforms(distance_image)
+            print(type(distance_tensor))
         else:
             mae_tensor = []
             entropy_tensor = []
