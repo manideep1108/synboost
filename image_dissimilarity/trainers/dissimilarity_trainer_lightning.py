@@ -169,7 +169,7 @@ class Synboost_trainer(pl.LightningModule):
             outputs = softmax(predictions)
             (softmax_pred, predictions) = torch.max(outputs, dim=1)
             print("##############")
-            print(ataloader_idx)      #just for debugging
+            print(dataloader_idx)      #just for debugging
             print(batch_idx)
             print("##############")
             self.flat_pred[dataloader_idx][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(outputs[:, 1, :, :])
