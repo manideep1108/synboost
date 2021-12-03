@@ -159,9 +159,6 @@ class Synboost_trainer(pl.LightningModule):
         synthesis = batch['synthesis']   
         label = batch['label']
         
-        print("$$$$$$$$$$$$$$$$$")
-        print(dataloader_idx)    
-        print("$$$$$$$$$$$$$$$$$")
         if self.config['model']['prior']:
             entropy = batch['entropy']
             mae = batch['mae']
@@ -178,12 +175,12 @@ class Synboost_trainer(pl.LightningModule):
         if(dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3 ):
             outputs = softmax(predictions)
             (softmax_pred, predictions) = torch.max(outputs, dim=1)
-            print("##############")
-            print(dataloader_idx)      #just for debugging
-            print(batch_idx)
-            print("##############")
-            self.flat_pred[dataloader_idx][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(outputs[:, 1, :, :])
-            self.flat_labels[dataloader_idx][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(label)
+            # print("##############")
+            # print(dataloader_idx)      #just for debugging
+            # print(batch_idx)
+            # print("##############")
+            self.flat_pred[dataloader_idx-1][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(outputs[:, 1, :, :])
+            self.flat_labels[dataloader_idx-1][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(label)
 
         return loss       
 
@@ -198,8 +195,8 @@ class Synboost_trainer(pl.LightningModule):
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
             log_dic = {"test_loss": validation_step_outputs.mean(), "mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
             self.log("test_epoch", log_dic)
-            self.flat_pred[dataloader_idx] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
-            self.flat_labels[dataloader_idx] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
+            self.flat_pred[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
+            self.flat_labels[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
     
 
     def configure_optimizers(self):
