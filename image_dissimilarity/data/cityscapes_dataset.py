@@ -143,13 +143,13 @@ class CityscapesDataset(Dataset):
         label_tensor = base_transforms(label)*255
         semantic_tensor = base_transforms(semantic)*255
         syn_image_tensor = base_transforms(syn_image)
-        print(self.prior)
+        #print(self.prior)
         if self.prior:
             mae_tensor = base_transforms(mae_image)
-            print("applied")  #for debugging
+            #print("applied")  #for debugging
             entropy_tensor = base_transforms(entropy_image)
             distance_tensor = base_transforms(distance_image)
-            print(type(distance_tensor))
+            #print(type(distance_tensor))
         else:
             mae_tensor = []
             entropy_tensor = []
