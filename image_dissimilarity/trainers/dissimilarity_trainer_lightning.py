@@ -70,17 +70,17 @@ class Synboost_trainer(pl.LightningModule):
         self.config = config
         self.data_module = SynboostDataModule(self.config)
         self.test_dataset1 = CityscapesDataset(**self.config["test_dataloader1"]['dataset_args']) # only for debugging
-        print(self.data_module)
-        print(len(DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']))) #for debugging
-        print(self.data_module.val_dataloader())  #just for debugging
+        # print(self.data_module)
+        # print(len(DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']))) #for debugging
+        # print(self.data_module.val_dataloader())  #just for debugging
 
         self.test_loader1_size = len(self.data_module.val_dataloader()[0])
         self.test_loader2_size = len(self.data_module.val_dataloader()[1])
         self.test_loader3_size = len(self.data_module.val_dataloader()[2])
         #self.test_loader4_size = len(self.datamodule.test_dataloader()[3])
         
-        self.flat_pred = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
-        self.flat_labels = [np.zeros(h*w*self.test_loader1_size),np.zeros(h*w*self.test_loader2_size),np.zeros(h*w*self.test_loader3_size)]
+        self.flat_pred = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
+        self.flat_labels = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
         
         if self.config['model']['prior']:
             self.diss_model = DissimNetPrior(**self.config['model'])
@@ -124,8 +124,8 @@ class Synboost_trainer(pl.LightningModule):
             mae = batch['mae']
             distance = batch['distance']
             predictions = self.diss_model(original, synthesis, semantic, entropy, mae, distance)
-            print(predictions.get_device())  #for debugging
-            print(label.type(torch.LongTensor).squeeze(dim=1).get_device().cuda())
+            #print(predictions.get_device())  #for debugging
+            #print(label.type(torch.LongTensor).squeeze(dim=1).get_device().cuda())
             loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1).cuda())
             
         else:
@@ -184,8 +184,8 @@ class Synboost_trainer(pl.LightningModule):
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
             log_dic = {"test_loss": validation_step_outputs.mean(), "mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
             self.log("test_epoch", log_dic)
-            self.flat_pred[dataloader_idx] = np.zeros(h*w*self.test_loader%f_size)%dataloader_idx
-            self.flat_labels[dataloader_idx] = np.zeros(h*w*self.test_loader%f_size)%dataloader_idx
+            self.flat_pred[dataloader_idx] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
+            self.flat_labels[dataloader_idx] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
     
 
     def configure_optimizers(self):

@@ -25,7 +25,7 @@ class CityscapesDataset(Dataset):
     def __init__(self, dataroot, preprocess_mode, crop_size=512, aspect_ratio= 0.5, flip=False, normalize=False,
                  prior = False, only_valid = False, roi = False, light_data= False, void = False, num_semantic_classes = 19, is_train = True):
         
-        print(prior)  #for debugging
+        #print(prior)  #for debugging
         self.original_paths = [os.path.join(dataroot, 'original', image)
                                for image in os.listdir(os.path.join(dataroot, 'original'))]
         if light_data:
