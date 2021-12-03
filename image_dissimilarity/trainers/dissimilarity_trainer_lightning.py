@@ -188,12 +188,12 @@ class Synboost_trainer(pl.LightningModule):
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
         
         if  dataloader_idx==0:
-            self.val_loss = validation_step_outputs.mean()
-            self.log('avg_loss_val', validation_step_outputs.mean())
+            self.val_loss = validation_step_outputs[0].mean()
+            self.log('avg_loss_val', validation_step_outputs[0].mean())
 
         elif dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
-            log_dic = {"test_loss": validation_step_outputs.mean(), "mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
+            log_dic = {"test_loss": validation_step_outputs[dataloader_idx].mean(), "mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
             self.log("test_epoch", log_dic)
             self.flat_pred[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
             self.flat_labels[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
