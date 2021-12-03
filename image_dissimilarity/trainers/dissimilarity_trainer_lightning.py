@@ -148,8 +148,8 @@ class Synboost_trainer(pl.LightningModule):
             
 
     def training_epoch_end(self, training_step_outputs):
-        print("Training Loss after epoch %f is : "% (self.trainer.current_epoch), training_step_outputs.mean())  #self.trainer.current_epoch
-        self.log('avg_loss_train', training_step_outputs.mean())
+        print("Training Loss after epoch %f is : "% (self.trainer.current_epoch), sum(training_step_outputs)/len(training_step_outputs))  #self.trainer.current_epoch
+        self.log('avg_loss_train', sum(training_step_outputs)/len(training_step_outputs))
 
 
 
