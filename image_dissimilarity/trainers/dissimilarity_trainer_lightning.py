@@ -74,9 +74,9 @@ class Synboost_trainer(pl.LightningModule):
         # print(len(DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']))) #for debugging
         # print(self.data_module.val_dataloader())  #just for debugging
 
-        self.test_loader1_size = len(self.data_module.val_dataloader()[0])
-        self.test_loader2_size = len(self.data_module.val_dataloader()[1])
-        self.test_loader3_size = len(self.data_module.val_dataloader()[2])
+        self.test_loader1_size = len(self.data_module.val_dataloader()[1])
+        self.test_loader2_size = len(self.data_module.val_dataloader()[2])
+        self.test_loader3_size = len(self.data_module.val_dataloader()[3])
         #self.test_loader4_size = len(self.datamodule.test_dataloader()[3])
         
         self.flat_pred = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
