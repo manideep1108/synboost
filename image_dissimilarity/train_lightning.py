@@ -57,16 +57,20 @@ best_val_loss = float('inf')
 best_map_metric = 0
 iter = 0
 
+wandb_logger = WandbLogger(project='MLRC_Synboost', # group runs in "BANA" project
+                           log_model='all') # log all new checkpoints during training
 
 from trainers.dissimilarity_trainer_lightning import SynboostDataModule,Synboost_trainer
 
 
 datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
+wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
-trainer = Trainer(max_epochs=2, gpus=1)
+trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger)
 trainer.fit(model, datamodule=datamodule)
 
+wandb.finish()
 
 
 

@@ -139,7 +139,14 @@ class Synboost_trainer(pl.LightningModule):
             predictions = self.diss_model(original, synthesis, semantic)
             loss = self.criterion(predictions, label.type(torch.LongTensor).squeeze(dim=1))
         
-        self.log("train_iter_losss",loss)
+        #self.log("train_iter_losss",loss)
+        self.log_dict(
+            {"train_iter_losss" : loss},
+            on_step=True,
+            on_epoch=True,
+            prog_bar=True,
+        )
+
         return loss
         # if opts.wandb:
         #     wandb.log({"Loss_iter_train": model_loss, "train_idx": idx_train})
@@ -147,9 +154,9 @@ class Synboost_trainer(pl.LightningModule):
         # idx_train +=1
             
 
-    def training_epoch_end(self, training_step_outputs):
-        print("Training Loss after epoch %f is : "% (self.trainer.current_epoch), sum(training_step_outputs)/len(training_step_outputs))  #self.trainer.current_epoch
-        self.log('avg_loss_train', sum(training_step_outputs)/len(training_step_outputs))
+    # def training_epoch_end(self, training_step_outputs):
+    #     print("Training Loss after epoch %f is : "% (self.trainer.current_epoch), sum(training_step_outputs)/len(training_step_outputs))  #self.trainer.current_epoch
+    #     self.log('avg_loss_train', sum(training_step_outputs)/len(training_step_outputs))
 
 
 
@@ -181,7 +188,12 @@ class Synboost_trainer(pl.LightningModule):
             # print("##############")
             self.flat_pred[dataloader_idx-1][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(outputs[:, 1, :, :])
             self.flat_labels[dataloader_idx-1][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(label)
-
+        
+        self.log_dict(
+            {"val_loss" : loss},
+            on_step=False,
+            on_epoch=True
+        )
         return loss       
 
 
@@ -192,14 +204,13 @@ class Synboost_trainer(pl.LightningModule):
         # print(len(validation_step_outputs[0]))
         # print(validation_step_outputs[1].shape) 
         # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-        if  dataloader_idx==0:
-            self.val_loss = sum(validation_step_outputs[dataloader_idx])/len(validation_step_outputs[dataloader_idx])
-            self.log('avg_loss_val', sum(validation_step_outputs[dataloader_idx])/len(validation_step_outputs[dataloader_idx]))
 
-        elif dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
+        if dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
-            log_dic = {"test_loss": sum(validation_step_outputs[dataloader_idx])/len(validation_step_outputs[dataloader_idx]), "mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
-            self.log("test_epoch", log_dic)
+            log_dic = {"mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
+
+            self.log_dict(log_dic, on_step=False,on_epoch=True)
+
             self.flat_pred[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
             self.flat_labels[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
     
