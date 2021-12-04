@@ -23,7 +23,7 @@ dataset:
 # parameters for dataloaders
 test_dataloader:
   dataset_args:
-    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/cityscapes_processed
+    dataroot: /kaggle/input/cityscapes-synboost/final_dataset/fs_lost_and_found
     preprocess_mode: none
     crop_size: 512
     aspect_ratio: 2
