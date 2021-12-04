@@ -194,25 +194,21 @@ class Synboost_trainer(pl.LightningModule):
             on_step=False,
             on_epoch=True
         )
+
         return loss       
 
 
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
         
-        # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-        # print(len(validation_step_outputs))
-        # print(len(validation_step_outputs[0]))
-        # print(validation_step_outputs[1].shape) 
-        # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-        if dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
+        for idx in range(3):
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
-            log_dic = {"mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
+            log_dic = {"mAP%f"%(idx+1): results['AP'], "FPR@95TPR%f"%(idx+1): results['FPR@95%TPR'], "AU_ROC%f"%(idx+1): results['auroc']}
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-            self.log_dict(log_dic, on_step=False,on_epoch=True)
+            self.log_dict(log_dic)
 
-            self.flat_pred[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
-            self.flat_labels[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
+            self.flat_pred[idx] = (torch.zeros(h*w*self.test_loader%f_size)%(idx+1)).cuda()
+            self.flat_labels[idx] = (torch.zeros(h*w*self.test_loader%f_size)%(idx+1)).cuda()
     
 
     def configure_optimizers(self):
