@@ -208,8 +208,8 @@ class Synboost_trainer(pl.LightningModule):
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             self.log_dict(log_dic)
 
-            self.flat_pred[idx] = (torch.zeros(h*w*self.test_loader%f_size)%(idx+1)).cuda()
-            self.flat_labels[idx] = (torch.zeros(h*w*self.test_loader%f_size)%(idx+1)).cuda()
+        self.flat_pred = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
+        self.flat_labels = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
     
 
     def configure_optimizers(self):
