@@ -208,7 +208,7 @@ class Synboost_trainer(pl.LightningModule):
         if dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3:
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
             log_dic = {"mAP": results['AP'], "FPR@95TPR": results['FPR@95%TPR'], "AU_ROC": results['auroc']}
-
+            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             self.log_dict(log_dic, on_step=False,on_epoch=True)
 
             self.flat_pred[dataloader_idx-1] = (torch.zeros(h*w*self.test_loader%f_size)%dataloader_idx).cuda()
