@@ -2,7 +2,7 @@
 experiment_name: replicate_best_mult_3 # where checkpoints are stored
 save_folder: /kaggle/working/results/ # where checkpoints are stored
 which_epoch: best
-store_results: /kaggle/working/results/fs_lost_and_found/
+store_results: /kaggle/working/results/
 visualize: False
 ensemble: True
 
