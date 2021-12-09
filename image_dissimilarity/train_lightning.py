@@ -68,12 +68,21 @@ checkpoint_callback = ModelCheckpoint(
     monitor='val_loss/dataloader_idx_0',
     # dirpath=f"{cfg.NAME}",    
     # filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
-    save_top_k =1,                 # saving best model, if to save the latest one replace by - save_last=True
+    save_top_k =2,                 # saving best model, if to save the latest one replace by - save_last=True
     mode='min',                     # written for save_top_k
     every_n_epochs=1,              # after 40 epochs checkpoint saved.
     save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
     )
 
+checkpoint_callback_latest = ModelCheckpoint(
+    #monitor='val_loss/dataloader_idx_0',
+    # dirpath=f"{cfg.NAME}",    
+    # filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
+    #save_top_k =1,                 # saving best model, if to save the latest one replace by - save_last=True
+    #mode='min',                     # written for save_top_k
+    every_n_epochs=1             # after 40 epochs checkpoint saved.
+    #save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
+    )
 
 # checkpoint_callback_best = ModelCheckpoint(
 #     dirpath=f"{cfg.NAME}",    
@@ -93,7 +102,7 @@ datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
-trainer = Trainer(max_epochs=2, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback])
+trainer = Trainer(max_epochs=2, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, checkpoint_callback_latest])
 trainer.fit(model, datamodule=datamodule)
 
 wandb.finish()
