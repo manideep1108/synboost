@@ -102,7 +102,7 @@ datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
-trainer = Trainer(max_epochs=2, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, checkpoint_callback_latest])
+trainer = Trainer(max_epochs=6, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, checkpoint_callback_latest])
 trainer.fit(model, datamodule=datamodule)
 
 wandb.finish()
