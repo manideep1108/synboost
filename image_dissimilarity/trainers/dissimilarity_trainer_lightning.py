@@ -204,7 +204,7 @@ class Synboost_trainer(pl.LightningModule):
 
         for idx in range(3):
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
-            log_dic = {"mAP%f"%(idx+1): results['AP'], "FPR@95TPR%f"%(idx+1): results['FPR@95%TPR'], "AU_ROC%f"%(idx+1): results['auroc']}
+            log_dic = {"mAP%d"%(idx+1): results['AP'], "FPR@95TPR%d"%(idx+1): results['FPR@95%TPR'], "AU_ROC%d"%(idx+1): results['auroc']}
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             self.log_dict(log_dic)
 

@@ -13,6 +13,7 @@ from torchvision.utils import make_grid
 from torchvision.transforms import ToPILImage, ToTensor
 import wandb
 from pytorch_lightning.loggers import WandbLogger
+from pytorch_lightning.callbacks import Callback
 
 from trainers.dissimilarity_trainer import DissimilarityTrainer
 from util import trainer_util
@@ -61,6 +62,28 @@ iter = 0
 wandb_logger = WandbLogger(project='MLRC_Synboost', # group runs in "BANA" project
                            log_model='all') # log all new checkpoints during training
 
+
+checkpoint_callback = ModelCheckpoint(
+    # dirpath=f"{cfg.NAME}",    
+    # filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
+    save_top_k =1,                 # saving best model, if to save the latest one replace by - save_last=True
+    #mode='min',                     # written for save_top_k
+    every_n_epochs=1,              # after 40 epochs checkpoint saved.
+    save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
+    )
+
+
+# checkpoint_callback_best = ModelCheckpoint(
+#     dirpath=f"{cfg.NAME}",    
+#     filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
+#     save_top_k =1,                 # saving best model, if to save the latest one replace by - save_last=True
+#     mode='min',                     # written for save_top_k
+#     every_n_epochs=5,              # after 40 epochs checkpoint saved.
+#     save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
+#     )
+
+
+
 from trainers.dissimilarity_trainer_lightning import SynboostDataModule,Synboost_trainer
 
 
@@ -68,7 +91,7 @@ datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
-trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger)
+trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback])
 trainer.fit(model, datamodule=datamodule)
 
 wandb.finish()
