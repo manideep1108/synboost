@@ -14,6 +14,7 @@ from torchvision.transforms import ToPILImage, ToTensor
 import wandb
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import Callback
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 from trainers.dissimilarity_trainer import DissimilarityTrainer
 from util import trainer_util
