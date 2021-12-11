@@ -15,6 +15,7 @@ import wandb
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import Callback
 from pytorch_lightning.callbacks import ModelCheckpoint
+from pathlib import Path
 
 from trainers.dissimilarity_trainer import DissimilarityTrainer
 from util import trainer_util
@@ -101,6 +102,14 @@ from trainers.dissimilarity_trainer_lightning import SynboostDataModule,Synboost
 datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
+
+
+if wandb_resume:
+    run = wandb.init()  
+    artifact = run.use_artifact(artifact_path, type='model')
+    artifact_dir = artifact.download()  #should change these lines so that user can specify path (now just for testing)
+    model = Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt')
+
 
 trainer = Trainer(max_epochs=6, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, checkpoint_callback_latest])
 trainer.fit(model, datamodule=datamodule)
