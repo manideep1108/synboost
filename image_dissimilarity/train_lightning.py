@@ -34,7 +34,6 @@ parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0
 parser.add_argument('--seed', type=str, default='0', help='seed for experiment')
 # parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
 parser.add_argument('--wandb_resume', type=bool, default = False, help='Resume Training')
-print(wandb_resume)
 parser.add_argument('--artifact_path', type=str, default= 's', help='Path of artifact to load weights and Resume Run')
 # parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
 # parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
@@ -106,9 +105,9 @@ model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
 
-if wandb_resume:
+if opts.wandb_resume:
     run = wandb.init()  
-    artifact = run.use_artifact(artifact_path, type='model')
+    artifact = run.use_artifact(opts.artifact_path, type='model')
     artifact_dir = artifact.download()  #should change these lines so that user can specify path (now just for testing)
     model = Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt')
 
