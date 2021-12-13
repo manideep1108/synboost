@@ -97,7 +97,7 @@ if opts.wandb_resume:
     model =Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt', config=config )
     #(cls, checkpoint: Dict[str, Any], strict: bool = True, **cls_kwargs_new)
 
-trainer = Trainer(max_epochs=4, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, checkpoint_callback_latest])
+trainer = Trainer(max_epochs=4, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback])
 trainer.fit(model, datamodule=datamodule)
 
 wandb.finish()
