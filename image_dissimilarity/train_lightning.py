@@ -66,7 +66,7 @@ if opts.wandb_resume:
     wandb_logger = WandbLogger(project='MLRC_Synboost',name = opts.wandb_run ,log_model='all', resume='allow', id=opts.wandb_run_id) # log all new checkpoints during training
 
 else:
-    wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = opts.wandb_run) # log all new checkpoints during training
+    wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = opts.wandb_run, resume=None) # log all new checkpoints during training
 
 
 checkpoint_callback = ModelCheckpoint(
