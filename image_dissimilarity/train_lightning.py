@@ -63,7 +63,7 @@ best_map_metric = 0
 iter = 0
 
 if opts.wandb_resume:
-    wandb_logger = WandbLogger(project='MLRC_Synboost',name = opts.wandb_run ,log_model='all',resume= True, id=opts.wandb_run_id) # log all new checkpoints during training
+    wandb_logger = WandbLogger(project='MLRC_Synboost',name = opts.wandb_run ,log_model='all', resume='allow', id=opts.wandb_run_id) # log all new checkpoints during training
 
 else:
     wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = opts.wandb_run) # log all new checkpoints during training
@@ -71,32 +71,14 @@ else:
 
 checkpoint_callback = ModelCheckpoint(
     monitor='val_loss/dataloader_idx_0',
-    # dirpath=f"{cfg.NAME}",    
-    # filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
-    save_top_k =2,                 # saving best model, if to save the latest one replace by - save_last=True
-    mode='min',                     # written for save_top_k
-    every_n_epochs=1,              # after 40 epochs checkpoint saved.
-    save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
+    save_top_k =2,                 
+    mode='min',                    
+    every_n_epochs=1,             
+    save_on_train_epoch_end=True 
+    save_last = True    
     )
 
-checkpoint_callback_latest = ModelCheckpoint(
-    #monitor='val_loss/dataloader_idx_0',
-    # dirpath=f"{cfg.NAME}",    
-    # filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
-    #save_top_k =1,                 # saving best model, if to save the latest one replace by - save_last=True
-    #mode='min',                     # written for save_top_k
-    every_n_epochs=1             # after 40 epochs checkpoint saved.
-    #save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
-    )
 
-# checkpoint_callback_best = ModelCheckpoint(
-#     dirpath=f"{cfg.NAME}",    
-#     filename='{epoch}-{train_loss:.2f}',   # right now checking based on train_loss
-#     save_top_k =1,                 # saving best model, if to save the latest one replace by - save_last=True
-#     mode='min',                     # written for save_top_k
-#     every_n_epochs=5,              # after 40 epochs checkpoint saved.
-#     save_on_train_epoch_end=True   #  to run checkpointing at the end of the training epoch.  
-#     )
 
 
 
