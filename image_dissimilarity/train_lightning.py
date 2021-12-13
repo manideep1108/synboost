@@ -35,8 +35,8 @@ parser.add_argument('--seed', type=str, default='0', help='seed for experiment')
 # parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
 parser.add_argument('--wandb_resume', type=bool, default = False, help='Resume Training')
 parser.add_argument('--artifact_path', type=str, default= 's', help='Path of artifact to load weights and Resume Run')
-# parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
-# parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
+parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
+parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
 # parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 # parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
 # parser.add_argument('--pre_epoch', type=int, default=0, help='Previous epoch Number to resume training')
@@ -62,8 +62,11 @@ best_val_loss = float('inf')
 best_map_metric = 0
 iter = 0
 
-wandb_logger = WandbLogger(project='MLRC_Synboost', # group runs in "BANA" project
-                           log_model='all') # log all new checkpoints during training
+if opts.wandb_resume:
+    wandb_logger = WandbLogger(project='MLRC_Synboost',name = opts.wandb_run ,log_model='all',resume= True, id=opts.wandb_run_id) # log all new checkpoints during training
+
+else:
+    wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = opts.wandb_run) # log all new checkpoints during training
 
 
 checkpoint_callback = ModelCheckpoint(
