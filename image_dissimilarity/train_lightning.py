@@ -62,6 +62,8 @@ best_val_loss = float('inf')
 best_map_metric = 0
 iter = 0
 
+print(opts.wandb_resume)
+
 if opts.wandb_resume:
     wandb_logger = WandbLogger(project='MLRC_Synboost',name = opts.wandb_run ,log_model='all', resume='allow', id=opts.wandb_run_id) # log all new checkpoints during training
 
