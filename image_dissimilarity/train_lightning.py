@@ -74,7 +74,7 @@ checkpoint_callback = ModelCheckpoint(
     save_top_k =2,                 
     mode='min',                    
     every_n_epochs=1,             
-    save_on_train_epoch_end=True 
+    save_on_train_epoch_end=True,
     save_last = True    
     )
 
