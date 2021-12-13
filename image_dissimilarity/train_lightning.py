@@ -89,7 +89,7 @@ datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
-
+print(opts.wandb_resume)
 if opts.wandb_resume:
     run = wandb.init()  
     artifact = run.use_artifact(opts.artifact_path, type='model')
