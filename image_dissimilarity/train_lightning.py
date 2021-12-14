@@ -16,6 +16,7 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import Callback
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pathlib import Path
+from pytorch_lightning.callbacks import LearningRateMonitor
 
 from trainers.dissimilarity_trainer import DissimilarityTrainer
 from util import trainer_util
@@ -81,7 +82,7 @@ checkpoint_callback = ModelCheckpoint(
     save_last = True    
     )
 
-
+lr_monitor = LearningRateMonitor(logging_interval='epoch')
 
 
 
@@ -103,7 +104,7 @@ if opts.wandb_resume:
     resume_path = "artifacts/" + opts.artifact_path + "/model.ckpt"
 
 
-trainer = Trainer(max_epochs=opts.max_epoch, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback],resume_from_checkpoint=resume_path)
+trainer = Trainer(max_epochs=opts.max_epoch, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, lr_monitor],resume_from_checkpoint=resume_path)
 trainer.fit(model, datamodule=datamodule)                                                                                                            
 print("Calling finish")
 wandb.finish()
