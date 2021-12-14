@@ -102,8 +102,8 @@ if opts.wandb_resume:
     resume_path = "artifacts/" + path + "/model.ckpt"
 
 
-trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback],resume_from_checkpoint=resume_path,enable_checkpointing=True)
-trainer.fit(model, datamodule=datamodule)
+trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback],resume_from_checkpoint=resume_path)
+trainer.fit(model, datamodule=datamodule)                                                                                                            
 
 wandb.finish()
 
