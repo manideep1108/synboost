@@ -22,24 +22,12 @@ class SynboostDataModule(pl.LightningDataModule):
     
         self.config= config
 
-    #def setup(self):
-        # Assign train/val/test datasets for use in dataloaders
-        #if stage == "fit" or stage is None:
         self.train_dataset = CityscapesDataset(**self.config["train_dataloader"]['dataset_args'])
 
-         #if stage == "val" or stage is None:
         self.validation_dataset = CityscapesDataset(**self.config["val_dataloader"]['dataset_args'])
         self.test_dataset1 = CityscapesDataset(**self.config["test_dataloader1"]['dataset_args'])
         self.test_dataset2 = CityscapesDataset(**self.config["test_dataloader2"]['dataset_args'])
         self.test_dataset3 = CityscapesDataset(**self.config["test_dataloader3"]['dataset_args'])
-           # self.test_dataset4 = CityscapesDataset(self.config["test_dataloader4"]['dataset_args'])
-
-        # if stage == "test" or stage is None:
-        #     self.test_dataset1 = CityscapesDataset(self.config["test_dataloader1"]['dataset_args'])
-        #     self.test_dataset2 = CityscapesDataset(self.config["test_dataloader2"]['dataset_args'])
-        #     self.test_dataset3 = CityscapesDataset(self.config["test_dataloader3"]['dataset_args'])
-        #     self.test_dataset4 = CityscapesDataset(self.config["test_dataloader4"]['dataset_args'])
-
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, **self.config["train_dataloader"]['dataloader_args'])
@@ -49,17 +37,7 @@ class SynboostDataModule(pl.LightningDataModule):
             DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']),
             DataLoader(self.test_dataset2, **self.config["test_dataloader2"]['dataloader_args']),
             DataLoader(self.test_dataset3, **self.config["test_dataloader3"]['dataloader_args']),
-            #DataLoader(self.test_dataset4, self.config["test_dataloader4"]['dataloader_args'])
         ]
-
-    # def test_dataloader(self):
-    #     return [
-    #         DataLoader(self.test_dataset1, self.config["test_dataloader1"]['dataloader_args']),
-    #         DataLoader(self.test_dataset2, self.config["test_dataloader2"]['dataloader_args']),
-    #         DataLoader(self.test_dataset3, self.config["test_dataloader3"]['dataloader_args']),
-    #         DataLoader(self.test_dataset4, self.config["test_dataloader4"]['dataloader_args'])
-    #     ]
-
 
 
 
@@ -69,23 +47,11 @@ class Synboost_trainer(pl.LightningModule):
         
         self.val_loss = 0
         self.config = config
-        self.data_module = SynboostDataModule(self.config)
-        #self.test_dataset1 = CityscapesDataset(**self.config["test_dataloader1"]['dataset_args']) # only for debugging
-        # print(self.data_module)
-        # print(len(DataLoader(self.test_dataset1, **self.config["test_dataloader1"]['dataloader_args']))) #for debugging
-        # print(self.data_module.val_dataloader())  #just for debugging
-        
-        # print("****************************************")
-        # self.val_size = len(self.data_module.val_dataloader()[0])
-        # print(self.val_size)       
+
+        self.data_module = SynboostDataModule(self.config)   
         self.test_loader1_size = len(self.data_module.val_dataloader()[1])
-        # print(self.test_loader1_size)
         self.test_loader2_size = len(self.data_module.val_dataloader()[2])
-        # print(self.test_loader2_size)
         self.test_loader3_size = len(self.data_module.val_dataloader()[3])
-        # print(self.test_loader3_size)
-        # print("****************************************")
-        #self.test_loader4_size = len(self.datamodule.test_dataloader()[3])
         
         self.flat_pred = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
         self.flat_labels = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
@@ -117,6 +83,8 @@ class Synboost_trainer(pl.LightningModule):
             self.criterion = nn.CrossEntropyLoss(ignore_index=255, weight=torch.FloatTensor(class_weights))
         else:
             self.criterion = nn.CrossEntropyLoss(ignore_index=255)
+
+        self.save_hyperparameters()  
 
 
     def  training_step(self,batch,batch_idx):
@@ -183,10 +151,6 @@ class Synboost_trainer(pl.LightningModule):
         if(dataloader_idx== 1 or dataloader_idx== 2 or dataloader_idx== 3 ):
             outputs = softmax(predictions)
             (softmax_pred, predictions) = torch.max(outputs, dim=1)
-            # print("##############")
-            # print(dataloader_idx)      #just for debugging
-            # print(batch_idx)
-            # print("##############")
             self.flat_pred[dataloader_idx-1][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(outputs[:, 1, :, :])
             self.flat_labels[dataloader_idx-1][batch_idx * w * h:batch_idx * w * h + w * h] = torch.flatten(label)
         
@@ -200,12 +164,9 @@ class Synboost_trainer(pl.LightningModule):
 
 
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
-        
-
         for idx in range(3):
             results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
             log_dic = {"mAP%d"%(idx+1): results['AP'], "FPR@95TPR%d"%(idx+1): results['FPR@95%TPR'], "AU_ROC%d"%(idx+1): results['auroc']}
-            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             self.log_dict(log_dic)
 
         self.flat_pred = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]

@@ -92,14 +92,17 @@ model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
 print(opts.wandb_resume)
+resume_path = None
+
 if opts.wandb_resume:
     run = wandb.init()  
     artifact = run.use_artifact(opts.artifact_path, type='model')
     artifact_dir = artifact.download()  #should change these lines so that user can specify path (now just for testing)
     model =Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt', config=config )
-    #(cls, checkpoint: Dict[str, Any], strict: bool = True, **cls_kwargs_new)
+    resume_path = "artifacts/" + path + "/model.ckpt"
 
-trainer = Trainer(max_epochs=4, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback])
+
+trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback],resume_from_checkpoint=resume_path,enable_checkpointing=True)
 trainer.fit(model, datamodule=datamodule)
 
 wandb.finish()
