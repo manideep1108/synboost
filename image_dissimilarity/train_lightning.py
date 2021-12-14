@@ -99,7 +99,7 @@ if opts.wandb_resume:
     artifact = run.use_artifact(opts.artifact_path, type='model')
     artifact_dir = artifact.download()  #should change these lines so that user can specify path (now just for testing)
     model =Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt', config=config )
-    resume_path = "artifacts/" + path + "/model.ckpt"
+    resume_path = "artifacts/" + opts.artifact_path + "/model.ckpt"
 
 
 trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback],resume_from_checkpoint=resume_path)
