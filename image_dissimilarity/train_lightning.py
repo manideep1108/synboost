@@ -104,7 +104,7 @@ if opts.wandb_resume:
 
 trainer = Trainer(max_epochs=1, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback],resume_from_checkpoint=resume_path)
 trainer.fit(model, datamodule=datamodule)                                                                                                            
-
+print("Calling finish")
 wandb.finish()
 
 
