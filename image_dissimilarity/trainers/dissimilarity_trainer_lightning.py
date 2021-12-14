@@ -187,14 +187,14 @@ class Synboost_trainer(pl.LightningModule):
 
         return {
             "optimizer": optimizer,
-            # "lr_scheduler": {
-            #     "scheduler": ReduceLROnPlateau(optimizer, 'min', patience=self.config['optimizer']['parameters']['patience'], factor=self.config['optimizer']['parameters']['factor']),
-            #     "monitor": self.val_loss ,     #should check if I should change the variable name
-            #     "interval": "epoch",
-            #     "frequency": 1  
-            #     # If "monitor" references validation metrics, then "frequency" should be set to a
-            #     # multiple of "trainer.check_val_every_n_epoch".
-            # },  #should resolve this temporaririly stopped it
+            "lr_scheduler": {
+                "scheduler": ReduceLROnPlateau(optimizer, 'min', patience=self.config['optimizer']['parameters']['patience'], factor=self.config['optimizer']['parameters']['factor']),
+                "monitor": "val_loss/dataloader_idx_0" ,     #should check if I should change the variable name
+                "interval": "epoch",
+                "frequency": 1 
+                # If "monitor" references validation metrics, then "frequency" should be set to a
+                # multiple of "trainer.check_val_every_n_epoch".
+            },  #should resolve this temporaririly stopped it
         }
 
 
