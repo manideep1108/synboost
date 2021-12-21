@@ -1204,7 +1204,7 @@ class GuideEncoderLayer(nn.Module):
 
 
 class NLBlockND(nn.Module):
-    def __init__(self, in_channels, inter_channels=2, mode='embedded', 
+    def __init__(self, in_channels, inter_channels=None, mode='embedded', 
                  dimension=2, bn_layer=True):
         """Implementation of Non-Local Block with 4 different pairwise functions but doesn't include subsampling trick
         args:
