@@ -174,7 +174,7 @@ class DissimNetPrior(nn.Module):
         # self.semantic = False if spade else semantic
         self.semantic = semantic
         self.prior = prior
-        self.nonlocal_block = NLBlockND(in_channels=2)
+        #self.nonlocal_block = NLBlockND(in_channels=2)
 
         # generate encoders
         if self.spade == 'encoder' or self.spade == 'both':
@@ -326,7 +326,7 @@ class DissimNetPrior(nn.Module):
             x = self.conv6(x)
         logits = self.conv11(x)
 
-        logits = self.nonlocal_block(logits)
+        #logits = self.nonlocal_block(logits)
 
         return logits
 
