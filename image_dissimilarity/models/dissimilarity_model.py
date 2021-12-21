@@ -176,7 +176,7 @@ class DissimNetPrior(nn.Module):
         # self.semantic = False if spade else semantic
         self.semantic = semantic
         self.prior = prior
-        self.nonlocal_block = NLBlockND(in_channels=2)
+        #self.nonlocal_block = NLBlockND(in_channels=2)
 
         # generate encoders
         if self.spade == 'encoder' or self.spade == 'both':
@@ -231,6 +231,17 @@ class DissimNetPrior(nn.Module):
             self.conv9 = nn.Conv2d(256, 128, kernel_size=1, padding=0)
             self.conv10 = nn.Conv2d(128, 64, kernel_size=1, padding=0)
             self.conv11 = nn.Conv2d(64, 2, kernel_size=1, padding=0)
+
+
+        self.conv1010 = nn.Conv2d(64, 1, kernel_size=1,stride=1,padding=0)  # 1mm
+        self.conv1020 = nn.Conv2d(64, 1, kernel_size=1,stride=1,padding=0)  # 1mm
+        self.conv1030 = nn.Conv2d(64, 1, kernel_size=1,stride=1,padding=0)  # 1mm
+        self.conv1040 = nn.Conv2d(64, 1, kernel_size=1,stride=1,padding=0)        
+        self.conv_la = nn.Conv2d(68, 2, kernel_size=7, stride=1, padding=3)
+        self.relu = nn.LeakyReLU(0.2, inplace=True)
+        self.tanh = nn.Tanh()
+        
+        self.upsample = F.interpolate
 
         # self._initialize_weights()
 
@@ -326,11 +337,32 @@ class DissimNetPrior(nn.Module):
             x = self.conv6(x, semantic_img)
         else:
             x = self.conv6(x)
-        logits = self.conv11(x)
+        
+        x101 = F.avg_pool2d(x, 32)
+        #print(x101.shape)
+        x102 = F.avg_pool2d(x, 16)
+        x103 = F.avg_pool2d(x, 8)
+        x104 = F.avg_pool2d(x, 4)
 
-        pred = self.nonlocal_block(logits)
+        shape_out = x.data.size()
+        shape_out = shape_out[2:4]
+        
+        
+        #print(x101.shape)
+        x1010 = self.upsample(self.relu(self.conv1010(x101)), size=shape_out)
+        x1020 = self.upsample(self.relu(self.conv1020(x102)), size=shape_out)
+        x1030 = self.upsample(self.relu(self.conv1030(x103)), size=shape_out)
+        x1040 = self.upsample(self.relu(self.conv1040(x104)), size=shape_out)
+        
+        out = torch.cat((x1010, x1020, x1030, x1040, x), 1)
+        out = self.tanh(self.conv_la(out))
+        logits =  F.interpolate(out, size=shape_out, mode='bilinear', align_corners=True)
 
-        return pred
+        #logits = self.conv11(x)
+
+        #pred = self.nonlocal_block(logits)
+
+        return logits
 
 
 class ResNetDissimNet(nn.Module):
