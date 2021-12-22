@@ -241,7 +241,7 @@ class DissimNetPrior(nn.Module):
         # self.relu = nn.LeakyReLU(0.2, inplace=True)
         # self.tanh = nn.Tanh()
         
-        # self.upsample = F.interpolate
+        self.upsample = F.interpolate
 
         # self._initialize_weights()
 
@@ -362,7 +362,7 @@ class DissimNetPrior(nn.Module):
 
         #pred = self.nonlocal_block(logits)
 
-        return logits
+        return F.interpolate(logits, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
 
 
 class ResNetDissimNet(nn.Module):
