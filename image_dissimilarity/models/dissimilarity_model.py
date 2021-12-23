@@ -213,9 +213,9 @@ class DissimNetPrior(nn.Module):
             self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=3, dilation=3), nn.SELU())
 
         # all the tranposed convolutions
-        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
-        self.tconv3 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
-        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=0)
+        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=1, dilation=3)
+        self.tconv3 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=1, dilation=3)
+        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=1, dilation=3)
 
         # all the other 1x1 convolutions
         if self.semantic:
