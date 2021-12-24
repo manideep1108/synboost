@@ -165,6 +165,21 @@ class DissimNet(nn.Module):
         return logits
 
 
+class LGBlock(nn.Module):
+    def __init__(self, scale, input_filters, kernel_size, padding=0):
+        super(LPGBlock, self).__init__()
+        self.input_filters = input_filters
+        self.scale = scale
+        self.conv_1 = nn.Conv2d(input_filters, 4, 1)
+        self.conv_3 = nn.ConvTranspose2d(4, 1, kernel_size = kernel_size, stride=scale, padding=padding)
+        self.sigmoid = nn.Sigmoid()
+        self.leakyrelu = nn.LeakyReLU(0.2)
+        
+        
+    def forward(self, x):
+        return self.leakyrelu(self.conv_3(self.sigmoid(self.conv_1(x))))
+
+
 class DissimNetPrior(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
                  num_semantic_classes=19):
@@ -191,9 +206,9 @@ class DissimNetPrior(nn.Module):
         # all the 3x3 convolutions
         if correlation:
             self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=1), nn.SELU())
-            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(514, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(386, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(194, 64, kernel_size=3, padding=1), nn.SELU())
 
         else:
             self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
@@ -223,13 +238,18 @@ class DissimNetPrior(nn.Module):
             self.conv8 = nn.Conv2d(640, 256, kernel_size=1, padding=0)
             self.conv9 = nn.Conv2d(320, 128, kernel_size=1, padding=0)
             self.conv10 = nn.Conv2d(160, 64, kernel_size=1, padding=0)
-            self.conv11 = nn.Conv2d(64, 2, kernel_size=1, padding=0)
+            self.conv11 = nn.Conv2d(67, 2, kernel_size=1, padding=0)
         else:
             self.conv7 = nn.Conv2d(1024, 512, kernel_size=1, padding=0)
             self.conv8 = nn.Conv2d(512, 256, kernel_size=1, padding=0)
             self.conv9 = nn.Conv2d(256, 128, kernel_size=1, padding=0)
             self.conv10 = nn.Conv2d(128, 64, kernel_size=1, padding=0)
-            self.conv11 = nn.Conv2d(64, 2, kernel_size=1, padding=0)
+            self.conv11 = nn.Conv2d(67, 2, kernel_size=1, padding=0)
+
+
+        self.lgb3 = LGBlock(scale=4, input_filters= 256, kernel_size=4, padding=0)
+        self.lgb2 = LGBlock(scale=2, input_filters= 256, kernel_size=4, padding=1)
+        self.lgb1 = LGBlock(scale=1, input_filters= 128, kernel_size=3, padding=1)
 
         # self._initialize_weights()
 
@@ -295,10 +315,10 @@ class DissimNetPrior(nn.Module):
             layer2_cat = torch.cat((corr2, layer2_cat), dim=1)
             layer1_cat = torch.cat((corr1, layer1_cat), dim=1)
 
-        print(layer4_cat.shape)
-        print(layer3_cat.shape)
-        print(layer2_cat.shape)
-        print(layer1_cat.shape)
+        # print(layer4_cat.shape)
+        # print(layer3_cat.shape)
+        # print(layer2_cat.shape)
+        # print(layer1_cat.shape)
     
         # Run Decoder
         x = self.conv1(layer4_cat)
@@ -307,29 +327,41 @@ class DissimNetPrior(nn.Module):
         else:
             x = self.conv2(x)
         x = self.tconv1(x)
-    
-        x = torch.cat((x, layer3_cat), dim=1)
+        
+        gb3 = self.lgb3(x)
+        gb3_r = F.interpolate(gb3, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
+
+
+        x = torch.cat((x, layer3_cat, gb3_r), dim=1)
         x = self.conv12(x)
         if self.spade == 'decoder' or self.spade == 'both':
             x = self.conv13(x, semantic_img)
         else:
             x = self.conv13(x)
         x = self.tconv3(x)
+
+        gb2 = self.lgb2(x)
+        gb2_r = F.interpolate(gb2, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
     
-        x = torch.cat((x, layer2_cat), dim=1)
+        x = torch.cat((x, layer2_cat, gb2_r), dim=1)
         x = self.conv3(x)
         if self.spade == 'decoder' or self.spade == 'both':
             x = self.conv4(x, semantic_img)
         else:
             x = self.conv4(x)
         x = self.tconv2(x)
+
+        gb1 = self.lgb1(x)
+        gb1_r = F.interpolate(gb1, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
     
-        x = torch.cat((x, layer1_cat), dim=1)
+        x = torch.cat((x, layer1_cat, gb1_r), dim=1)
         x = self.conv5(x)
         if self.spade == 'decoder' or self.spade == 'both':
             x = self.conv6(x, semantic_img)
         else:
             x = self.conv6(x)
+
+        x = torch.cat((x, gb3, gb2, gb1), dim=1)
         logits = self.conv11(x)
         return logits
 
