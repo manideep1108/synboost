@@ -190,16 +190,16 @@ class DissimNetPrior(nn.Module):
         # layers for decoder
         # all the 3x3 convolutions
         if correlation:
-            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=3, dilation=3), nn.SELU())
+            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=1), nn.SELU())
 
         else:
-            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=3, dilation=3), nn.SELU())
+            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=1), nn.SELU())
 
         if self.spade == 'decoder' or self.spade == 'both':
             self.conv2 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
@@ -207,15 +207,15 @@ class DissimNetPrior(nn.Module):
             self.conv4 = SPADEDecoderLayer(nc=128, label_nc=num_semantic_classes)
             self.conv6 = SPADEDecoderLayer(nc=64, label_nc=num_semantic_classes)
         else:
-            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=3, dilation=3), nn.SELU())
-            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=3, dilation=3), nn.SELU())
+            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=1), nn.SELU())
 
         # all the tranposed convolutions
-        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=1, dilation=3)
-        self.tconv3 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=1, dilation=3)
-        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=1, dilation=3)
+        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
+        self.tconv3 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
+        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=0)
 
         # all the other 1x1 convolutions
         if self.semantic:
@@ -294,6 +294,11 @@ class DissimNetPrior(nn.Module):
             layer3_cat = torch.cat((corr3, layer3_cat), dim=1)
             layer2_cat = torch.cat((corr2, layer2_cat), dim=1)
             layer1_cat = torch.cat((corr1, layer1_cat), dim=1)
+
+        print(layer4_cat.shape)
+        print(layer3_cat.shape)
+        print(layer2_cat.shape)
+        print(layer1_cat.shape)
     
         # Run Decoder
         x = self.conv1(layer4_cat)
@@ -327,6 +332,7 @@ class DissimNetPrior(nn.Module):
             x = self.conv6(x)
         logits = self.conv11(x)
         return logits
+
 
 
 class ResNetDissimNet(nn.Module):
