@@ -167,7 +167,7 @@ class DissimNet(nn.Module):
 
 class LGBlock(nn.Module):
     def __init__(self, scale, input_filters, kernel_size, padding=0):
-        super(LPGBlock, self).__init__()
+        super(LGBlock, self).__init__()
         self.input_filters = input_filters
         self.scale = scale
         self.conv_1 = nn.Conv2d(input_filters, 4, 1)
