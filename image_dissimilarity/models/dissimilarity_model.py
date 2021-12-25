@@ -170,8 +170,8 @@ class LGBlock(nn.Module):
         super(LGBlock, self).__init__()
         self.input_filters = input_filters
         self.scale = scale
-        self.conv_1 = nn.Conv2d(input_filters, 4, 1)
-        self.conv_3 = nn.ConvTranspose2d(4, 1, kernel_size = kernel_size, stride=scale, padding=padding)
+        self.conv_1 = nn.Conv2d(input_filters, 32, 1)
+        self.conv_3 = nn.ConvTranspose2d(32, 1, kernel_size = kernel_size, stride=scale, padding=padding)
         self.sigmoid = nn.Sigmoid()
         self.leakyrelu = nn.LeakyReLU(0.2)
         
