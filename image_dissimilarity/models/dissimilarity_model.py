@@ -386,21 +386,21 @@ class DissimNetPrior(nn.Module):
 
         if self.semantic:
             self.semantic_encoder = SemanticEncoder(architecture=architecture, in_channels=num_semantic_classes)
-            self.prior_encoder = SemanticEncoder(architecture=architecture, in_channels=3, base_feature_size=64)
+            self.prior_encoder = SemanticEncoder(architecture=architecture, in_channels=2, base_feature_size=64)
 
         # layers for decoder
         # all the 3x3 convolutions
         if correlation:
-            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=1), nn.Sigmoid())
+            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=1), nn.SELU())
 
         else:
-            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=1), nn.Sigmoid())
+            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=1), nn.SELU())
 
         if self.spade == 'decoder' or self.spade == 'both':
             self.conv2 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
@@ -408,10 +408,10 @@ class DissimNetPrior(nn.Module):
             self.conv4 = SPADEDecoderLayer(nc=128, label_nc=num_semantic_classes)
             self.conv6 = SPADEDecoderLayer(nc=64, label_nc=num_semantic_classes)
         else:
-            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=1), nn.Sigmoid())
-            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=1), nn.Sigmoid())
+            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=1), nn.SELU())
 
         # all the tranposed convolutions
         self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
@@ -449,7 +449,7 @@ class DissimNetPrior(nn.Module):
 
     def forward(self, original_img, synthesis_img, semantic_img, entropy, mae, distance, softmax_out=False):
         # get all the image encodings
-        prior_img = torch.cat((entropy, mae, distance), dim=1)
+        prior_img = torch.cat((entropy, distance), dim=1)
         if self.spade == 'encoder' or self.spade == 'both':
             encoding_og = self.vgg_encoder(original_img, semantic_img)
             encoding_syn = self.vgg_encoder(synthesis_img, semantic_img)
@@ -1377,10 +1377,10 @@ class SPADEDecoderLayer(nn.Module):
 
         # create conv layers
         self.norm1 = SPADE(norm_nc=nc, label_nc=label_nc)
-        self.selu1 = nn.Sigmoid()
-        self.conv = nn.Conv2d(nc, nc, kernel_size=3, padding=3, dilation=3)
+        self.selu1 = nn.SELU()
+        self.conv = nn.Conv2d(nc, nc, kernel_size=3, padding=1)
         self.norm2 = SPADE(norm_nc=nc, label_nc=label_nc)
-        self.selu2 = nn.Sigmoid()
+        self.selu2 = nn.SELU()
 
     def forward(self, x, seg):
         out = self.selu2(self.norm2(self.conv(self.selu1(self.norm1(x, seg))), seg))
