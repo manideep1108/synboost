@@ -16,8 +16,8 @@ def Norm2d(in_channels, **kwargs):
     """
     Custom Norm Function to allow flexible switching
     """
-    layer = getattr(cfg.MODEL, 'BNFUNC')
-    normalization_layer = layer(in_channels, **kwargs)
+    #layer = getattr(cfg.MODEL, 'BNFUNC')
+    normalization_layer = torch.nn.BatchNorm2d(in_channels, **kwargs)
     return normalization_layer
 
 
