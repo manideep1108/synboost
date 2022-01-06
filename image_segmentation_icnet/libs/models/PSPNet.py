@@ -54,7 +54,7 @@ class Bottleneck(nn.Module):
 class PSPModule(nn.Module):
     """
     Reference:
-        Zhao, Hengshuang, et al. *"Pyramid scene parsing network."*
+        Zhao, Hengshuang, et al. *"Pyramid scene parsing libs.models."*
     """
     def __init__(self, features, out_features=512, sizes=(1, 2, 3, 6)):
         super(PSPModule, self).__init__()

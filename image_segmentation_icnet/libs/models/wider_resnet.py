@@ -38,7 +38,7 @@ from collections import OrderedDict
 from functools import partial
 import torch.nn as nn
 import torch
-import network.mynn as mynn
+import libs.models.mynn as mynn
 from config import cfg
 
 
@@ -199,13 +199,13 @@ class WiderResNet(nn.Module):
         Parameters
         ----------
         structure : list of int
-            Number of residual blocks in each of the six modules of the network.
+            Number of residual blocks in each of the six modules of the libs.models.
         norm_act : callable
             Function to create normalization / activation Module.
         classes : int
             If not `0` also include global average pooling and \
             a fully-connected layer with `classes` outputs at the end
-            of the network.
+            of the libs.models.
         """
         super(WiderResNet, self).__init__()
         self.structure = structure
@@ -273,13 +273,13 @@ class WiderResNetA2(nn.Module):
     Parameters
     ----------
     structure : list of int
-        Number of residual blocks in each of the six modules of the network.
+        Number of residual blocks in each of the six modules of the libs.models.
     norm_act : callable
         Function to create normalization / activation Module.
     classes : int
         If not `0` also include global average pooling and a fully-connected layer
         with `classes` outputs at the end
-        of the network.
+        of the libs.models.
     dilation : bool
         If `True` apply dilation to the last three modules and change the
         down-sampling factor from 32 to 8.

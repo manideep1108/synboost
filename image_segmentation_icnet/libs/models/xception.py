@@ -7,9 +7,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from config import cfg
-from network.mynn import Norm2d
+from libs.models.mynn import Norm2d
 from apex.parallel import SyncBatchNorm
-from runx.logx import logx
+#from runx.logx import logx
 
 
 def fixed_padding(inputs, kernel_size, dilation):

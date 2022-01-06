@@ -37,7 +37,7 @@ from collections import OrderedDict
 import math
 import torch.nn as nn
 from torch.utils import model_zoo
-import network.mynn as mynn
+import libs.models.mynn as mynn
 
 __all__ = ['SENet', 'se_resnext50_32x4d', 'se_resnext101_32x4d']
 
@@ -207,7 +207,7 @@ class SENet(nn.Module):
             - For SE-ResNet models: SEResNetBottleneck
             - For SE-ResNeXt models:  SEResNeXtBottleneck
         layers (list of ints): Number of residual blocks for 4 layers of the
-            network (layer1...layer4).
+            libs.models (layer1...layer4).
         groups (int): Number of groups for the 3x3 convolution in each
             bottleneck block.
             - For SENet154: 64
@@ -336,7 +336,7 @@ class SENet(nn.Module):
 
     def features(self, x):
         """
-        Forward Pass through the each layer of SE network
+        Forward Pass through the each layer of SE libs.models
         """
         x = self.layer0(x)
         x = self.layer1(x)

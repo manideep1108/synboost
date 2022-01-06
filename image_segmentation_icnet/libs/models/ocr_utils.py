@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from config import cfg
-from network.utils import BNReLU
+from libs.models.utils import BNReLU
 
 
 class SpatialGather_Module(nn.Module):
