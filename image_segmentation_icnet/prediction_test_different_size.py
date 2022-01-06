@@ -17,6 +17,8 @@ color_map = [(128, 64, 128), (244, 35, 232), (70, 70, 70), (102, 102, 156), (190
              (250, 170, 30), (220, 220, 0), (107, 142, 35), (152, 251, 152), (70, 130, 180), (220, 20, 60),
              (255, 0, 0), (0, 0, 142), (0, 0, 70), (0, 60, 100), (0, 80, 100), (0, 0, 230), (119, 11, 32)]
 up_kwargs = {'mode': 'bilinear', 'align_corners': True}
+criterion = CrossEntropyLoss2d(
+    ignore_index=255).cuda() #should make it general for any device
 
 
 def transform(img):
@@ -154,21 +156,21 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='PyTorch \
                 Segmentation Crop Prediction')
     parser.add_argument('--input_dir', type=str,
-                        default="/home/lxt/data/Cityscapes/leftImg8bit/test",
+                        default="/kaggle/input/synboostwo-data-generator/final_dataset/cityscapes_processed/original",
                         help='training dataset folder (default: \
                               $(HOME)/data)')
     parser.add_argument("--input_disp_dir", type=str, default=None)
-    parser.add_argument('--output_dir', type=str, default="/home/giancarlo/Desktop/temp2",
+    parser.add_argument('--output_dir', type=str, default="/kaggle/working/results",
                         help='output directory of the model_test, for saving the seg_models')
-    parser.add_argument("--resume", type=str, default="/home/lxt/Desktop/Seg_model_ZOO/CNL_net_4w_ohem/CS_scenes_40000.pth")
+    parser.add_argument("--resume", type=str, default="/kaggle/input/hrnet-mscale")
     parser.add_argument("--start",type=int,default=0,help="start index of crop test")
     parser.add_argument("--end",type=int,default=5000,help="end index of crop test")
     parser.add_argument("--gpu",type=str,default="0",help="which gpu to use")
-    parser.add_argument("--arch",type=str,default=None, help="which network are used")
+    parser.add_argument("--arch",type=str,default="HRNet_Mscale", help="which network are used")
     parser.add_argument("--size",type=float,default=1.0,help="ratio of the input images")
     parser.add_argument("--rgb",type=int,default=0)
     args = parser.parse_args()
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
     test_list =[os.path.join(args.input_dir, image) for image in os.listdir(args.input_dir) if '.jpg' or '.png' in image]
-    model= models.__dict__[args.arch](num_classes=19, data_set="cityscapes")
+    model= models.__dict__[args.arch](num_classes=19, criterion=criterion)
     WholeTest(args, model=model, size=args.size)

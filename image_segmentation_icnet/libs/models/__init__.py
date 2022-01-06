@@ -4,3 +4,4 @@ from .ICNet import *
 from .FastSCNN import *
 from .SwiftNet import *
 from .ESPNet import *
+from .ocrnet import *
