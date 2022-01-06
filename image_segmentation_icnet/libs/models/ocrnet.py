@@ -31,7 +31,7 @@ from libs.models.utils import BNReLU, get_aspp
 from libs.models.utils import make_attn_head
 from libs.models.ocr_utils import SpatialGather_Module, SpatialOCR_Module
 from config import cfg
-from utils.misc import fmt_scale
+from libs.utils.misc import fmt_scale
 
 
 class OCR_block(nn.Module):
