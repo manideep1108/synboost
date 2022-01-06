@@ -10,6 +10,21 @@ import datetime
 
 import libs.models as models
 
+class CrossEntropyLoss2d(nn.Module):
+    """
+    Cross Entroply NLL Loss
+    """
+
+    def __init__(self, weight=None, ignore_index=255,
+                 reduction='mean'):
+        super(CrossEntropyLoss2d, self).__init__()
+        #logx.msg("Using Cross Entropy Loss")
+        self.nll_loss = nn.NLLLoss(weight, reduction=reduction,
+                                   ignore_index=ignore_index)
+
+    def forward(self, inputs, targets, do_rmi=None):
+        return self.nll_loss(F.log_softmax(inputs, dim=1), targets)
+
 
 N_CLASS = 19
 color_list = [7, 8, 11, 12, 13, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33]
