@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 from shutil import copyfile
 import datetime
+import torch.nn as nn
 
 
 import libs.models as models
