@@ -116,7 +116,7 @@ __C.DATASET.CROP_SIZE = '896'
 
 __C.MODEL = AttrDict()
 __C.MODEL.BN = 'regularnorm'
-__C.MODEL.BNFUNC = None
+__C.MODEL.BNFUNC = 'regularnorm'
 __C.MODEL.MSCALE = False
 __C.MODEL.THREE_SCALE = False
 __C.MODEL.ALT_TWO_SCALE = False
