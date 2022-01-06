@@ -29,14 +29,14 @@ import torch.nn.functional as F
 
 from torch import nn
 
-from network.mynn import Norm2d, Upsample
-from network.xception import xception71
-from network.wider_resnet import wrn38
-from network.SEresnext import se_resnext50_32x4d, se_resnext101_32x4d
-from network.Resnet import resnet50, resnet101
-import network.hrnetv2 as hrnetv2
+from libs.models.mynn import Norm2d, Upsample
+from libs.models.xception import xception71
+from libs.models.wider_resnet import wrn38
+from libs.models.SEresnext import se_resnext50_32x4d, se_resnext101_32x4d
+from libs.models.Resnet import resnet50, resnet101
+import libs.models.hrnetv2 as hrnetv2
 
-from runx.logx import logx
+#from runx.logx import logx
 from config import cfg
 
 
@@ -57,7 +57,7 @@ class get_resnet(nn.Module):
             resnet.layer0 = nn.Sequential(resnet.conv1, resnet.bn1,
                                           resnet.relu, resnet.maxpool)
         else:
-            raise ValueError("Not a valid network arch")
+            raise ValueError("Not a valid libs.models arch")
 
         self.layer0 = resnet.layer0
         self.layer1, self.layer2, self.layer3, self.layer4 = \
@@ -96,7 +96,7 @@ class get_resnet(nn.Module):
 
 def get_trunk(trunk_name, output_stride=8):
     """
-    Retrieve the network trunk and channel counts.
+    Retrieve the libs.models trunk and channel counts.
     """
     assert output_stride == 8, 'Only stride8 supported right now'
 

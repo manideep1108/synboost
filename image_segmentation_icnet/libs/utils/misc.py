@@ -37,7 +37,7 @@ from PIL import Image
 
 from config import cfg
 from utils.results_page import ResultsPage
-from runx.logx import logx
+#from runx.logx import logx
 
 
 def fast_hist(pred, gtruth, num_classes):
