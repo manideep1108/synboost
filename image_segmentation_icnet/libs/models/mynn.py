@@ -8,8 +8,6 @@ import torch.nn as nn
 from config import cfg
 
 
-from runx.logx import logx
-
 
 align_corners = cfg.MODEL.ALIGN_CORNERS
 
