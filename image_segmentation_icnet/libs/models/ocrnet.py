@@ -24,12 +24,12 @@ POSSIBILITY OF SUCH DAMAGE.
 """
 from torch import nn
 
-from network.mynn import initialize_weights, Upsample, scale_as
-from network.mynn import ResizeX
-from network.utils import get_trunk
-from network.utils import BNReLU, get_aspp
-from network.utils import make_attn_head
-from network.ocr_utils import SpatialGather_Module, SpatialOCR_Module
+from libs.models.mynn import initialize_weights, Upsample, scale_as
+from libs.models.mynn import ResizeX
+from libs.models.utils import get_trunk
+from libs.models.utils import BNReLU, get_aspp
+from libs.models.utils import make_attn_head
+from libs.models.ocr_utils import SpatialGather_Module, SpatialOCR_Module
 from config import cfg
 from utils.misc import fmt_scale
 
