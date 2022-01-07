@@ -171,6 +171,11 @@ if __name__ == '__main__':
         checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 14)
         diss_model.load_state_dict(checkpoint['state_dict'])
 
+    h = int((dataset['crop_size']/dataset['aspect_ratio']))
+    w = int(dataset['crop_size'])
+    flat_pred = np.zeros(w*h*len(test_loader), dtype='float32')
+    flat_labels = np.zeros(w*h*len(test_loader), dtype='float32')
+
     with torch.no_grad():
         for i, data_i in enumerate(test_loader):
             original = data_i['original'].cuda()
