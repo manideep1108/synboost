@@ -479,6 +479,6 @@ class HighResolutionNet(nn.Module):
 
 def get_seg_model():
     model = HighResolutionNet()
-    model.init_weights()
+    #model.init_weights()
 
     return model
