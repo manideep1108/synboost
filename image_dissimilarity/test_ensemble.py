@@ -166,7 +166,7 @@ if __name__ == '__main__':
     diss_model.eval()
     if use_wandb and wandb_resume:
         checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "latest", 16)
-        diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
+        diss_model.load_state_dict(checkpoint['state_dict'])
     
     softmax = torch.nn.Softmax(dim=1)
     best_weights, best_score, best_roc, best_ap = grid_search()
