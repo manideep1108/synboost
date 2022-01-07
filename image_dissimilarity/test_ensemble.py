@@ -122,6 +122,7 @@ if __name__ == '__main__':
     with open(opts.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
     
+    softmax = torch.nn.Softmax(dim=1)
     # get experiment information
     exp_name = config['experiment_name']
     save_fdr = config['save_folder']
@@ -167,9 +168,49 @@ if __name__ == '__main__':
     print(wandb_resume)
     print(use_wandb)
     if use_wandb and wandb_resume:
-        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "latest", 16)
+        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 14)
         diss_model.load_state_dict(checkpoint['state_dict'])
+
+    with torch.no_grad():
+        for i, data_i in enumerate(test_loader):
+            original = data_i['original'].cuda()
+            semantic = data_i['semantic'].cuda()
+            synthesis = data_i['synthesis'].cuda()
+            label = data_i['label'].cuda()
+        
+            if prior:
+                entropy = data_i['entropy'].cuda()
+                mae = data_i['mae'].cuda()
+                distance = data_i['distance'].cuda()
+                outputs = softmax(diss_model(original, synthesis, semantic, entropy, mae, distance))
+                
+            else:
+                outputs = softmax(diss_model(original, synthesis, semantic))
+            (softmax_pred, predictions) = torch.max(outputs,dim=1)
+            
+            soft_pred = outputs[:,1,:,:]*1.0 + entropy*0 + mae*0 + distance*0
+            flat_pred[i*w*h:i*w*h+w*h] = torch.flatten(soft_pred).detach().cpu().numpy()
+            flat_labels[i*w*h:i*w*h+w*h] = torch.flatten(label).detach().cpu().numpy()
+            # Save results
+            predicted_tensor = predictions * 1
+            label_tensor = label * 1
+            
+            file_name = os.path.basename(data_i['original_path'][0])
+            label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
+            soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
+            predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
+            predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
+            soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
+            label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
+
+    if config['test_dataloader']['dataset_args']['roi']:
+        invalid_indices = np.argwhere(flat_labels == 255)
+        flat_labels = np.delete(flat_labels, invalid_indices)
+        flat_pred = np.delete(flat_pred, invalid_indices)
+
+    results = metrics.get_metrics(flat_labels, flat_pred)
+    print(results['auroc'],"   ", results['AP'],"   ", results['FPR@95%TPR'])
     
     softmax = torch.nn.Softmax(dim=1)
-    best_weights, best_score, best_roc, best_ap = grid_search()
-    print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
+    #best_weights, best_score, best_roc, best_ap = grid_search()
+    #print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
