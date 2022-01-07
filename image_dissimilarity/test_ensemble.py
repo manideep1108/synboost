@@ -168,7 +168,7 @@ if __name__ == '__main__':
     print(wandb_resume)
     print(use_wandb)
     if use_wandb and wandb_resume:
-        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 19)
+        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 1)
         diss_model.load_state_dict(checkpoint['state_dict'])
     
     dataset = cfg_test_loader['dataset_args']
