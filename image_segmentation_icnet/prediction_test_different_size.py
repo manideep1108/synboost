@@ -178,7 +178,7 @@ if __name__ == '__main__':
     parser.add_argument("--input_disp_dir", type=str, default=None)
     parser.add_argument('--output_dir', type=str, default="/kaggle/working/results",
                         help='output directory of the model_test, for saving the seg_models')
-    parser.add_argument("--resume", type=str, default="/kaggle/input/hrnet-mscale")
+    parser.add_argument("--resume", type=str, default="../input/hrnet-mscale/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth")
     parser.add_argument("--start",type=int,default=0,help="start index of crop test")
     parser.add_argument("--end",type=int,default=5000,help="end index of crop test")
     parser.add_argument("--gpu",type=str,default="0",help="which gpu to use")
