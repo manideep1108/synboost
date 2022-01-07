@@ -158,6 +158,8 @@ class MscaleOCR(nn.Module):
         super(MscaleOCR, self).__init__()
         self.criterion = criterion
         self.backbone, _, _, high_level_ch = get_trunk(trunk)
+        print(self.backbone)
+        print(high_level_ch)
         self.ocr = OCR_block(high_level_ch)
         self.scale_attn = make_attn_head(
             in_ch=cfg.MODEL.OCR.MID_CHANNELS, out_ch=1)
