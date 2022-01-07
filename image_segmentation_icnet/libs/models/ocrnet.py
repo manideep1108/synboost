@@ -59,8 +59,7 @@ class OCR_block(nn.Module):
                                                  dropout=0.05,
                                                  )
         self.cls_head = nn.Conv2d(
-            ocr_mid_channels, num_classes, kernel_size=1, stride=1, padding=0,
-            bias=True)
+            ocr_mid_channels, num_classes, kernel_size=1, stride=1, padding=0)
 
         self.aux_head = nn.Sequential(
             nn.Conv2d(high_level_ch, high_level_ch,
@@ -158,8 +157,8 @@ class MscaleOCR(nn.Module):
         super(MscaleOCR, self).__init__()
         self.criterion = criterion
         self.backbone, _, _, high_level_ch = get_trunk(trunk)
-        print(self.backbone)
-        print(high_level_ch)
+        # print(self.backbone)
+        # print(high_level_ch)
         self.ocr = OCR_block(high_level_ch)
         self.scale_attn = make_attn_head(
             in_ch=cfg.MODEL.OCR.MID_CHANNELS, out_ch=1)
