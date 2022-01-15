@@ -107,12 +107,12 @@ def evaluate_ensemble(weights_f, visualize=False):
                 #file_name = os.path.basename(data_i['original_path'][0])
                 soft_pred = (soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8)
                 heatmap_prediction = cv2.applyColorMap((255-soft_pred), cv2.COLORMAP_JET)
-                heatmap_pred_im = Image.fromarray(heatmap_prediction).resize((2048, 1024))
+                heatmap_pred_im = (heatmap_prediction)
 
-                combined_image = cv2.addWeighted(original.squeeze().cpu().numpy(), 0.5, heatmap_pred_im, 0.5, 0.0)
+                combined_image = cv2.addWeighted((inv_normalize(original).squeeze().cpu().numpy()).astype(np.uint8), 0.5, heatmap_pred_im, 0.5, 0.0)
                 
                 wandb.log({
-                    "input": wandb.Image(original.squeeze().cpu().numpy()),
+                    "input": wandb.Image(inv_normalize(original).squeeze().cpu().numpy().astype(np.uint8)),
                     "label": wandb.Image(label_tensor.squeeze().cpu().numpy().astype(np.uint8)),
                     "predicted": wandb.Image(combined_image.squeeze().cpu().numpy().astype(np.uint8))
                 })
@@ -134,6 +134,12 @@ def evaluate_ensemble(weights_f, visualize=False):
 
 if __name__ == '__main__':
     # Load experiment setting
+
+    inv_normalize = torchvision.transforms.Normalize(
+    mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225],
+    std=[1/0.229, 1/0.224, 1/0.225]
+    )
+
     with open(opts.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
 
