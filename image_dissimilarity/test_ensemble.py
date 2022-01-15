@@ -14,6 +14,7 @@ from numpy.linalg import norm
 from util.load import load_ckp
 from util import wandb_utils
 from util.load import load_ckp
+import cv2
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
