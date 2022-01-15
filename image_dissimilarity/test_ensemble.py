@@ -188,7 +188,7 @@ if __name__ == '__main__':
     
     softmax = torch.nn.Softmax(dim=1)
 
-    if(visualize = False):
+    if(opts.visualize = False):
         best_weights, best_score, best_roc, best_ap = grid_search()
 
     else :
