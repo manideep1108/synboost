@@ -108,7 +108,7 @@ def evaluate_ensemble(weights_f, visualize=False):
                 #file_name = os.path.basename(data_i['original_path'][0])
                 soft_pred = (soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8)
                 heatmap_prediction = cv2.applyColorMap((255-soft_pred), cv2.COLORMAP_JET)
-                heatmap_pred_im = (heatmap_prediction)
+                heatmap_pred_im = np.repeat(heatmap_prediction[:, :, np.newaxis], 3, axis=2)
                 
                 print(original.shape)
                 print(soft_pred.shape)
