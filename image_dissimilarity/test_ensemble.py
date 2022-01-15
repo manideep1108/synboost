@@ -105,6 +105,7 @@ def evaluate_ensemble(weights_f, visualize=False):
 
             if(visualize):   
                 #file_name = os.path.basename(data_i['original_path'][0])
+                soft_pred = soft_pred.squeeze().cpu().numpy()
                 heatmap_prediction = cv2.applyColorMap((255-255*soft_pred), cv2.COLORMAP_JET)
                 heatmap_pred_im = Image.fromarray(heatmap_prediction).resize((2048, 1024))
                 combined_image = Image.blend(img_og, heatmap_pred_im, alpha=.5)
