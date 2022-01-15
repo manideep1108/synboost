@@ -29,6 +29,7 @@ parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run
 parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
 parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
+parser.add_argument('--visualize', type=bool, default=False, help='Lets to log images to wandb')
 
 opts = parser.parse_args()
 cudnn.benchmark = True
@@ -69,7 +70,7 @@ def grid_search(model_num=4):
             print('>BEST SO FAR %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
     return list(best_weights), best_score, best_roc, best_ap
 
-def evaluate_ensemble(weights_f):
+def evaluate_ensemble(weights_f, visualize=False):
     # create memory locations for results to save time while running the code
     dataset = cfg_test_loader['dataset_args']
     h = int((dataset['crop_size']/dataset['aspect_ratio']))
@@ -100,14 +101,25 @@ def evaluate_ensemble(weights_f):
             # Save results
             predicted_tensor = predictions * 1
             label_tensor = label * 1
-            
-            file_name = os.path.basename(data_i['original_path'][0])
-            label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
-            soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
-            predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
-            predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
-            soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
-            label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
+
+            if(visualize):   
+                #file_name = os.path.basename(data_i['original_path'][0])
+                heatmap_prediction = cv2.applyColorMap((255-255*soft_pred), cv2.COLORMAP_JET)
+                heatmap_pred_im = Image.fromarray(heatmap_prediction).resize((2048, 1024))
+                combined_image = Image.blend(img_og, heatmap_pred_im, alpha=.5)
+
+                wandb.log({
+                    "input": wandb.Image(original.squeeze().cpu().numpy()),
+                    "label": wandb.Image(label_tensor.squeeze().cpu().numpy().astype(np.uint8)),
+                    "predicted": wandb.Image(combined_image.squeeze().cpu().numpy().astype(np.uint8))
+                })
+                    
+                # label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
+                # soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
+                # predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
+                # predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
+                # soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
+                # label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
     
     if config['test_dataloader']['dataset_args']['roi']:
         invalid_indices = np.argwhere(flat_labels == 255)
@@ -121,8 +133,13 @@ if __name__ == '__main__':
     # Load experiment setting
     with open(opts.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
+
+    class_labels = {
+    0: 'anomaly',
+    1: 'non_anomaly'
+    }
+
     
-    softmax = torch.nn.Softmax(dim=1)
     # get experiment information
     exp_name = config['experiment_name']
     save_fdr = config['save_folder']
@@ -165,58 +182,16 @@ if __name__ == '__main__':
     wandb_resume = opts.wandb_resume
     wandb_utils.init_wandb(config=config, key=opts.wandb_Api_key,wandb_project= opts.wandb_project, wandb_run=opts.wandb_run, wandb_run_id=opts.wandb_run_id, wandb_resume=opts.wandb_resume)
     diss_model.eval()
-    print(wandb_resume)
-    print(use_wandb)
     if use_wandb and wandb_resume:
-        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 1)
-        diss_model.load_state_dict(checkpoint['state_dict'])
-    
-    dataset = cfg_test_loader['dataset_args']
-    h = int((dataset['crop_size']/dataset['aspect_ratio']))
-    w = int(dataset['crop_size'])
-    flat_pred = np.zeros(w*h*len(test_loader), dtype='float32')
-    flat_labels = np.zeros(w*h*len(test_loader), dtype='float32')
-
-    with torch.no_grad():
-        for i, data_i in enumerate(test_loader):
-            original = data_i['original'].cuda()
-            semantic = data_i['semantic'].cuda()
-            synthesis = data_i['synthesis'].cuda()
-            label = data_i['label'].cuda()
-        
-            if prior:
-                entropy = data_i['entropy'].cuda()
-                mae = data_i['mae'].cuda()
-                distance = data_i['distance'].cuda()
-                outputs = softmax(diss_model(original, synthesis, semantic, entropy, mae, distance))
-                
-            else:
-                outputs = softmax(diss_model(original, synthesis, semantic))
-            (softmax_pred, predictions) = torch.max(outputs,dim=1)
-            
-            soft_pred = outputs[:,1,:,:]*1.0 + entropy*0 + mae*0 + distance*0
-            flat_pred[i*w*h:i*w*h+w*h] = torch.flatten(soft_pred).detach().cpu().numpy()
-            flat_labels[i*w*h:i*w*h+w*h] = torch.flatten(label).detach().cpu().numpy()
-            # Save results
-            predicted_tensor = predictions * 1
-            label_tensor = label * 1
-            
-            file_name = os.path.basename(data_i['original_path'][0])
-            label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
-            soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
-            predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
-            predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
-            soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
-            label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
-
-    if config['test_dataloader']['dataset_args']['roi']:
-        invalid_indices = np.argwhere(flat_labels == 255)
-        flat_labels = np.delete(flat_labels, invalid_indices)
-        flat_pred = np.delete(flat_pred, invalid_indices)
-
-    results = metrics.get_metrics(flat_labels, flat_pred)
-    print(results['auroc'],"   ", results['AP'],"   ", results['FPR@95%TPR'])
+        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 12)
+        diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
     
     softmax = torch.nn.Softmax(dim=1)
-    #best_weights, best_score, best_roc, best_ap = grid_search()
-    #print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
+
+    if(visualize = False):
+        best_weights, best_score, best_roc, best_ap = grid_search()
+
+    else :
+        best_weights, best_score, best_roc, best_ap = evaluate_ensemble([0.75, 0.25, 0, 0], visualize=Trye)
+        
+    print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
