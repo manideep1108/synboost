@@ -111,7 +111,7 @@ def evaluate_ensemble(weights_f, visualize=False):
                 heatmap_pred_im = np.repeat(heatmap_prediction[:, :, np.newaxis], 3, axis=2)
                 
                 print(original.shape)
-                print(soft_pred.shape)
+                print(heatmap_pred_im.shape)
                 orig = inv_normalize(original.squeeze())
                 combined_image = cv2.addWeighted(orig.cpu().numpy().astype(np.uint8), 0.5, heatmap_pred_im, 0.5, 0.0)
                 
