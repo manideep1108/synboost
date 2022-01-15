@@ -192,6 +192,6 @@ if __name__ == '__main__':
         best_weights, best_score, best_roc, best_ap = grid_search()
 
     else :
-        best_weights, best_score, best_roc, best_ap = evaluate_ensemble([0.75, 0.25, 0, 0], visualize=Trye)
+        best_weights, best_score, best_roc, best_ap = evaluate_ensemble([0.75, 0.25, 0, 0], visualize=True)
         
     print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
