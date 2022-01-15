@@ -113,7 +113,7 @@ def evaluate_ensemble(weights_f, visualize=False):
                 print(original.shape)
                 print(soft_pred.shape)
                 original = inv_normalize(original.squeeze().permute(1,2,0))
-                combined_image = cv2.addWeighted(original.cpu().numpy()).astype(np.uint8), 0.5, heatmap_pred_im, 0.5, 0.0)
+                combined_image = cv2.addWeighted(original.cpu().numpy().astype(np.uint8), 0.5, heatmap_pred_im, 0.5, 0.0)
                 
                 wandb.log({
                     "input": wandb.Image(inv_normalize(original).squeeze().cpu().numpy().astype(np.uint8)),
