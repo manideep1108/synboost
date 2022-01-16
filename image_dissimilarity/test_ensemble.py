@@ -108,12 +108,11 @@ def evaluate_ensemble(weights_f, visualize=False):
                 #file_name = os.path.basename(data_i['original_path'][0])
                 soft_pred = (soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8)
                 heatmap_prediction = cv2.applyColorMap((255-soft_pred), cv2.COLORMAP_JET)
-                #heatmap_pred_im = np.repeat(heatmap_prediction[:, :, np.newaxis], 3, axis=2)
                 heatmap_pred_im = heatmap_prediction
                 print(original.shape)
                 print(heatmap_prediction.shape)
-                orig = inv_normalize(original.squeeze())
-                combined_image = cv2.addWeighted(orig.cpu().numpy().astype(np.uint8), 0.5, heatmap_pred_im, 0.5, 0.0)
+                orig = inv_normalize(original.squeeze()).cpu().numpy().astype(np.uint8)
+                combined_image = orig*0.5 + heatmap_pred_im*0.5
                 
                 wandb.log({
                     "input": wandb.Image(inv_normalize(original).squeeze().cpu().numpy().astype(np.uint8)),
