@@ -116,9 +116,9 @@ def evaluate_ensemble(weights_f, visualize=False):
                 combined_image = orig*0.5 + heatmap_pred_im*0.5
                 
                 wandb.log({
-                    "input": wandb.Image(inv_normalize(original).squeeze().cpu().numpy().astype(np.uint8)),
+                    "input": wandb.Image(orig),
                     "label": wandb.Image(label_tensor.squeeze().cpu().numpy().astype(np.uint8)),
-                    "predicted": wandb.Image(combined_image.squeeze().cpu().numpy().astype(np.uint8))
+                    "predicted": wandb.Image(combined_image.astype(np.uint8))
                 })
                     
                 # label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
