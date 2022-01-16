@@ -111,7 +111,7 @@ def evaluate_ensemble(weights_f, visualize=False):
                 heatmap_pred_im = heatmap_prediction
                 print(original.shape)
                 print(heatmap_prediction.shape)
-                orig = inv_normalize(original.squeeze()).cpu().numpy().astype(np.uint8)
+                orig = inv_normalize(original.squeeze()).permute(1,2,0).cpu().numpy().astype(np.uint8)
                 combined_image = orig*0.5 + heatmap_pred_im*0.5
                 
                 wandb.log({
