@@ -110,8 +110,6 @@ def evaluate_ensemble(weights_f, visualize=False):
                 soft_pred = (soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8)
                 heatmap_prediction = cv2.applyColorMap((255-soft_pred), cv2.COLORMAP_JET)
                 heatmap_pred_im = heatmap_prediction
-                print(original.shape)
-                print(heatmap_prediction.shape)
                 orig = inv_normalize(original.squeeze()).permute(1,2,0).cpu().numpy().astype(np.uint8)
                 combined_image = orig*0.5 + heatmap_pred_im*0.5
                 
@@ -200,6 +198,9 @@ if __name__ == '__main__':
         diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
     
     softmax = torch.nn.Softmax(dim=1)
+    print("%%%%%%%%%%%%")
+    print(opts.visualize)
+    print("%%%%%%%%%%%%")
 
     if(opts.visualize == False):
         best_weights, best_score, best_roc, best_ap = grid_search()
