@@ -16,6 +16,7 @@ from util import wandb_utils
 from util.load import load_ckp
 import cv2
 import torchvision 
+import wandb
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
