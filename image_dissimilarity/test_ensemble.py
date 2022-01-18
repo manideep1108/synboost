@@ -106,7 +106,7 @@ def evaluate_ensemble(weights_f, visualize=False):
             label_tensor = label * 1
 
             if(visualize):   
-                #file_name = os.path.basename(data_i['original_path'][0])
+                
                 soft_pred = (soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8)
                 heatmap_prediction = cv2.applyColorMap((255-soft_pred), cv2.COLORMAP_JET)
                 heatmap_pred_im = heatmap_prediction
@@ -118,6 +118,8 @@ def evaluate_ensemble(weights_f, visualize=False):
                     "label": wandb.Image(label_tensor.squeeze().cpu().numpy().astype(np.uint8)),
                     "predicted": wandb.Image(combined_image.astype(np.uint8))
                 })
+
+                soft_predict.append(combined_image)
                     
                 # label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
                 # soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
@@ -130,6 +132,11 @@ def evaluate_ensemble(weights_f, visualize=False):
         invalid_indices = np.argwhere(flat_labels == 255)
         flat_labels = np.delete(flat_labels, invalid_indices)
         flat_pred = np.delete(flat_pred, invalid_indices)
+
+    path = "/kaggle/working/predictions"
+    os.mkdir(path)
+
+    np.save(path, soft_predict)
     
     results = metrics.get_metrics(flat_labels, flat_pred)
     return results['auroc'], results['AP'], results['FPR@95%TPR']
@@ -149,6 +156,8 @@ if __name__ == '__main__':
     0: 'anomaly',
     1: 'non_anomaly'
     }
+
+    soft_predict = []  #array to stor predictions
 
     
     # get experiment information
