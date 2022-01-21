@@ -38,7 +38,7 @@ parser.add_argument('--wandb_resume', type=bool, default = False, help='Resume T
 parser.add_argument('--artifact_path', type=str, default= 's', help='Path of artifact to load weights and Resume Run')
 parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
 parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
-parser.add_argument('--max_epoch', type=int, default=5, help="Number of epochs u want to run")
+parser.add_argument('--max_epoch', type=int, default=15, help="Number of epochs u want to run")
 # parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 # parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
 # parser.add_argument('--pre_epoch', type=int, default=0, help='Previous epoch Number to resume training')
