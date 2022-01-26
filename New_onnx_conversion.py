@@ -81,7 +81,7 @@ def convert_dissimilarity_model(
     import yaml
     
 
-    with open(opts.configs, 'r') as stream:
+    with open(opts.config, 'r') as stream:
         configs = yaml.load(stream, Loader=yaml.FullLoader)
 
     # get experiment information
