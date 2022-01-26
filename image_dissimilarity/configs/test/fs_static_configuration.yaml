@@ -42,4 +42,4 @@ test_dataloader:
 wandb_config:
   wandb_watch: True
   wandb_watch_freq: 50
-  model_path_base: /kaggle/working/synboost/image_dissimilarity/wandb/latest-run/files/
+  model_path_base: /kaggle/working/synboost/wandb/latest-run/files/
