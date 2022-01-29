@@ -11,7 +11,7 @@ from image_dissimilarity.models.normalization import SPADE, FILM, GuideCorrelati
 
 class DissimNet(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, prior = False, spade='',
-                 num_semantic_classes = 19, non_local=True):
+                 num_semantic_classes = 19):
         super(DissimNet, self).__init__()
         
         #get initialization parameters
@@ -159,209 +159,6 @@ class DissimNet(nn.Module):
             x = self.conv6(x, semantic_img)
         else:
             x = self.conv6(x)
-        logits = self.conv11(x)
-
-
-        return logits
-
-
-class LGBlock(nn.Module):
-    def __init__(self, scale, input_filters, kernel_size, padding=0):
-        super(LGBlock, self).__init__()
-        self.input_filters = input_filters
-        self.scale = scale
-        self.conv_1 = nn.Conv2d(input_filters, 4, 1)
-        self.conv_3 = nn.ConvTranspose2d(4, 1, kernel_size = kernel_size, stride=scale, padding=padding)
-        self.sigmoid = nn.Sigmoid()
-        self.leakyrelu = nn.LeakyReLU(0.2)
-        
-        
-    def forward(self, x):
-        return self.leakyrelu(self.conv_3(self.sigmoid(self.conv_1(x))))
-
-
-class DissimNetPrior_lgb(nn.Module):
-    def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
-                 num_semantic_classes=19):
-        super(DissimNetPrior, self).__init__()
-
-        # get initialization parameters
-        self.correlation = correlation
-        self.spade = spade
-        # self.semantic = False if spade else semantic
-        self.semantic = semantic
-        self.prior = prior
-
-        # generate encoders
-        if self.spade == 'encoder' or self.spade == 'both':
-            self.vgg_encoder = VGGSPADE(pretrained=pretrained, label_nc=num_semantic_classes)
-        else:
-            self.vgg_encoder = VGGFeatures(architecture=architecture, pretrained=pretrained)
-
-        if self.semantic:
-            self.semantic_encoder = SemanticEncoder(architecture=architecture, in_channels=num_semantic_classes)
-            self.prior_encoder = SemanticEncoder(architecture=architecture, in_channels=3, base_feature_size=64)
-
-        # layers for decoder
-        # all the 3x3 convolutions
-        if correlation:
-            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv12 = nn.Sequential(nn.Conv2d(514, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv3 = nn.Sequential(nn.Conv2d(386, 128, kernel_size=3, padding=1), nn.SELU())
-            self.conv5 = nn.Sequential(nn.Conv2d(194, 64, kernel_size=3, padding=1), nn.SELU())
-
-        else:
-            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=1), nn.SELU())
-            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=1), nn.SELU())
-
-        if self.spade == 'decoder' or self.spade == 'both':
-            self.conv2 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
-            self.conv13 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
-            self.conv4 = SPADEDecoderLayer(nc=128, label_nc=num_semantic_classes)
-            self.conv6 = SPADEDecoderLayer(nc=64, label_nc=num_semantic_classes)
-        else:
-            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
-            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=1), nn.SELU())
-            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=1), nn.SELU())
-
-        # all the tranposed convolutions
-        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
-        self.tconv3 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
-        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=0)
-
-        # all the other 1x1 convolutions
-        if self.semantic:
-            self.conv7 = nn.Conv2d(1280, 512, kernel_size=1, padding=0)
-            self.conv8 = nn.Conv2d(640, 256, kernel_size=1, padding=0)
-            self.conv9 = nn.Conv2d(320, 128, kernel_size=1, padding=0)
-            self.conv10 = nn.Conv2d(160, 64, kernel_size=1, padding=0)
-            self.conv11 = nn.Conv2d(67, 2, kernel_size=1, padding=0)
-        else:
-            self.conv7 = nn.Conv2d(1024, 512, kernel_size=1, padding=0)
-            self.conv8 = nn.Conv2d(512, 256, kernel_size=1, padding=0)
-            self.conv9 = nn.Conv2d(256, 128, kernel_size=1, padding=0)
-            self.conv10 = nn.Conv2d(128, 64, kernel_size=1, padding=0)
-            self.conv11 = nn.Conv2d(67, 2, kernel_size=1, padding=0)
-
-
-        self.lgb3 = LGBlock(scale=4, input_filters= 256, kernel_size=4, padding=0)
-        self.lgb2 = LGBlock(scale=2, input_filters= 256, kernel_size=4, padding=1)
-        self.lgb1 = LGBlock(scale=1, input_filters= 128, kernel_size=3, padding=1)
-
-        # self._initialize_weights()
-
-    def _initialize_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-                if m.bias is not None:
-                    nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.constant_(m.bias, 0)
-
-    def forward(self, original_img, synthesis_img, semantic_img, entropy, mae, distance, softmax_out=False):
-        # get all the image encodings
-        prior_img = torch.cat((entropy, mae, distance), dim=1)
-        if self.spade == 'encoder' or self.spade == 'both':
-            encoding_og = self.vgg_encoder(original_img, semantic_img)
-            encoding_syn = self.vgg_encoder(synthesis_img, semantic_img)
-        else:
-            encoding_og = self.vgg_encoder(original_img)
-            encoding_syn = self.vgg_encoder(synthesis_img)
-    
-        if self.semantic:
-            encoding_sem = self.semantic_encoder(semantic_img)
-            # concatenate the output of each encoder
-            layer1_cat = torch.cat((encoding_og[0], encoding_syn[0], encoding_sem[0]), dim=1)
-            layer2_cat = torch.cat((encoding_og[1], encoding_syn[1], encoding_sem[1]), dim=1)
-            layer3_cat = torch.cat((encoding_og[2], encoding_syn[2], encoding_sem[2]), dim=1)
-            layer4_cat = torch.cat((encoding_og[3], encoding_syn[3], encoding_sem[3]), dim=1)
-        else:
-            layer1_cat = torch.cat((encoding_og[0], encoding_syn[0]), dim=1)
-            layer2_cat = torch.cat((encoding_og[1], encoding_syn[1]), dim=1)
-            layer3_cat = torch.cat((encoding_og[2], encoding_syn[2]), dim=1)
-            layer4_cat = torch.cat((encoding_og[3], encoding_syn[3]), dim=1)
-    
-        # use 1x1 convolutions to reduce dimensions of concatenations
-        layer4_cat = self.conv7(layer4_cat)
-        layer3_cat = self.conv8(layer3_cat)
-        layer2_cat = self.conv9(layer2_cat)
-        layer1_cat = self.conv10(layer1_cat)
-        
-        if self.prior:
-            encoding_pior = self.prior_encoder(prior_img)
-            layer1_cat = torch.mul(layer1_cat, encoding_pior[0])
-            layer2_cat = torch.mul(layer2_cat, encoding_pior[1])
-            layer3_cat = torch.mul(layer3_cat, encoding_pior[2])
-            layer4_cat = torch.mul(layer4_cat, encoding_pior[3])
-    
-        if self.correlation:
-            # get correlation for each layer (multiplication + 1x1 conv)
-            corr1 = torch.sum(torch.mul(encoding_og[0], encoding_syn[0]), dim=1).unsqueeze(dim=1)
-            corr2 = torch.sum(torch.mul(encoding_og[1], encoding_syn[1]), dim=1).unsqueeze(dim=1)
-            corr3 = torch.sum(torch.mul(encoding_og[2], encoding_syn[2]), dim=1).unsqueeze(dim=1)
-            corr4 = torch.sum(torch.mul(encoding_og[3], encoding_syn[3]), dim=1).unsqueeze(dim=1)
-        
-            # concatenate correlation layers
-            layer4_cat = torch.cat((corr4, layer4_cat), dim=1)
-            layer3_cat = torch.cat((corr3, layer3_cat), dim=1)
-            layer2_cat = torch.cat((corr2, layer2_cat), dim=1)
-            layer1_cat = torch.cat((corr1, layer1_cat), dim=1)
-
-        # print(layer4_cat.shape)
-        # print(layer3_cat.shape)
-        # print(layer2_cat.shape)
-        # print(layer1_cat.shape)
-    
-        # Run Decoder
-        x = self.conv1(layer4_cat)
-        if self.spade == 'decoder' or self.spade == 'both':
-            x = self.conv2(x, semantic_img)
-        else:
-            x = self.conv2(x)
-        x = self.tconv1(x)
-        
-        gb3 = self.lgb3(x)
-        gb3_r = F.interpolate(gb3, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
-
-
-        x = torch.cat((x, layer3_cat, gb3_r), dim=1)
-        x = self.conv12(x)
-        if self.spade == 'decoder' or self.spade == 'both':
-            x = self.conv13(x, semantic_img)
-        else:
-            x = self.conv13(x)
-        x = self.tconv3(x)
-
-        gb2 = self.lgb2(x)
-        gb2_r = F.interpolate(gb2, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
-    
-        x = torch.cat((x, layer2_cat, gb2_r), dim=1)
-        x = self.conv3(x)
-        if self.spade == 'decoder' or self.spade == 'both':
-            x = self.conv4(x, semantic_img)
-        else:
-            x = self.conv4(x)
-        x = self.tconv2(x)
-
-        gb1 = self.lgb1(x)
-        gb1_r = F.interpolate(gb1, size=[x.shape[2],x.shape[3]], mode='bilinear', align_corners=True)
-    
-        x = torch.cat((x, layer1_cat, gb1_r), dim=1)
-        x = self.conv5(x)
-        if self.spade == 'decoder' or self.spade == 'both':
-            x = self.conv6(x, semantic_img)
-        else:
-            x = self.conv6(x)
-
-        x = torch.cat((x, gb3, gb2, gb1), dim=1)
         logits = self.conv11(x)
         return logits
 
@@ -529,17 +326,16 @@ class DissimNetPrior(nn.Module):
         logits = self.conv11(x)
         return logits
 
-
-
-class ResNetDissimNet(nn.Module):
-    def __init__(self, architecture='resnet18', semantic=True, pretrained=True, correlation=True, spade='',
+class ResNet18DissimNet(nn.Module):
+    def __init__(self, architecture='resnet18', semantic=True, pretrained=True, correlation=True, prior = False, spade='',
                  num_semantic_classes = 19):
         super(ResNetDissimNet, self).__init__()
 
         # get initialization parameters
         self.correlation = correlation
         self.spade = spade
-        self.semantic = False if spade else semantic
+        #self.semantic = False if spade else semantic
+        self.semantic = semantic
         
         # generate encoders
         if self.spade == 'encoder' or self.spade == 'both':
@@ -692,6 +488,356 @@ class ResNetDissimNet(nn.Module):
         
         return self.final_prediction
 
+class ResNet18DissimNetPrior(nn.Module):
+    def __init__(self, architecture='resnet18', semantic=True, pretrained=True, correlation=True, prior = False, spade='',
+                 num_semantic_classes = 19):
+        super(ResNetDissimNetPrior, self).__init__()
+
+        # get initialization parameters
+        self.correlation = correlation
+        self.spade = spade
+        #self.semantic = False if spade else semantic
+        self.semantic = semantic
+        self.prior = prior
+        
+        # generate encoders
+        if self.spade == 'encoder' or self.spade == 'both':
+            raise NotImplementedError()
+            #self.encoder = VGGSPADE()
+        else:
+            self.encoder = resnet(architecture=architecture, pretrained=pretrained)
+        
+        if self.semantic:
+            self.semantic_encoder = ResNetSemanticEncoder()
+            print("check1")
+            self.prior_encoder = ResNetSemanticEncoder(in_channels=3, base_feature_size=64)
+            print("check3")
+        
+        # layers for decoder
+        # all the 3x3 convolutions
+        if correlation:
+            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=1), nn.SELU())
+
+        else:
+            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=1), nn.SELU())
+        
+        if self.spade == 'decoder' or self.spade == 'both':
+            self.conv2 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
+            self.conv13 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
+            self.conv4 = SPADEDecoderLayer(nc=128, label_nc=num_semantic_classes)
+            self.conv6 = SPADEDecoderLayer(nc=64, label_nc=num_semantic_classes)
+        else:
+            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=1), nn.SELU())
+        
+        # all the tranposed convolutions
+        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
+        self.tconv5 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
+        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=0)
+        self.tconv3 = nn.ConvTranspose2d(64, 64, kernel_size=2, stride=2, padding=0)
+        self.tconv4 = nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2, padding=0)
+        
+        # all the other 1x1 convolutions
+        if self.semantic:
+            self.conv7 = nn.Conv2d(1280, 512, kernel_size=1, padding=0)
+            self.conv8 = nn.Conv2d(640, 256, kernel_size=1, padding=0)
+            self.conv9 = nn.Conv2d(320, 128, kernel_size=1, padding=0)
+            self.conv10 = nn.Conv2d(160, 64, kernel_size=1, padding=0)
+            self.conv11 = nn.Conv2d(32, 2, kernel_size=1, padding=0)
+        else:
+            self.conv7 = nn.Conv2d(1024, 512, kernel_size=1, padding=0)
+            self.conv8 = nn.Conv2d(512, 256, kernel_size=1, padding=0)
+            self.conv9 = nn.Conv2d(256, 128, kernel_size=1, padding=0)
+            self.conv10 = nn.Conv2d(128, 64, kernel_size=1, padding=0)
+            self.conv11 = nn.Conv2d(32, 2, kernel_size=1, padding=0)
+
+        # self._initialize_weights()
+    
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
+    
+    def forward(self, original_img, synthesis_img, semantic_img,  entropy, mae, distance, softmax_out=False):
+        # get all the image encodings
+        prior_img = torch.cat((entropy, mae, distance), dim=1)
+        if self.spade == 'encoder' or self.spade == 'both':
+            self.encoding_og = self.encoder(original_img, semantic_img)
+            self.encoding_syn = self.encoder(synthesis_img, semantic_img)
+        else:
+            self.encoding_og = self.encoder(original_img)
+            self.encoding_syn = self.encoder(synthesis_img)
+        
+        if self.semantic:
+            self.encoding_sem = self.semantic_encoder(semantic_img)
+            # concatenate the output of each encoder
+            layer1_cat = torch.cat((self.encoding_og[0], self.encoding_syn[0], self.encoding_sem[0]), dim=1)
+            layer2_cat = torch.cat((self.encoding_og[1], self.encoding_syn[1], self.encoding_sem[1]), dim=1)
+            layer3_cat = torch.cat((self.encoding_og[2], self.encoding_syn[2], self.encoding_sem[2]), dim=1)
+            layer4_cat = torch.cat((self.encoding_og[3], self.encoding_syn[3], self.encoding_sem[3]), dim=1)
+        else:
+            layer1_cat = torch.cat((self.encoding_og[0], self.encoding_syn[0]), dim=1)
+            layer2_cat = torch.cat((self.encoding_og[1], self.encoding_syn[1]), dim=1)
+            layer3_cat = torch.cat((self.encoding_og[2], self.encoding_syn[2]), dim=1)
+            layer4_cat = torch.cat((self.encoding_og[3], self.encoding_syn[3]), dim=1)
+        
+        # use 1x1 convolutions to reduce dimensions of concatenations
+        layer4_cat = self.conv7(layer4_cat)
+        layer3_cat = self.conv8(layer3_cat)
+        layer2_cat = self.conv9(layer2_cat)
+        layer1_cat = self.conv10(layer1_cat)
+        
+        if self.prior:
+            encoding_pior = self.prior_encoder(prior_img)
+            layer1_cat = torch.mul(layer1_cat, encoding_pior[0])
+            layer2_cat = torch.mul(layer2_cat, encoding_pior[1])
+            layer3_cat = torch.mul(layer3_cat, encoding_pior[2])
+            layer4_cat = torch.mul(layer4_cat, encoding_pior[3])
+        
+        if self.correlation:
+            # get correlation for each layer (multiplication + 1x1 conv)
+            corr1 = torch.sum(torch.mul(self.encoding_og[0], self.encoding_syn[0]), dim=1).unsqueeze(dim=1)
+            corr2 = torch.sum(torch.mul(self.encoding_og[1], self.encoding_syn[1]), dim=1).unsqueeze(dim=1)
+            corr3 = torch.sum(torch.mul(self.encoding_og[2], self.encoding_syn[2]), dim=1).unsqueeze(dim=1)
+            corr4 = torch.sum(torch.mul(self.encoding_og[3], self.encoding_syn[3]), dim=1).unsqueeze(dim=1)
+            
+            # concatenate correlation layers
+            layer4_cat = torch.cat((corr4, layer4_cat), dim=1)
+            layer3_cat = torch.cat((corr3, layer3_cat), dim=1)
+            layer2_cat = torch.cat((corr2, layer2_cat), dim=1)
+            layer1_cat = torch.cat((corr1, layer1_cat), dim=1)
+        
+        # Run Decoder
+        x = self.conv1(layer4_cat)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv2(x, semantic_img)
+        else:
+            x = self.conv2(x)
+        x = self.tconv1(x)
+        
+        x = torch.cat((x, layer3_cat), dim=1)
+        x = self.conv12(x)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv13(x, semantic_img)
+        else:
+            x = self.conv13(x)
+        x = self.tconv5(x)
+        
+        x = torch.cat((x, layer2_cat), dim=1)
+        x = self.conv3(x)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv4(x, semantic_img)
+        else:
+            x = self.conv4(x)
+        x = self.tconv2(x)
+        
+        x = torch.cat((x, layer1_cat), dim=1)
+        x = self.conv5(x)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv6(x, semantic_img)
+        else:
+            x = self.conv6(x)
+        x = self.tconv3(x)
+        x = self.tconv4(x)
+        
+        x = self.conv11(x)
+        
+        self.final_prediction = x
+        
+        return self.final_prediction
+   
+
+class ResNet101DissimNetPrior(nn.Module):
+    def __init__(self, architecture='resnet101', semantic=True, pretrained=True, correlation=True, prior = False, spade='',
+                 num_semantic_classes = 19):
+        super(ResNetDissimNetPrior, self).__init__()
+
+        # get initialization parameters
+        self.correlation = correlation
+        self.spade = spade
+        #self.semantic = False if spade else semantic
+        self.semantic = semantic
+        self.prior = prior
+        
+        # generate encoders
+        if self.spade == 'encoder' or self.spade == 'both':
+            raise NotImplementedError()
+            #self.encoder = VGGSPADE()
+        else:
+            architecture = 'resnet101'
+            self.encoder = resnet(architecture=architecture, pretrained=pretrained)
+        
+        if self.semantic:
+            self.semantic_encoder = ResNetSemanticEncoder()
+            print("check1")
+            self.prior_encoder = ResNetSemanticEncoder(in_channels=3, base_feature_size=64)
+            print("check3")
+        
+        # layers for decoder
+        # all the 3x3 convolutions
+        if correlation:
+            self.conv1 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(513, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(385, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(193, 64, kernel_size=3, padding=1), nn.SELU())
+
+        else:
+            self.conv1 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv12 = nn.Sequential(nn.Conv2d(512, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv3 = nn.Sequential(nn.Conv2d(384, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv5 = nn.Sequential(nn.Conv2d(192, 64, kernel_size=3, padding=1), nn.SELU())
+        
+        if self.spade == 'decoder' or self.spade == 'both':
+            self.conv2 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
+            self.conv13 = SPADEDecoderLayer(nc=256, label_nc=num_semantic_classes)
+            self.conv4 = SPADEDecoderLayer(nc=128, label_nc=num_semantic_classes)
+            self.conv6 = SPADEDecoderLayer(nc=64, label_nc=num_semantic_classes)
+        else:
+            self.conv2 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv13 = nn.Sequential(nn.Conv2d(256, 256, kernel_size=3, padding=1), nn.SELU())
+            self.conv4 = nn.Sequential(nn.Conv2d(128, 128, kernel_size=3, padding=1), nn.SELU())
+            self.conv6 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=3, padding=1), nn.SELU())
+        
+        # all the tranposed convolutions
+        self.tconv1 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
+        self.tconv5 = nn.ConvTranspose2d(256, 256, kernel_size=2, stride=2, padding=0)
+        self.tconv2 = nn.ConvTranspose2d(128, 128, kernel_size=2, stride=2, padding=0)
+        self.tconv3 = nn.ConvTranspose2d(64, 64, kernel_size=2, stride=2, padding=0)
+        self.tconv4 = nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2, padding=0)
+        
+        # all the other 1x1 convolutions
+        if self.semantic:
+            self.conv7 = nn.Conv2d(4352, 512, kernel_size=1, padding=0)
+            self.conv8 = nn.Conv2d(2176, 256, kernel_size=1, padding=0)
+            self.conv9 = nn.Conv2d(1088, 128, kernel_size=1, padding=0)
+            self.conv10 = nn.Conv2d(544, 64, kernel_size=1, padding=0)
+            self.conv11 = nn.Conv2d(32, 2, kernel_size=1, padding=0)
+        else:
+            self.conv7 = nn.Conv2d(1024, 512, kernel_size=1, padding=0)
+            self.conv8 = nn.Conv2d(512, 256, kernel_size=1, padding=0)
+            self.conv9 = nn.Conv2d(256, 128, kernel_size=1, padding=0)
+            self.conv10 = nn.Conv2d(128, 64, kernel_size=1, padding=0)
+            self.conv11 = nn.Conv2d(32, 2, kernel_size=1, padding=0)
+
+        # self._initialize_weights()
+    
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
+    
+    def forward(self, original_img, synthesis_img, semantic_img,  entropy, mae, distance, softmax_out=False):
+        # get all the image encodings
+        prior_img = torch.cat((entropy, mae, distance), dim=1)
+        if self.spade == 'encoder' or self.spade == 'both':
+            self.encoding_og = self.encoder(original_img, semantic_img)
+            self.encoding_syn = self.encoder(synthesis_img, semantic_img)
+        else:
+            self.encoding_og = self.encoder(original_img)
+            self.encoding_syn = self.encoder(synthesis_img)
+        
+        if self.semantic:
+            self.encoding_sem = self.semantic_encoder(semantic_img)
+            # concatenate the output of each encoder
+            layer1_cat = torch.cat((self.encoding_og[0], self.encoding_syn[0], self.encoding_sem[0]), dim=1)
+            layer2_cat = torch.cat((self.encoding_og[1], self.encoding_syn[1], self.encoding_sem[1]), dim=1)
+            layer3_cat = torch.cat((self.encoding_og[2], self.encoding_syn[2], self.encoding_sem[2]), dim=1)
+            layer4_cat = torch.cat((self.encoding_og[3], self.encoding_syn[3], self.encoding_sem[3]), dim=1)
+        else:
+            layer1_cat = torch.cat((self.encoding_og[0], self.encoding_syn[0]), dim=1)
+            layer2_cat = torch.cat((self.encoding_og[1], self.encoding_syn[1]), dim=1)
+            layer3_cat = torch.cat((self.encoding_og[2], self.encoding_syn[2]), dim=1)
+            layer4_cat = torch.cat((self.encoding_og[3], self.encoding_syn[3]), dim=1)
+       
+        # use 1x1 convolutions to reduce dimensions of concatenations
+        layer4_cat = self.conv7(layer4_cat)
+        layer3_cat = self.conv8(layer3_cat)
+        layer2_cat = self.conv9(layer2_cat)
+        layer1_cat = self.conv10(layer1_cat)
+        
+        if self.prior:
+            encoding_pior = self.prior_encoder(prior_img)
+            layer1_cat = torch.mul(layer1_cat, encoding_pior[0])
+            layer2_cat = torch.mul(layer2_cat, encoding_pior[1])
+            layer3_cat = torch.mul(layer3_cat, encoding_pior[2])
+            layer4_cat = torch.mul(layer4_cat, encoding_pior[3])
+        
+        if self.correlation:
+            # get correlation for each layer (multiplication + 1x1 conv)
+            corr1 = torch.sum(torch.mul(self.encoding_og[0], self.encoding_syn[0]), dim=1).unsqueeze(dim=1)
+            corr2 = torch.sum(torch.mul(self.encoding_og[1], self.encoding_syn[1]), dim=1).unsqueeze(dim=1)
+            corr3 = torch.sum(torch.mul(self.encoding_og[2], self.encoding_syn[2]), dim=1).unsqueeze(dim=1)
+            corr4 = torch.sum(torch.mul(self.encoding_og[3], self.encoding_syn[3]), dim=1).unsqueeze(dim=1)
+            
+            # concatenate correlation layers
+            layer4_cat = torch.cat((corr4, layer4_cat), dim=1)
+            layer3_cat = torch.cat((corr3, layer3_cat), dim=1)
+            layer2_cat = torch.cat((corr2, layer2_cat), dim=1)
+            layer1_cat = torch.cat((corr1, layer1_cat), dim=1)
+        
+        # Run Decoder
+        x = self.conv1(layer4_cat)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv2(x, semantic_img)
+        else:
+            x = self.conv2(x)
+        x = self.tconv1(x)
+        
+        x = torch.cat((x, layer3_cat), dim=1)
+        x = self.conv12(x)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv13(x, semantic_img)
+        else:
+            x = self.conv13(x)
+        x = self.tconv5(x)
+        
+        x = torch.cat((x, layer2_cat), dim=1)
+        x = self.conv3(x)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv4(x, semantic_img)
+        else:
+            x = self.conv4(x)
+        x = self.tconv2(x)
+        
+        x = torch.cat((x, layer1_cat), dim=1)
+        x = self.conv5(x)
+        if self.spade == 'decoder' or self.spade == 'both':
+            x = self.conv6(x, semantic_img)
+        else:
+            x = self.conv6(x)
+        x = self.tconv3(x)
+        x = self.tconv4(x)
+        
+        x = self.conv11(x)
+        
+        self.final_prediction = x
+        
+        return self.final_prediction
+    
 class GuidedDissimNet(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, spade=True,
                  num_semantic_classes = 19):
@@ -1401,141 +1547,6 @@ class GuideEncoderLayer(nn.Module):
         x = self.relu(x)
         return x
 
-
-
-class NLBlockND(nn.Module):
-    def __init__(self, in_channels, inter_channels=None, mode='embedded', 
-                 dimension=2, bn_layer=True):
-        """Implementation of Non-Local Block with 4 different pairwise functions but doesn't include subsampling trick
-        args:
-            in_channels: original channel size (1024 in the paper)
-            inter_channels: channel size inside the block if not specifed reduced to half (512 in the paper)
-            mode: supports Gaussian, Embedded Gaussian, Dot Product, and Concatenation
-            dimension: can be 1 (temporal), 2 (spatial), 3 (spatiotemporal)
-            bn_layer: whether to add batch norm
-        """
-        super(NLBlockND, self).__init__()
-
-        assert dimension in [1, 2, 3]
-        
-        if mode not in ['gaussian', 'embedded', 'dot', 'concatenate']:
-            raise ValueError('`mode` must be one of `gaussian`, `embedded`, `dot` or `concatenate`')
-            
-        self.mode = mode
-        self.dimension = dimension
-
-        self.in_channels = in_channels
-        self.inter_channels = inter_channels
-
-        # the channel size is reduced to half inside the block
-        if self.inter_channels is None:
-            self.inter_channels = in_channels // 2
-            if self.inter_channels == 0:
-                self.inter_channels = 1
-        
-        # assign appropriate convolutional, max pool, and batch norm layers for different dimensions
-        if dimension == 3:
-            conv_nd = nn.Conv3d
-            max_pool_layer = nn.MaxPool3d(kernel_size=(1, 2, 2))
-            bn = nn.BatchNorm3d
-        elif dimension == 2:
-            conv_nd = nn.Conv2d
-            max_pool_layer = nn.MaxPool2d(kernel_size=(2, 2))
-            bn = nn.BatchNorm2d
-        else:
-            conv_nd = nn.Conv1d
-            max_pool_layer = nn.MaxPool1d(kernel_size=(2))
-            bn = nn.BatchNorm1d
-
-        # function g in the paper which goes through conv. with kernel size 1
-        self.g = conv_nd(in_channels=self.in_channels, out_channels=self.inter_channels, kernel_size=1)
-
-        # add BatchNorm layer after the last conv layer
-        if bn_layer:
-            self.W_z = nn.Sequential(
-                    conv_nd(in_channels=self.inter_channels, out_channels=self.in_channels, kernel_size=1),
-                    bn(self.in_channels)
-                )
-            # from section 4.1 of the paper, initializing params of BN ensures that the initial state of non-local block is identity mapping
-            nn.init.constant_(self.W_z[1].weight, 0)
-            nn.init.constant_(self.W_z[1].bias, 0)
-        else:
-            self.W_z = conv_nd(in_channels=self.inter_channels, out_channels=self.in_channels, kernel_size=1)
-
-            # from section 3.3 of the paper by initializing Wz to 0, this block can be inserted to any existing architecture
-            nn.init.constant_(self.W_z.weight, 0)
-            nn.init.constant_(self.W_z.bias, 0)
-
-        # define theta and phi for all operations except gaussian
-        if self.mode == "embedded" or self.mode == "dot" or self.mode == "concatenate":
-            self.theta = conv_nd(in_channels=self.in_channels, out_channels=self.inter_channels, kernel_size=1)
-            self.phi = conv_nd(in_channels=self.in_channels, out_channels=self.inter_channels, kernel_size=1)
-        
-        if self.mode == "concatenate":
-            self.W_f = nn.Sequential(
-                    nn.Conv2d(in_channels=self.inter_channels * 2, out_channels=1, kernel_size=1),
-                    nn.ReLU()
-                )
-            
-    def forward(self, x):
-        """
-        args
-            x: (N, C, T, H, W) for dimension=3; (N, C, H, W) for dimension 2; (N, C, T) for dimension 1
-        """
-
-        batch_size = x.size(0)
-        
-        # (N, C, THW)
-        # this reshaping and permutation is from the spacetime_nonlocal function in the original Caffe2 implementation
-        g_x = self.g(x).view(batch_size, self.inter_channels, -1)
-        g_x = g_x.permute(0, 2, 1)
-
-        if self.mode == "gaussian":
-            theta_x = x.view(batch_size, self.in_channels, -1)
-            phi_x = x.view(batch_size, self.in_channels, -1)
-            theta_x = theta_x.permute(0, 2, 1)
-            f = torch.matmul(theta_x, phi_x)
-
-        elif self.mode == "embedded" or self.mode == "dot":
-            theta_x = self.theta(x).view(batch_size, self.inter_channels, -1)
-            phi_x = self.phi(x).view(batch_size, self.inter_channels, -1)
-            theta_x = theta_x.permute(0, 2, 1)
-            f = torch.matmul(theta_x, phi_x)
-
-        elif self.mode == "concatenate":
-            theta_x = self.theta(x).view(batch_size, self.inter_channels, -1, 1)
-            phi_x = self.phi(x).view(batch_size, self.inter_channels, 1, -1)
-            
-            h = theta_x.size(2)
-            w = phi_x.size(3)
-            theta_x = theta_x.repeat(1, 1, 1, w)
-            phi_x = phi_x.repeat(1, 1, h, 1)
-            
-            concat = torch.cat([theta_x, phi_x], dim=1)
-            f = self.W_f(concat)
-            f = f.view(f.size(0), f.size(2), f.size(3))
-        
-        if self.mode == "gaussian" or self.mode == "embedded":
-            f_div_C = F.softmax(f, dim=-1)
-        elif self.mode == "dot" or self.mode == "concatenate":
-            N = f.size(-1) # number of position in x
-            f_div_C = f / N
-        
-        y = torch.matmul(f_div_C, g_x)
-        
-        # contiguous here just allocates contiguous chunk of memory
-        y = y.permute(0, 2, 1).contiguous()
-        y = y.view(batch_size, self.inter_channels, *x.size()[2:])
-        
-        W_y = self.W_z(y)
-        # residual connection
-        z = W_y + x
-
-        return z
-
-import torch
-from torch import nn
-from torch.nn import functional as F
 
 if __name__ == "__main__":
     from PIL import Image
