@@ -36,7 +36,7 @@ In order to run inference in these images, run the following command: `python de
 In case custom images want to be tested change the `--demo_folder` flag. Information about all the other flags can be 
 found running `demo.py -h`.
 
-![Alt text](display_images/three_anomaly_scenarios.png?raw=true "Methodology")
+![Alt text](display_images/Comapring oututs of ours and authors.jpeg?raw=true "Methodology")
 
 ### Datasets 
 The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
