@@ -20,7 +20,7 @@ from natsort import natsorted
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
-from models.dissimilarity_model import DissimNet, DissimNetPrior
+from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNet18DissimNet, ResNet18DissimNetPrior, ResNet101DissimNetPrior
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
@@ -81,13 +81,23 @@ cfg_test_loader['dataset_args']['prior'] = prior
 test_loader = trainer_util.get_dataloader(cfg_test_loader['dataset_args'],
                                           cfg_test_loader['dataloader_args'])
 
-# get model
-if config['model']['prior']:
-    diss_model = DissimNetPrior(**config['model']).cuda()
-elif 'vgg' in config['model']['architecture']:
-    diss_model = DissimNet(**config['model']).cuda()
+# Added functionality to access vgg16, resnet18, resnet101 encoders
+if 'vgg' in config['model']['architecture']:
+        if config['model']['prior']:
+            self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
+        else:
+            self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
+
+elif 'resnet18' in config['model']['architecture']:
+        if config['model']['prior']:
+            self.diss_model = ResNet18DissimNetPrior(**config['model']).cuda(self.gpu)
+        else:
+            self.diss_model = ResNet18DissimNet(**config['model']).cuda(self.gpu)
+
+elif 'resnet101' in config['model']['architecture'] and config['model']['prior']:
+        self.diss_model = ResNet101DissimNetPrior(**config['model']).cuda(self.gpu)
 else:
-    raise NotImplementedError()
+        raise NotImplementedError()
 
 use_wandb = opts.wandb
 wandb_resume = opts.wandb_resume
