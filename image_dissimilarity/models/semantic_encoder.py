@@ -64,11 +64,10 @@ class SemanticEncoder(nn.Module):
 class ResNetSemanticEncoder(nn.Module):
 	''' Semantic Encoder as described in Detecting the Unexpected via Image Resynthesis '''
 	
-	def __init__(self, in_channels=19, num_hidden_layers=4):
+	def __init__(self, in_channels=19, num_hidden_layers=4, base_feature_size = 32):
 		super(ResNetSemanticEncoder, self).__init__()
 		
 		self.hidden_layers = nn.ModuleList()
-		base_feature_size = 32
 		
 		for idx in range(num_hidden_layers):
 			if idx == 0:
