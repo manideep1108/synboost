@@ -32,7 +32,7 @@ class DissimilarityTrainer:
             self.gpu = 'cpu'
         
         # Added functionality to access vgg16, resnet18, resnet101 encoders
-         if 'vgg' in config['model']['architecture']:
+        if 'vgg' in config['model']['architecture']:
             if config['model']['prior']:
                 self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
             else:
@@ -43,7 +43,7 @@ class DissimilarityTrainer:
                 self.diss_model = ResNet18DissimNetPrior(**config['model']).cuda(self.gpu)
             else:
                 self.diss_model = ResNet18DissimNet(**config['model']).cuda(self.gpu)
-                
+
         elif 'resnet101' in config['model']['architecture'] and config['model']['prior']:
             self.diss_model = ResNet101DissimNetPrior(**config['model']).cuda(self.gpu)
         else:
