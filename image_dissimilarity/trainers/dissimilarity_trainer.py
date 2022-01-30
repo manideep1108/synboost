@@ -9,7 +9,7 @@ from util.load import load_ckp
 import sys
 sys.path.append("..")
 from image_dissimilarity.util import trainer_util
-from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior
+from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior, ResNet18DissimNet, ResNet18DissimNetPrior, ResNet101DissimNetPrior
 
 class DissimilarityTrainer:
     """
@@ -31,10 +31,21 @@ class DissimilarityTrainer:
         else:
             self.gpu = 'cpu'
         
-        if config['model']['prior']:
-            self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
-        elif 'vgg' in config['model']['architecture']:
-            self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
+        # Added functionality to access vgg16, resnet18, resnet101 encoders
+         if 'vgg' in config['model']['architecture']:
+            if config['model']['prior']:
+                self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
+            else:
+                self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
+                
+        elif 'resnet18' in config['model']['architecture']:
+            if config['model']['prior']:
+                self.diss_model = ResNet18DissimNetPrior(**config['model']).cuda(self.gpu)
+            else:
+                self.diss_model = ResNet18DissimNet(**config['model']).cuda(self.gpu)
+                
+        elif 'resnet101' in config['model']['architecture'] and config['model']['prior']:
+            self.diss_model = ResNet101DissimNetPrior(**config['model']).cuda(self.gpu)
         else:
             raise NotImplementedError()
 
