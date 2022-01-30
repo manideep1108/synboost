@@ -5,9 +5,18 @@ import torch
 from PIL import Image
 import numpy as np
 import os
+import cv2
 from sklearn import metrics
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import ast
+from itertools import product
+from numpy.linalg import norm
+from util.load import load_ckp
+from util import wandb_utils
+from util.load import load_ckp
+from scipy.special import softmax as sft
+from natsort import natsorted
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
@@ -15,10 +24,19 @@ from models.dissimilarity_model import DissimNet, DissimNetPrior
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
-parser.add_argument('--gpu_ids',
-                    type=str,
-                    default='0',
-                    help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+#parser.add_argument('--weights', type=str, default='[0.70, 0.1, 0.1, 0.1]', help='weights for ensemble testing [model, entropy, mae, distance]')
+parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
+parser.add_argument('--wandb_resume', type=bool, default=False, help='Resume Training')
+parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
+parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
+parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
+parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
+parser.add_argument('--epoch', type=int, default=12, help='best epoch number in wandb')
+
+def to_numpy(tensor):
+        return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+    
 opts = parser.parse_args()
 cudnn.benchmark = True
 
@@ -32,7 +50,7 @@ save_fdr = config['save_folder']
 epoch = config['which_epoch']
 store_fdr = config['store_results']
 store_fdr_exp = os.path.join(config['store_results'], exp_name)
-ensemble = config['ensemble']
+ensemble = True
 
 if not os.path.isdir(store_fdr):
     os.makedirs(store_fdr, exist_ok=True)
@@ -47,6 +65,8 @@ if not os.path.isdir(os.path.join(store_fdr_exp, 'pred')):
     os.makedirs(os.path.join(store_fdr_exp, 'label'), exist_ok=True)
     os.makedirs(os.path.join(store_fdr_exp, 'pred'), exist_ok=True)
     os.makedirs(os.path.join(store_fdr_exp, 'soft'), exist_ok=True)
+if not os.path.isdir(os.path.join(store_fdr_exp, 'blended')):
+    os.makedirs(os.path.join(store_fdr_exp, 'blended'), exist_ok=True)
 
 # Activate GPUs
 config['gpu_ids'] = opts.gpu_ids
@@ -69,11 +89,13 @@ elif 'vgg' in config['model']['architecture']:
 else:
     raise NotImplementedError()
 
+use_wandb = opts.wandb
+wandb_resume = opts.wandb_resume
+wandb_utils.init_wandb(config=config, key=opts.wandb_Api_key,wandb_project= opts.wandb_project, wandb_run=opts.wandb_run, wandb_run_id=opts.wandb_run_id, wandb_resume=opts.wandb_resume)
 diss_model.eval()
-model_path = os.path.join(save_fdr, exp_name,
-                          '%s_net_%s.pth' % (epoch, exp_name))
-model_weights = torch.load(model_path)
-diss_model.load_state_dict(model_weights)
+if use_wandb and wandb_resume:
+    checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", opts.epoch)
+    diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
 
 softmax = torch.nn.Softmax(dim=1)
 
@@ -85,8 +107,15 @@ flat_pred = np.zeros(w * h * len(test_loader), dtype='float32')
 flat_labels = np.zeros(w * h * len(test_loader), dtype='float32')
 num_points = 50
 
+dataroot = cfg_test_loader['dataset_args']['dataroot']
+original_paths = [os.path.join(dataroot, 'original', image)
+                               for image in os.listdir(os.path.join(dataroot, 'original'))]
+original_paths = natsorted(original_paths)
+
 with torch.no_grad():
     for i, data_i in enumerate(tqdm(test_loader)):
+        image_path = original_paths[i]
+        img_og = Image.open(image_path).convert('RGB').resize((2048,1024))
         original = data_i['original'].cuda()
         semantic = data_i['semantic'].cuda()
         synthesis = data_i['synthesis'].cuda()
@@ -96,9 +125,12 @@ with torch.no_grad():
             entropy = data_i['entropy'].cuda()
             mae = data_i['mae'].cuda()
             distance = data_i['distance'].cuda()
-            outputs = softmax(
-                diss_model(original, synthesis, semantic, entropy, mae,
-                           distance))
+            outputs = diss_model(original, synthesis, semantic, entropy, mae,
+                           distance)
+            out = to_numpy(outputs)
+            diss_pred = sft(out[0], axis=1)
+            outputs = softmax(outputs)
+            
         else:
             outputs = softmax(diss_model(original, synthesis, semantic))
         (softmax_pred, predictions) = torch.max(outputs, dim=1)
@@ -106,6 +138,15 @@ with torch.no_grad():
             soft_pred = outputs[:, 1, :, :] * 0.75 + entropy * 0.25
         else:
             soft_pred = outputs[:, 1, :, :]
+           
+        diss_pred = (soft_pred.squeeze().cpu().numpy() * 255).astype(np.uint8)
+
+        heatmap_prediction = cv2.applyColorMap((255-diss_pred), cv2.COLORMAP_JET)
+        heatmap_pred_im = Image.fromarray(heatmap_prediction).resize((2048, 1024))
+        combined_image = Image.blend(img_og, heatmap_pred_im, alpha=.5)
+
+        
+        
         flat_pred[i * w * h:i * w * h +
                   w * h] = torch.flatten(soft_pred).detach().cpu().numpy()
         flat_labels[i * w * h:i * w * h +
@@ -124,7 +165,9 @@ with torch.no_grad():
         predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
         soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
         label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
-
+        combined_image.save(os.path.join(store_fdr_exp, 'blended', file_name))
+       
+        
 print('Calculating metric scores')
 if config['test_dataloader']['dataset_args']['roi']:
     invalid_indices = np.argwhere(flat_labels == 255)
