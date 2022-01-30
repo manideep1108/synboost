@@ -14,13 +14,10 @@ from numpy.linalg import norm
 from util.load import load_ckp
 from util import wandb_utils
 from util.load import load_ckp
-import cv2
-import torchvision 
-import wandb
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
-from models.dissimilarity_model import DissimNet, DissimNetPrior
+from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNetDissimNet, ResNetDissimNetPrior
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
@@ -32,7 +29,7 @@ parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run
 parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
 parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
-parser.add_argument('--visualize', type=bool, default=False, help='Lets to log images to wandb')
+parser.add_argument('--epoch', type=int, default=12, help='best epoch number in wandb')
 
 opts = parser.parse_args()
 cudnn.benchmark = True
@@ -54,6 +51,7 @@ def grid_search(model_num=4):
     d = {}
     w = [0, 1, 2, 3]
     best_score, best_roc, best_ap, best_weights = 1.0, 0, 0, None
+    best = -1
     # iterate all possible combinations (cartesian product)
     for weights in product(w, repeat=model_num):
         # skip if all weights are equal
@@ -68,12 +66,13 @@ def grid_search(model_num=4):
         # evaluate weights
         score_roc, score_ap, score_fp = evaluate_ensemble(weights)
         print('Weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (weights, score_fp, score_roc, score_ap))
-        if score_fp < best_score:
+        if score_ap - score_fp > best:
             best_score, best_weights, best_roc, best_ap = score_fp, weights, score_roc, score_ap
+            best = score_ap - score_fp
             print('>BEST SO FAR %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
     return list(best_weights), best_score, best_roc, best_ap
 
-def evaluate_ensemble(weights_f, visualize=False):
+def evaluate_ensemble(weights_f):
     # create memory locations for results to save time while running the code
     dataset = cfg_test_loader['dataset_args']
     h = int((dataset['crop_size']/dataset['aspect_ratio']))
@@ -104,61 +103,27 @@ def evaluate_ensemble(weights_f, visualize=False):
             # Save results
             predicted_tensor = predictions * 1
             label_tensor = label * 1
-
-            if(visualize):   
-                
-                soft_pred = (soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8)
-                heatmap_prediction = cv2.applyColorMap((255-soft_pred), cv2.COLORMAP_JET)
-                heatmap_pred_im = heatmap_prediction
-                orig = inv_normalize(original.squeeze()).permute(1,2,0).cpu().numpy().astype(np.uint8)
-                combined_image = cv2.addWeighted(orig, 0.5 , heatmap_pred_im, 0.5, 0)
-                
-                wandb.log({
-                    "input": wandb.Image(orig),
-                    "label": wandb.Image(label_tensor.squeeze().cpu().numpy().astype(np.uint8)),
-                    "predicted": wandb.Image(combined_image.astype(np.uint8))
-                })
-
-                soft_predict.append(combined_image)
-                    
-                # label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
-                # soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
-                # predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
-                # predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
-                # soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
-                # label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
+            
+            file_name = os.path.basename(data_i['original_path'][0])
+            label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
+            soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
+            predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
+            predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
+            soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
+            label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
     
     if config['test_dataloader']['dataset_args']['roi']:
         invalid_indices = np.argwhere(flat_labels == 255)
         flat_labels = np.delete(flat_labels, invalid_indices)
         flat_pred = np.delete(flat_pred, invalid_indices)
-
-    path = "/kaggle/working/predictions"
-    os.mkdir(path)
-
-    np.save(path, soft_predict)
     
     results = metrics.get_metrics(flat_labels, flat_pred)
     return results['auroc'], results['AP'], results['FPR@95%TPR']
 
 if __name__ == '__main__':
     # Load experiment setting
-
-    inv_normalize = torchvision.transforms.Normalize(
-    mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225],
-    std=[1/0.229, 1/0.224, 1/0.225]
-    )
-
     with open(opts.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
-
-    class_labels = {
-    0: 'anomaly',
-    1: 'non_anomaly'
-    }
-
-    soft_predict = []  #array to stor predictions
-
     
     # get experiment information
     exp_name = config['experiment_name']
@@ -190,11 +155,21 @@ if __name__ == '__main__':
     cfg_test_loader['dataset_args']['prior'] = prior
     test_loader = trainer_util.get_dataloader(cfg_test_loader['dataset_args'], cfg_test_loader['dataloader_args'])
     
-    # get model
-    if config['model']['prior']:
-        diss_model = DissimNetPrior(**config['model']).cuda()
-    elif 'vgg' in config['model']['architecture']:
-        diss_model = DissimNet(**config['model']).cuda()
+    # Added functionality to access vgg16, resnet18, resnet101 encoders
+    if 'vgg' in config['model']['architecture']:
+        if config['model']['prior']:
+            self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
+        else:
+            self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
+
+    elif 'resnet18' in config['model']['architecture']:
+        if config['model']['prior']:
+            self.diss_model = ResNet18DissimNetPrior(**config['model']).cuda(self.gpu)
+        else:
+            self.diss_model = ResNet18DissimNet(**config['model']).cuda(self.gpu)
+
+    elif 'resnet101' in config['model']['architecture'] and config['model']['prior']:
+        self.diss_model = ResNet101DissimNetPrior(**config['model']).cuda(self.gpu)
     else:
         raise NotImplementedError()
     
@@ -203,18 +178,9 @@ if __name__ == '__main__':
     wandb_utils.init_wandb(config=config, key=opts.wandb_Api_key,wandb_project= opts.wandb_project, wandb_run=opts.wandb_run, wandb_run_id=opts.wandb_run_id, wandb_resume=opts.wandb_resume)
     diss_model.eval()
     if use_wandb and wandb_resume:
-        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", 12)
-        diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
+        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", opts.epoch)
+        diss_model.load_state_dict(checkpoint['state_dict'])
     
     softmax = torch.nn.Softmax(dim=1)
-    print("%%%%%%%%%%%%")
-    print(opts.visualize)
-    print("%%%%%%%%%%%%")
-
-    if(opts.visualize == False):
-        best_weights, best_score, best_roc, best_ap = grid_search()
-
-    else :
-        best_score, best_roc, best_ap = evaluate_ensemble(weights_f=[0.75, 0.25, 0, 0], visualize=True)
-        
+    best_weights, best_score, best_roc, best_ap = grid_search()
     print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
