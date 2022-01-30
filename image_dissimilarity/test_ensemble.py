@@ -17,7 +17,7 @@ from util.load import load_ckp
 
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
-from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNetDissimNet, ResNetDissimNetPrior
+from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNet18DissimNet, ResNet18DissimNetPrior, ResNet101DissimNetPrior
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
