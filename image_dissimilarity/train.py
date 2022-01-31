@@ -23,6 +23,7 @@ from util import wandb_utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
+parser.add_argument('--config_wandb', type=str, help='Path to the config file of wandb.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 parser.add_argument('--seed', type=str, default='0', help='seed for experiment')
 parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
@@ -40,6 +41,18 @@ cudnn.benchmark = True
 # Load experiment setting
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
+
+with open(opts.config_wandb, 'r') as stream:
+    config_wandb = yaml.load(stream, Loader=yaml.FullLoader)
+
+wandb_Api_key = config_wandb['wandb_Api_key']
+wandb_resume = config_wandb['wandb_resume']
+wandb_run_id = config_wandb['wandb_run_id']
+wandb_run = config_wandb['wandb_run']
+wandb_project = config_wandb['wandb_project']
+pre_epoch = config_wandb['pre_epoch']
+epochs = config_wandb['epochs']
+name = config_wandb['name']
 
 
 # get experiment information
@@ -109,21 +122,21 @@ w = int(dataset['crop_size'])
 
 #initializing wandb
 if opts.wandb:
-    print(opts.wandb_resume)
-    wandb_utils.init_wandb(config=config, key=opts.wandb_Api_key,wandb_project= opts.wandb_project, wandb_run=opts.wandb_run, wandb_run_id=opts.wandb_run_id, wandb_resume=opts.wandb_resume)
+    print(wandb_resume)
+    wandb_utils.init_wandb(config=config, key=wandb_Api_key,wandb_project= wandb_project, wandb_run=wandb_run, wandb_run_id=wandb_run_id, wandb_resume=wandb_resume)
 
 # create trainer for our model
 print('Loading Model')
-trainer = DissimilarityTrainer(config=config, wandb=opts.wandb, resume=opts.wandb_resume, epoch=opts.pre_epoch, name=opts.name, seed=int(opts.seed))
+trainer = DissimilarityTrainer(config=config, wandb=opts.wandb, resume=wandb_resume, epoch=pre_epoch, name=name, seed=int(opts.seed))
 
 #if opts.wandb:
-#    wandb_utils.init_wandb(config, opts.wandb_Api_key, opts.wandb_project, opts.wandb_run, opts.wandb_run_id, opts.wandb_resume)
+#    wandb_utils.init_wandb(config, wandb_Api_key, wandb_project, wandb_run, wandb_run_id, wandb_resume)
 
 
 # create tool for counting iterations
 batch_size = config['train_dataloader']['dataloader_args']['batch_size']
 #iter_counter = IterationCounter(config, len(train_loader), batch_size)
-iter_counter = IterationCounter(config, len(train_loader), batch_size, opts.epochs, opts.wandb, opts.wandb_resume, opts.pre_epoch)
+iter_counter = IterationCounter(config, len(train_loader), batch_size, epochs, opts.wandb, wandb_resume, pre_epoch)
 
 
 # Softmax layer for testing
