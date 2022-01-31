@@ -24,7 +24,6 @@ from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNet18Dissim
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
-parser.add_argument('--config_wandb', type=str, help='Path to the config file for wandb.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 #parser.add_argument('--weights', type=str, default='[0.70, 0.1, 0.1, 0.1]', help='weights for ensemble testing [model, entropy, mae, distance]')
 parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
@@ -44,15 +43,15 @@ cudnn.benchmark = True
 # Load experiment setting
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
-with open(opts.config_wandb, 'r') as stream:
-        config_wandb = yaml.load(stream, Loader=yaml.FullLoader)
+with open(opts.config["wandb_config"], 'r') as stream:
+        config["wandb_config"] = yaml.load(stream, Loader=yaml.FullLoader)
 
-wandb_Api_key = config_wandb['wandb_Api_key']
-wandb_resume = config_wandb['wandb_resume']
-wandb_run_id = config_wandb['wandb_run_id']
-wandb_run = config_wandb['wandb_run']
-wandb_project = config_wandb['wandb_project']
-epoch = config_wandb['best_epoch']
+wandb_Api_key = config["wandb_config"]['wandb_Api_key']
+wandb_resume = config["wandb_config"]['wandb_resume']
+wandb_run_id = config["wandb_config"]['wandb_run_id']
+wandb_run = config["wandb_config"]['wandb_run']
+wandb_project = config["wandb_config"]['wandb_project']
+epoch = config["wandb_config"]['best_epoch']
 
 # get experiment information
 exp_name = config['experiment_name']

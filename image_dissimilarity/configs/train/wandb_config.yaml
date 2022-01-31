@@ -7,3 +7,4 @@ pre_epoch: 0    #Previous epoch Number to resume training
 epochs: 13      #No. of epochs to run 
 name: "latest"  #file Name of the resuming/starting run
 best_epoch: 12  #best epoch number in wandb for testing
+model_path_base: 
