@@ -1,5 +1,5 @@
 wandb_Api_key: "10989cf7d666f7d3bfcc31c6185448bda1a19767" #Wandb_API_Key (Environment Variable)
-wandb_resume: True   #Resume Training
+wandb_resume: False   #Resume Training
 wandb_run_id: None  #Previous Run ID for Resuming , None if starting new run
 wandb_run: "Wandb_test"   #Name of wandb run
 wandb_project: "MLRC_Synboost"  #wandb project name
