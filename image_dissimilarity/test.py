@@ -43,8 +43,6 @@ cudnn.benchmark = True
 # Load experiment setting
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
-with open(opts.config["wandb_config"], 'r') as stream:
-        config["wandb_config"] = yaml.load(stream, Loader=yaml.FullLoader)
 
 wandb_Api_key = config["wandb_config"]['wandb_Api_key']
 wandb_resume = config["wandb_config"]['wandb_resume']
