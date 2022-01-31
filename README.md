@@ -27,7 +27,7 @@ In order to trained the dissimilarity network, we have to do the following:
 2) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, please 
 refere to the Dataset section. 
-3) Run `train.py --config configs/train/default_configuration.yaml`
+3) Run command for training: `train.py --config configs/train/default_configuration.yaml  --wandb_run '<wandb run-name>'  --wandb_project "<wandb project name>" --wandb True --wandb_resume <True/false to whether resume or not> --pre_epoch <number of epochs already completed> --wandb_run_id "<run id>" --epochs <number of epochs to run> --name "<name of run>"`
 
 ### Evaluation
 The repository already includes some sample images to test the pipeline, which are found under `./sample_images/`. 
