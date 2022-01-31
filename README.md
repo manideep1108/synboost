@@ -20,36 +20,35 @@ The anomaly pipeline uses pre-trained models for segmentation and image re-synth
 You can find this pre-trained models using `wget http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar`. 
 Additionally, you can refer to the original repositories. 
 
-<!-- cd image_dissimilarity -->
-<!-- 2) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
+!-- cd image_dissimilarity --
+!-- 2) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, please 
-refere to the Dataset section.  -->
-```cd image_dissimilarity
-   train.py --config configs/train/default_configuration.yaml```
+refere to the Dataset section.
+cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml
 
 ### Evaluation
 To Run ensemble:
-```cd image_dissimilarity
-   train.py --config configs/train/default_configuration.yaml```
+cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml
 
 (This loads required model from wandb artifacts)
 
 To Simply test:
-```cd image_dissimilarity
-   train.py --config configs/train/default_configuration.yaml```
+cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml
 
 To Visualize output:
 To Run ensemble:
-```cd image_dissimilarity
-   train.py --config configs/train/default_configuration.yaml```
+cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml
 
 ### Pretrained Weights
 
 
-
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
 
-<!-- ![Alt text](display_images/Comapring oututs of ours and authors.jpeg?raw=true "Methodology") -->
+!-- ![Alt text](display_images/Comapring oututs of ours and authors.jpeg?raw=true "Methodology") --
 
 ### Datasets 
 The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
