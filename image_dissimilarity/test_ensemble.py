@@ -138,7 +138,6 @@ if __name__ == '__main__':
     # get experiment information
     exp_name = config['experiment_name']
     save_fdr = config['save_folder']
-    epoch = config['which_epoch']
     store_fdr = config['store_results']
     store_fdr_exp = os.path.join(config['store_results'], exp_name)
     
