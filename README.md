@@ -3,38 +3,49 @@ This repository is the paper implementation for Pixel-wise Anomaly Detection in 
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
-### Installation
+### Requirements
 
-In order to set-up the project, please follow these steps:
-1) Run  `git clone https://github.com/giandbt/driving_uncertainty.git`. 
-2) Download pre-trained models using `wget http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar`. 
-De-compress file and save inside the repository (`tar -xvf ./models.tar`)
-3) We need to install Apex (https://github.com/NVIDIA/apex) running the following:
-    ```
-    git clone https://github.com/NVIDIA/apex
-    cd apex
-    pip install -v --no-cache-dir ./
-    ```
-4) Install all the neccesary python modules with `pip install -r requirements_demo.txt`
+To install the requirements:
+```pip install -r requirements_demo.txt```
+
+(For main model and light framework you can find labels under Dataset)
+Generate segmentation ,resynthesis, uncertainity maps:
+
+
+
+
 
 ### Training 
 The anomaly pipeline uses pre-trained models for segmentation and image re-synthesis. 
 You can find this pre-trained models using `wget http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar`. 
 Additionally, you can refer to the original repositories. 
 
-In order to trained the dissimilarity network, we have to do the following:
-1) `cd image_dissimilarity`
-2) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
+<!-- cd image_dissimilarity -->
+<!-- 2) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, please 
-refere to the Dataset section. 
-3) Run command for training: `train.py --config configs/train/default_configuration.yaml --wandb True`
+refere to the Dataset section.  -->
+```cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml```
 
 ### Evaluation
-The repository already includes some sample images to test the pipeline, which are found under `./sample_images/`. 
-In order to run inference in these images, run the following command: `python demo.py`
+To Run ensemble:
+```cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml```
 
-In case custom images want to be tested change the `--demo_folder` flag. Information about all the other flags can be 
-found running `demo.py -h`.
+(This loads required model from wandb artifacts)
+
+To Simply test:
+```cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml```
+
+To Visualize output:
+To Run ensemble:
+```cd image_dissimilarity
+   train.py --config configs/train/default_configuration.yaml```
+
+### Pretrained Weights
+
+
 
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
 
@@ -73,6 +84,7 @@ the image synthesis folder is based on [2]. specifically commit `0486b08`. For l
 model, we used the code from [3] (commit `682e0e6`) as our segmentation model, and [4] as our synthesis model (commit `5a2c872`)
 - The branch `fishyscapes_package` includes the code as a package specifically made for Fishyscapes submission.
 In ther to get the class for the detector simply `from test_fishy_torch import AnomalyDetector`.
+
 
 
 ## References
