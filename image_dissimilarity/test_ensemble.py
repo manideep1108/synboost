@@ -179,11 +179,10 @@ if __name__ == '__main__':
     else:
         raise NotImplementedError()
     
-    use_wandb = opts.wandb
     wandb_resume = wandb_resume
     wandb_utils.init_wandb(config=config, key=wandb_Api_key,wandb_project= wandb_project, wandb_run=wandb_run, wandb_run_id=wandb_run_id, wandb_resume=wandb_resume)
     diss_model.eval()
-    if use_wandb and wandb_resume:
+    if wandb_resume:
         checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", epoch)
         diss_model.load_state_dict(checkpoint['state_dict'])
     
