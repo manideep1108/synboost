@@ -25,17 +25,23 @@ In order to trained the dissimilarity network, we have to do the following:
 1) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, please 
 refere to the Dataset section. Also add the deatils of wandb in the configuration file.
-2) cd image_dissimilarity
+2) ```
+   cd image_dissimilarity
    train.py --config configs/train/default_configuration.yaml
+   ```
 
 ### Evaluation
 To Run ensemble(with grid search):
+```
 cd image_dissimilarity
 test_ensemble.py --config configs/train/default_configuration.yaml
+```
 
 To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented):
+```
 cd image_dissimilarity
 test.py --config configs/train/default_configuration.yaml
+```
 
 ### Pretrained Weights
 
