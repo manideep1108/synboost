@@ -97,7 +97,7 @@ The file is located `/Path/To/Enviroment/lib/python3.7/site-packages/torch/onnx`
 - The branch `fishyscapes_package` includes the code as a package specifically made for Fishyscapes submission.
 In ther to get the class for the detector simply `from test_fishy_torch import AnomalyDetector`.
 
-- The branch 'pytorch_lightning' included the code for the full framework using pytorch lightning.
+- The branch 'pytorch_lightning' includes the code for the full framework using pytorch lightning.
 
 
 
