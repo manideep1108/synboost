@@ -58,8 +58,8 @@ For this please provide the original cityscapes instanceids, labelids and the or
 Also provide pretrained weights of segmentation and synthesis.
 
 For making the data, run the following:
-1)segmentation.py 
 
+1)segmentation.py 
 2)create_unknown.py
 
 - This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
