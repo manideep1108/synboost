@@ -23,18 +23,8 @@ from util import wandb_utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
-parser.add_argument('--config["wandb_config"]', type=str, help='Path to the config file of wandb.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 parser.add_argument('--seed', type=str, default='0', help='seed for experiment')
-parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
-parser.add_argument('--wandb_resume', type=bool, default=False, help='Resume Training')
-parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
-parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
-parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
-parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
-parser.add_argument('--pre_epoch', type=int, default=0, help='Previous epoch Number to resume training')
-parser.add_argument('--epochs', type=int, default=16, help='No. of epochs to run ')
-parser.add_argument('--name', type=str, default='latest', help='file Name of the resuming run')
 opts = parser.parse_args()
 cudnn.benchmark = True
 
