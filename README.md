@@ -9,11 +9,24 @@ To install the requirements:
 ```pip install -r requirements_demo.txt```
 
 (For main model and light framework you can find labels under Dataset)
-Generate segmentation ,resynthesis, uncertainity maps:
 
+### Datasets 
+The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
+To download the dataset please register and follow the instructions here: https://www.cityscapes-dataset.com/downloads/.
 
+Then, we need to pre-process the images in order to get the predicted entropy, distance, perceptual difference, synthesis, and semantic maps.
+For this please provide the original cityscapes instanceids, labelids and the original images. Add the paths to these directories in the test_options.py under options folder.
+Also provide pretrained weights of segmentation and synthesis.
 
+For making the data, run the following:
 
+1) segmentation.py (makes the data from the semantic predictions)
+
+2) create_unknown.py (uses the ground truth semantic maps)
+
+- This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
+- Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
+- Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
 
 ### Training 
 The anomaly pipeline uses pre-trained models for segmentation and image re-synthesis. 
@@ -55,23 +68,6 @@ Links to different pretrained weights:
 
             The above image compares author's final predictions (2nd column from right) with our predictions(last column)
 
-### Datasets 
-The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
-To download the dataset please register and follow the instructions here: https://www.cityscapes-dataset.com/downloads/.
-
-Then, we need to pre-process the images in order to get the predicted entropy, distance, perceptual difference, synthesis, and semantic maps.
-For this please provide the original cityscapes instanceids, labelids and the original images. Add the paths to these directories in the test_options.py under options folder.
-Also provide pretrained weights of segmentation and synthesis.
-
-For making the data, run the following:
-
-1) segmentation.py (makes the data from the semantic predictions)
-
-2) create_unknown.py (uses the ground truth semantic maps)
-
-- This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
-- Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
-- Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
 
 ### Framework Light Version 
 The original paper discussed the implementation of a lighter version in order to demostrate the generalization ability of the network to different
