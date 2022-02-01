@@ -59,11 +59,12 @@ Also provide pretrained weights of segmentation and synthesis.
 
 For making the data, run the following:
 1)segmentation.py 
+
 2)create_unknown.py
 
-This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
-Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
-Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
+- This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
+- Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
+- Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
 
 ### Framework Light Version 
 The original paper discussed the implementation of a lighter version in order to demostrate the generalization ability of the network to different
