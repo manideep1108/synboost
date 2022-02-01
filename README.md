@@ -8,8 +8,6 @@ This repository is the paper implementation for Pixel-wise Anomaly Detection in 
 To install the requirements:
 ```pip install -r requirements_demo.txt```
 
-(For main model and light framework you can find labels under Dataset)
-
 ### Datasets 
 The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
 To download the dataset please register and follow the instructions here: https://www.cityscapes-dataset.com/downloads/.
@@ -27,6 +25,15 @@ For making the data, run the following:
 - This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
 - Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
 - Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
+
+(For main model and light framework you can find labels under Dataset)
+
+
+### Pretrained Weights
+
+Links to different pretrained weights:
+1) For the full framework : 
+2) For the light version :
 
 ### Training 
 The anomaly pipeline uses pre-trained models for segmentation and image re-synthesis. 
@@ -54,13 +61,7 @@ To Run testing directly with fixed weights(this also saves the final prediction 
 ```
 cd image_dissimilarity
 test.py --config configs/train/default_configuration.yaml
-```
-
-### Pretrained Weights
-
-Links to different pretrained weights:
-1) For the full framework : 
-2) For the light version : 
+``` 
 
 ### Results
 
