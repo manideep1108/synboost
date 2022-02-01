@@ -53,7 +53,7 @@ Links to different pretrained weights:
 
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
 
-                           The above image compares author's final predictions (2nd column from right) with our predictions(last column)
+            The above image compares author's final predictions (2nd column from right) with our predictions(last column)
 
 ### Datasets 
 The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
