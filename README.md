@@ -8,6 +8,14 @@ This repository is the paper implementation for Pixel-wise Anomaly Detection in 
 To install the requirements:
 ```pip install -r requirements_demo.txt```
 
+
+### Pretrained Weights
+
+Links to different pretrained weights:
+1) For the full framework : 
+2) For the light version :
+
+
 ### Datasets 
 The repository uses the Cityscapes Dataset [4] as the basis of the training data for the dissimilarity model. 
 To download the dataset please register and follow the instructions here: https://www.cityscapes-dataset.com/downloads/.
@@ -28,12 +36,6 @@ For making the data, run the following:
 
 (For main model and light framework you can find labels under Dataset)
 
-
-### Pretrained Weights
-
-Links to different pretrained weights:
-1) For the full framework : 
-2) For the light version :
 
 ### Training 
 The anomaly pipeline uses pre-trained models for segmentation and image re-synthesis. 
