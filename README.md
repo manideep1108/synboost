@@ -32,7 +32,7 @@ For making the data, run the following:
 
 2) create_unknown.py (uses the ground truth semantic maps)
 
-- This is the link to dataset of full framework (provided in the original author's repo) : `http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar`
+- This is the link to dataset of full framework (provided in the original author's repo) : http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar
 - Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
 - Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
 
