@@ -12,8 +12,10 @@ To install the requirements:
 ### Pretrained Weights
 
 Links to different pretrained weights:
-1) For the full framework : 
-2) For the light version :
+1) For the full framework :  https://drive.google.com/file/d/1FX4_df0SkmhnU_1ymTRDKHuueXlV4W4X/view?usp=sharing
+2) For the light version :   
+
+The above pretrained weights zip folder also contains the pretrained weights of segmentation and synthesis models.
 
 
 ### Datasets 
