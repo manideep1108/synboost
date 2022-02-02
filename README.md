@@ -34,7 +34,7 @@ For making the data, run the following:
 - Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
 - Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
 
-(For main model and light framework you can find labels under Dataset)
+(For main model and light framework you can find labels in the Dataset)
 
 
 ### Training 
