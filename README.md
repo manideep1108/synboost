@@ -64,10 +64,10 @@ test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml
 ```
 
 2) For Lost and Found : 
-'''
+```
 cd image_dissimilarity
 test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
-'''
+```
 
 To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented):
 1) For FS Static: 
@@ -76,10 +76,10 @@ cd image_dissimilarity
 test_ensemble.py --config configs/test/fs_static_configuration.yaml 
 ``` 
 2) For Lost and Found : 
-'''
+```
 cd image_dissimilarity
 test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
-'''
+```
 ### Results
 
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
