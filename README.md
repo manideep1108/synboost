@@ -91,7 +91,7 @@ The original paper discussed the implementation of a lighter version in order to
 synthesis and segmentation networks (even with lower performance).
 
 In the repository, we include the code and pre-trained model used for this lighter version. However, compatiblity with `demo.py` is still not supported. 
-We have also provided link to light data's dataset (refer to dataset section).
+We have also provided link to light version's dataset (refer to dataset section).
 
 
 ### Google Colab Demo Notebook
