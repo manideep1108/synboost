@@ -1,5 +1,5 @@
 # Pixel-wise Anomaly Detection in Complex Driving Scenes
-This repository is the paper implementation for Pixel-wise Anomaly Detection in Complex Driving Scenes ([Link](https://arxiv.org/abs/2103.05445)). 
+This repository is the PyTorch and PyTorch Lightning implementation of the paper for["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
@@ -13,12 +13,8 @@ This repository is the paper implementation for Pixel-wise Anomaly Detection in 
 
 ### Pretrained Weights
 
-Links to different pretrained weights:
-1) For the full framework :  https://drive.google.com/file/d/1FX4_df0SkmhnU_1ymTRDKHuueXlV4W4X/view?usp=sharing
-2) For the light version :   
-3) Link to original author's model : http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar
-
-The above pretrained weights zip folder also contains the pretrained weights of segmentation and synthesis models. Additionally, you can refer to the original repositories.
+1) Dissimilarity Module :[Link](https://drive.google.com/drive/folders/16ELWb4Qu0AZ5dolf1vT5SoIkpdNR59DR?usp=sharing)
+3) Segmentation and Resynthesis Models:[Link] (http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar)
 
 
 ### Datasets 
@@ -58,6 +54,7 @@ refer to the Dataset section. Also add the deatils of wandb in the configuration
    cd image_dissimilarity
    train.py --config configs/train/default_configuration.yaml
    ```
+3)The following file can be run to train the model in kaggle : [Link](https://www.kaggle.com/cshanmukhsivasai/synboost-pytorch/edit)
 
 ### Evaluation
 To Run ensemble(with grid search):
@@ -88,7 +85,7 @@ test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml
 ### Results
 
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
-The above image compares author's final predictions (2nd column from right) with our predictions(last column)
+The above image compares author's final predictions (2nd column from right) with our predictions(last column).
 
 
 ### Framework Light Version 
@@ -116,7 +113,7 @@ The file is located `/Path/To/Enviroment/lib/python3.7/site-packages/torch/onnx`
 - The branch `fishyscapes_package` includes the code as a package specifically made for Fishyscapes submission.
 In ther to get the class for the detector simply `from test_fishy_torch import AnomalyDetector`.
 
-- The branch 'pytorch_lightning' includes the code for the full framework using pytorch lightning.
+- The branch 'pytorch_lightning' includes the code for the dissimilarity model inpytorch lightning.
 
 
 
