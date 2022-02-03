@@ -158,18 +158,18 @@ if __name__ == '__main__':
     # Added functionality to access vgg16, resnet18, resnet101 encoders
     if 'vgg' in config['model']['architecture']:
         if config['model']['prior']:
-            self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
+            diss_model = DissimNetPrior(**config['model']).cuda()
         else:
-            self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
+            diss_model = DissimNet(**config['model']).cuda()
 
     elif 'resnet18' in config['model']['architecture']:
         if config['model']['prior']:
-            self.diss_model = ResNet18DissimNetPrior(**config['model']).cuda(self.gpu)
+            diss_model = ResNet18DissimNetPrior(**config['model']).cuda()
         else:
-            self.diss_model = ResNet18DissimNet(**config['model']).cuda(self.gpu)
+            diss_model = ResNet18DissimNet(**config['model']).cuda()
 
     elif 'resnet101' in config['model']['architecture'] and config['model']['prior']:
-        self.diss_model = ResNet101DissimNetPrior(**config['model']).cuda(self.gpu)
+        diss_model = ResNet101DissimNetPrior(**config['model']).cuda()
     else:
         raise NotImplementedError()
     
