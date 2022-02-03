@@ -42,7 +42,7 @@ pre_epoch = config["wandb_config"]['pre_epoch']
 epochs = config["wandb_config"]['epochs']
 name = config["wandb_config"]['name']
 
-os.environ["WANDB_API_KEY"] = "10989cf7d666f7d3bfcc31c6185448bda1a19767"
+os.environ["WANDB_API_KEY"] = wandb_Api_key
 # get experiment information
 exp_name = config['experiment_name'] + opts.seed
 save_fdr = config['save_folder']
