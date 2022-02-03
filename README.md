@@ -47,7 +47,7 @@ For making the data, run the following:
 
 
 ### Training 
-In order to trained the dissimilarity network, we have to do the following:
+In order to train the dissimilarity network, we have to do the following:
 
 1) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, please 
