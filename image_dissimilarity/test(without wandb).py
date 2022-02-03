@@ -23,6 +23,7 @@ from models.dissimilarity_model import DissimNet, DissimNetPrior, ResNet18Dissim
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
+parser.add_argument('--load_path', type=str, help='Path to the path file.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 #parser.add_argument('--weights', type=str, default='[0.70, 0.1, 0.1, 0.1]', help='weights for ensemble testing [model, entropy, mae, distance]')
 
