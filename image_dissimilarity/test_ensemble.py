@@ -118,12 +118,15 @@ if __name__ == '__main__':
     with open(opts.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
 
+    #get wandb information
     wandb_Api_key = config["wandb_config"]['wandb_Api_key']
     wandb_resume = config["wandb_config"]['wandb_resume']
     wandb_run_id = config["wandb_config"]['wandb_run_id']
     wandb_run = config["wandb_config"]['wandb_run']
     wandb_project = config["wandb_config"]['wandb_project']
     epoch = config["wandb_config"]['best_epoch']
+
+    #Logs into wandb with given api key
     os.environ["WANDB_API_KEY"] = wandb_Api_key
     
     # get experiment information

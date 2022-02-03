@@ -32,7 +32,7 @@ cudnn.benchmark = True
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
 
-
+#get wandb information
 wandb_Api_key = config["wandb_config"]['wandb_Api_key']
 wandb_resume = config["wandb_config"]['wandb_resume']
 wandb_run_id = config["wandb_config"]['wandb_run_id']
@@ -42,7 +42,9 @@ pre_epoch = config["wandb_config"]['pre_epoch']
 epochs = config["wandb_config"]['epochs']
 name = config["wandb_config"]['name']
 
+#logs into wandb with given api key
 os.environ["WANDB_API_KEY"] = wandb_Api_key
+
 # get experiment information
 exp_name = config['experiment_name'] + opts.seed
 save_fdr = config['save_folder']
