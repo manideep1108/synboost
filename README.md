@@ -36,7 +36,7 @@ For making the data, run the following:
 
 2) For making the unknown data (i.e. data that uses the ground truth semantic maps).
    ```
-   create_unknown_data.py --results_dir <path to results directory> --demo-folder <path to original images> --instances_og <path to original instance ids> --semantic_og <path to    ground truth semantic maps>
+   create_unknown_data.py --results_dir <path to results directory> --demo-folder <path to original images> --instances_og <path to original instance ids> --semantic_og <path to ground truth semantic maps>
    ```
 
 - This is the link to dataset of full framework (provided in the original author's repo) : http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar
