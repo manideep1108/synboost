@@ -82,21 +82,21 @@ test_loader = trainer_util.get_dataloader(cfg_test_loader['dataset_args'],
 
 # Added functionality to access vgg16, resnet18, resnet101 encoders
 if 'vgg' in config['model']['architecture']:
-        if config['model']['prior']:
-            self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
-        else:
-            self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
+    if config['model']['prior']:
+        diss_model = DissimNetPrior(**config['model']).cuda()
+    else:
+        diss_model = DissimNet(**config['model']).cuda()
 
 elif 'resnet18' in config['model']['architecture']:
-        if config['model']['prior']:
-            self.diss_model = ResNet18DissimNetPrior(**config['model']).cuda(self.gpu)
-        else:
-            self.diss_model = ResNet18DissimNet(**config['model']).cuda(self.gpu)
+    if config['model']['prior']:
+        diss_model = ResNet18DissimNetPrior(**config['model']).cuda()
+    else:
+        diss_model = ResNet18DissimNet(**config['model']).cuda()
 
 elif 'resnet101' in config['model']['architecture'] and config['model']['prior']:
-        self.diss_model = ResNet101DissimNetPrior(**config['model']).cuda(self.gpu)
+    diss_model = ResNet101DissimNetPrior(**config['model']).cuda()
 else:
-        raise NotImplementedError()
+    raise NotImplementedError()
 
 wandb_resume = wandb_resume
 wandb_utils.init_wandb(config=config, key=wandb_Api_key,wandb_project= wandb_project, wandb_run=wandb_run, wandb_run_id=wandb_run_id, wandb_resume=wandb_resume)
