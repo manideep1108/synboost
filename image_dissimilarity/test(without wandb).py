@@ -93,7 +93,7 @@ else:
 
 
 diss_model.eval()
-checkpoint = torch.load(load_path)
+checkpoint = torch.load(opts.load_path)
 diss_model.load_state_dict(checkpoint['state_dict'], strict=False)
 
 softmax = torch.nn.Softmax(dim=1)
