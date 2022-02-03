@@ -71,17 +71,29 @@ cd image_dissimilarity
 test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
 
-To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented):
+To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented, for this the model path base in wandb must be provided):
 1) For FS Static: 
 ```
 cd image_dissimilarity
-test_ensemble.py --config configs/test/fs_static_configuration.yaml 
+test.py --config configs/test/fs_static_configuration.yaml 
 ``` 
 2) For Lost and Found : 
 ```
 cd image_dissimilarity
-test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+test.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
+To run testing directly without wandb ( for this to run the path to .pth file of the model must be provided, this also saves the final predictions)
+1) For FS Static:
+   ```
+   cd image_dissimilarity
+   test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+   ```
+2) For FS Lost and Found:
+   '''
+   cd image_dissimilarity
+   test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+   '''
+   
 ### Results
 
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
