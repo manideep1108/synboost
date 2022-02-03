@@ -14,8 +14,9 @@ To install the requirements:
 Links to different pretrained weights:
 1) For the full framework :  https://drive.google.com/file/d/1FX4_df0SkmhnU_1ymTRDKHuueXlV4W4X/view?usp=sharing
 2) For the light version :   
+3) Link to original author's model : http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar
 
-The above pretrained weights zip folder also contains the pretrained weights of segmentation and synthesis models.
+The above pretrained weights zip folder also contains the pretrained weights of segmentation and synthesis models. Additionally, you can refer to the original repositories.
 
 
 ### Datasets 
@@ -40,10 +41,6 @@ For making the data, run the following:
 
 
 ### Training 
-The anomaly pipeline uses pre-trained models for segmentation and image re-synthesis. 
-You can find this pre-trained models using `wget http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar`. 
-Additionally, you can refer to the original repositories.
-
 In order to trained the dissimilarity network, we have to do the following:
 
 1) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
