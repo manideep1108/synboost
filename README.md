@@ -89,10 +89,10 @@ cd image_dissimilarity
 test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
 ```
 2) For FS Lost and Found:
-'''
+```
 cd image_dissimilarity
 test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
-'''
+```
    
 ### Results
 
