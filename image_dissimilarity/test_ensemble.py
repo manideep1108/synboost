@@ -124,6 +124,7 @@ if __name__ == '__main__':
     wandb_run = config["wandb_config"]['wandb_run']
     wandb_project = config["wandb_config"]['wandb_project']
     epoch = config["wandb_config"]['best_epoch']
+    os.environ["WANDB_API_KEY"] = wandb_Api_key
     
     # get experiment information
     exp_name = config['experiment_name']
