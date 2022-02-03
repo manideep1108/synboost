@@ -5,8 +5,10 @@ This repository is the paper implementation for Pixel-wise Anomaly Detection in 
 
 ### Requirements
 
-To install the requirements:
+1) To install the requirements:
 ```pip install -r requirements_demo.txt```
+
+2) Wandb has been used to log files and data, so it is necessary to have a wandb account (https://wandb.ai/site), details of which need to be added in the config file (configs/train/default_configuration.yaml). 
 
 
 ### Pretrained Weights
