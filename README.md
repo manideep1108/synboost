@@ -26,11 +26,10 @@ This repository is the PyTorch and PyTorch Lightning implementation of the paper
 ### Training 
 In order to train the dissimilarity network, we have to do the following:
 
-1) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
+1) Modify the necessary parameters in the configuration file `configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, also add the deatils of wandb in the configuration file.
 2) ```
-   cd image_dissimilarity
-   train.py --config configs/train/default_configuration.yaml
+   python train.py --config configs/train/default_configuration.yaml
    ```
 3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/crackcode466/synboost-pytorch-lightning)
 
@@ -38,38 +37,25 @@ More importanly, modify the folder paths for each dataset to your local path. In
 To Run ensemble(with grid search):
 1) For FS Static: 
 ```
-cd image_dissimilarity
-test_ensemble.py --config configs/test/fs_static_configuration.yaml 
-test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_ensemble.py --config configs/test/fs_static_configuration.yaml 
+python test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
 
 2) For Lost and Found : 
 ```
-cd image_dissimilarity
-test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
 
 To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented, for this the model path base in wandb must be provided):
 1) For FS Static: 
 ```
-cd image_dissimilarity
-test.py --config configs/test/fs_static_configuration.yaml 
+
+python test.py --config configs/test/fs_static_configuration.yaml 
 ``` 
 2) For Lost and Found : 
 ```
-cd image_dissimilarity
-test.py --config configs/test/fs_lost_found_configuration.yaml 
-```
-To run testing directly without wandb ( for this to run the path to .pth file of the model must be provided, this also saves the final predictions)
-1) For FS Static:
-```
-cd image_dissimilarity
-test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
-```
-2) For FS Lost and Found:
-```
-cd image_dissimilarity
-test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+
+python test.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
    
 ### Results
@@ -100,10 +86,7 @@ The file is located `/Path/To/Enviroment/lib/python3.7/site-packages/torch/onnx`
 
 ### Notes 
 
-- The branch `fishyscapes_package` includes the code as a package specifically made for Fishyscapes submission.
-In ther to get the class for the detector simply `from test_fishy_torch import AnomalyDetector`.
-
-- The branch 'pytorch_lightning' includes the code for the dissimilarity model inpytorch lightning.
+- This branch 'pytorch_lightning' includes the code for the dissimilarity model in pytorch lightning.
 
 
 
