@@ -18,7 +18,7 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pathlib import Path
 from pytorch_lightning.callbacks import LearningRateMonitor
 
-from trainers.dissimilarity_trainer import DissimilarityTrainer
+#from trainers.dissimilarity_trainer import DissimilarityTrainer
 from util import trainer_util
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
