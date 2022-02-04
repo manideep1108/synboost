@@ -38,8 +38,8 @@ For making the data, run the following:
    ```
 
 - This is the link to dataset of full framework (provided in the original author's repo) : [Link(original)](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar)
-- Link to dataset of light data : [Link(light data)](https://www.kaggle.com/shashwatnaidu07/light-data-synboost)
-- Link to dataset of w/o data generator: [Link(without datagenerator)](https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator)
+- Link to dataset of light data : [Link(light data)](https://www.kaggle.com/mlrc2021anonymous/synboost-light-data)
+- Link to dataset of w/o data generator: [Link(without datagenerator)](https://www.kaggle.com/mlrc2021anonymous/synboost-without-data-generator)
 
 (For main model and light framework you can find labels in the Dataset)
 
