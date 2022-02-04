@@ -124,9 +124,8 @@ if __name__ == '__main__':
     wandb_resume = config["wandb_config"]['wandb_resume']
     wandb_run_id = config["wandb_config"]['wandb_run_id']
     wandb_run = config["wandb_config"]['wandb_run']
-    wandb_project = config["wandb_config"]['wandb_project']
-    epoch = config["wandb_config"]['best_epoch']
-
+    max_epoch = config["wandb_config"]['max_epoch']
+    artifact_path = config["wandb_config"]['artifact_path']
     #Logs into wandb with given api key
     os.environ["WANDB_API_KEY"] = wandb_Api_key
     
