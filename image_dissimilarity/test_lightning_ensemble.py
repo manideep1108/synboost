@@ -100,7 +100,7 @@ def evaluate_ensemble(weights_f):
             (softmax_pred, predictions) = torch.max(outputs,dim=1)
             
             soft_pred = outputs[:,1,:,:]*weights_f[0] + entropy*weights_f[1] + mae*weights_f[2] + distance*weights_f[3]
-            flat_pred[i*w*h:i*w*h+w*h] = torch.flatten(soft_pred)#.detach().cpu().numpy()
+            flat_pred[i*w*h:i*w*h+w*h] = torch.flatten(soft_pred).detach().cpu().numpy()
             flat_labels[i*w*h:i*w*h+w*h] = torch.flatten(label).detach().cpu().numpy()
             # Save results
             predicted_tensor = predictions * 1
