@@ -14,6 +14,7 @@ from numpy.linalg import norm
 from util.load import load_ckp
 from util import wandb_utils
 from util.load import load_ckp
+import wandb
 
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import Callback
