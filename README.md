@@ -14,7 +14,7 @@ This repository is the PyTorch and PyTorch Lightning implementation of the paper
 ### Pretrained Weights
 
 1) Dissimilarity Module :[Link](https://drive.google.com/drive/folders/16ELWb4Qu0AZ5dolf1vT5SoIkpdNR59DR?usp=sharing)
-3) Segmentation and Resynthesis Models:[Link] (http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar)
+3) Segmentation and Resynthesis Models:[Link](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar)
 
 
 ### Datasets 
@@ -37,9 +37,9 @@ For making the data, run the following:
    create_unknown_data.py --results_dir <path to results directory> --demo-folder <path to original images> --instances_og <path to original instance ids> --semantic_og <path to ground truth semantic maps>
    ```
 
-- This is the link to dataset of full framework (provided in the original author's repo) : http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar
-- Link to dataset of light data : https://www.kaggle.com/shashwatnaidu07/light-data-synboost
-- Link to dataset of w/o data generator: https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator
+- This is the link to dataset of full framework (provided in the original author's repo) : [Link](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar)
+- Link to dataset of light data : [Link](https://www.kaggle.com/shashwatnaidu07/light-data-synboost)
+- Link to dataset of w/o data generator: [Link](https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator)
 
 (For main model and light framework you can find labels in the Dataset)
 
