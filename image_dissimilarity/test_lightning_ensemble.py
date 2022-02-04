@@ -98,13 +98,13 @@ def evaluate_ensemble(weights_f):
             predicted_tensor = predictions * 1
             label_tensor = label * 1
             
-            file_name = os.path.basename(data_i['original_path'][0])
-            label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
-            soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
-            predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
-            predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
-            soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
-            label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
+            # file_name = os.path.basename(data_i['original_path'][0])
+            # label_img = Image.fromarray(label_tensor.squeeze().cpu().numpy().astype(np.uint8))
+            # soft_img = Image.fromarray((soft_pred.squeeze().cpu().numpy()*255).astype(np.uint8))
+            # predicted_img = Image.fromarray(predicted_tensor.squeeze().cpu().numpy().astype(np.uint8))
+            # predicted_img.save(os.path.join(store_fdr_exp, 'pred', file_name))
+            # soft_img.save(os.path.join(store_fdr_exp, 'soft', file_name))
+            # label_img.save(os.path.join(store_fdr_exp, 'label', file_name))
     
     if config['test_dataloader']['dataset_args']['roi']:
         invalid_indices = np.argwhere(flat_labels == 255)
@@ -132,19 +132,19 @@ if __name__ == '__main__':
     # get experiment information
     exp_name = config['experiment_name']
     save_fdr = config['save_folder']
-    store_fdr = config['store_results']
-    store_fdr_exp = os.path.join(config['store_results'], exp_name)
+    # store_fdr = config['store_results']
+    # store_fdr_exp = os.path.join(config['store_results'], exp_name)
     
-    if not os.path.isdir(store_fdr):
-        os.mkdir(store_fdr)
+    # if not os.path.isdir(store_fdr):
+    #     os.mkdir(store_fdr)
     
-    if not os.path.isdir(store_fdr_exp):
-        os.mkdir(store_fdr_exp)
+    # if not os.path.isdir(store_fdr_exp):
+    #     os.mkdir(store_fdr_exp)
     
-    if not os.path.isdir(os.path.join(store_fdr_exp, 'pred')):
-        os.mkdir(os.path.join(store_fdr_exp, 'label'))
-        os.mkdir(os.path.join(store_fdr_exp, 'pred'))
-        os.mkdir(os.path.join(store_fdr_exp, 'soft'))
+    # if not os.path.isdir(os.path.join(store_fdr_exp, 'pred')):
+    #     os.mkdir(os.path.join(store_fdr_exp, 'label'))
+    #     os.mkdir(os.path.join(store_fdr_exp, 'pred'))
+    #     os.mkdir(os.path.join(store_fdr_exp, 'soft'))
     
     # Activate GPUs
     config['gpu_ids'] = opts.gpu_ids
