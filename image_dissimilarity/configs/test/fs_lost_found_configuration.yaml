@@ -40,7 +40,7 @@ test_dataloader:
     shuffle: False
     
 wandb_config:
-  wandb_Api_key: "10989cf7d666f7d3bfcc31c6185448bda1a19767" #Wandb_API_Key (Environment Variable)
+  wandb_Api_key: "0ccd89e91ab10c5e41e99bd8f524d6049cfda8de" #Wandb_API_Key (Environment Variable)
   wandb_resume: True   #Resume Training
   wandb_run_id: "9oonzgel"  #Previous Run ID for Resuming , None if starting new run
   wandb_run: "Lightning Test_2"   #Name of wandb run 
