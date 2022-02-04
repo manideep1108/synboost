@@ -18,6 +18,7 @@ from util.load import load_ckp
 from util import trainer_util, metrics
 from util.iter_counter import IterationCounter
 from models.dissimilarity_model import DissimNet, DissimNetPrior
+from trainers.dissimilarity_trainer_lightning import SynboostDataModule,Synboost_trainer
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
@@ -168,26 +169,24 @@ if __name__ == '__main__':
     else:
         raise NotImplementedError()
     
-    wandb_resume = wandb_resume
-    wandb_utils.init_wandb(config=config, key=wandb_Api_key,wandb_project= wandb_project, wandb_run=wandb_run, wandb_run_id=wandb_run_id, wandb_resume=wandb_resume)
-    diss_model.eval()
+    if wandb_resume:
+        wandb_logger = WandbLogger(project='MLRC_Synboost',name = wandb_run ,log_model='all', resume='allow', id=wandb_run_id) # log all new checkpoints during training
+
+    else:
+        wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = wandb_run, resume=None) # log all new checkpoints during training
+
+    datamodule = SynboostDataModule(config)
+    model = Synboost_trainer(config)
+    wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
     if wandb_resume:
         run = wandb.init()  
-        artifact = run.use_artifact(opts.artifact_path, type='model')
+        artifact = run.use_artifact(artifact_path, type='model')
         artifact_dir = artifact.download()  #should change these lines so that user can specify path (now just for testing)
         model =Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt', config=config )
-        resume_path = "artifacts/" + opts.artifact_path + "/model.ckpt"
+        resume_path = "artifacts/" + artifact_path + "/model.ckpt"
 
-
-    trainer = Trainer(max_epochs=opts.max_epoch, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, lr_monitor],resume_from_checkpoint=resume_path)
-    trainer.fit(model, datamodule=datamodule)                                                                                                            
-    print("Calling finish")
-    wandb.finish()
-    if wandb_resume:
-        checkpoint = load_ckp(config["wandb_config"]["model_path_base"], "best", epoch)
-        diss_model.load_state_dict(checkpoint['state_dict'])
-    
+    model = model.load_from_checkpoint(resume_path)
     softmax = torch.nn.Softmax(dim=1)
     best_weights, best_score, best_roc, best_ap = grid_search()
     print('Best weights: %s Score_FP: %.3f Score_ROC:%.3f Score_AP:%.3f' % (best_weights, best_score, best_roc, best_ap))
