@@ -28,6 +28,7 @@ from trainers.dissimilarity_trainer_lightning import SynboostDataModule,Synboost
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--config', type=str, help='Path to the config file.')
+parser.add_argument('--config_train', type=str, default='configs/train/default_configuration.yaml', help='Path to the config file.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 #parser.add_argument('--weights', type=str, default='[0.70, 0.1, 0.1, 0.1]', help='weights for ensemble testing [model, entropy, mae, distance]')
 
@@ -125,6 +126,9 @@ if __name__ == '__main__':
     with open(opts.config, 'r') as stream:
         config = yaml.load(stream, Loader=yaml.FullLoader)
 
+    with open(opts.config_train, 'r') as stream:
+        config_train = yaml.load(stream, Loader=yaml.FullLoader)
+
     #get wandb information
     wandb_Api_key = config["wandb_config"]['wandb_Api_key']
     wandb_resume = config["wandb_config"]['wandb_resume']
@@ -180,8 +184,8 @@ if __name__ == '__main__':
     else:
         wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = wandb_run, resume=None) # log all new checkpoints during training
 
-    datamodule = SynboostDataModule(config)
-    model = Synboost_trainer(config)
+    datamodule = SynboostDataModule(config_train)
+    model = Synboost_trainer(config_train)
     wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
     if wandb_resume:
