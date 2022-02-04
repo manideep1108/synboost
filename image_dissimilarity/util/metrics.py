@@ -2,8 +2,8 @@ import numpy as np
 
 def get_metrics(flat_labels, flat_pred, num_points=50):
     # From fishycapes code
-    flat_labels = flat_labels.cpu().detach().numpy()
-    flat_pred = flat_pred.cpu().detach().numpy()
+    flat_labels = flat_labels#.cpu().detach().numpy()
+    flat_pred = flat_pred#.cpu().detach().numpy()
     pos = flat_labels == 1
     valid = flat_labels <= 1  # filter out void
     gt = pos[valid]

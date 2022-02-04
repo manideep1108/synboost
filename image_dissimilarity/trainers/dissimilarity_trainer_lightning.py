@@ -165,7 +165,7 @@ class Synboost_trainer(pl.LightningModule):
 
     def validation_epoch_end(self, validation_step_outputs, dataloader_idx=0):
         for idx in range(3):
-            results = metrics.get_metrics(self.flat_labels[idx], self.flat_pred[idx])
+            results = metrics.get_metrics(self.flat_labels[idx].cpu().detach().numpy(), self.flat_pred[idx].cpu().detach().numpy())
             log_dic = {"mAP%d"%(idx+1): results['AP'], "FPR@95TPR%d"%(idx+1): results['FPR@95%TPR'], "AU_ROC%d"%(idx+1): results['auroc']}
             self.log_dict(log_dic)
 
