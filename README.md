@@ -13,8 +13,8 @@ This repository is the PyTorch and PyTorch Lightning implementation of the paper
 
 ### Pretrained Weights
 
-1) Dissimilarity Module :[Link](https://drive.google.com/drive/folders/16ELWb4Qu0AZ5dolf1vT5SoIkpdNR59DR?usp=sharing)
-3) Segmentation and Resynthesis Models:[Link](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar)
+1) Dissimilarity Module : [Link(dissimilarity models)](https://drive.google.com/drive/folders/16ELWb4Qu0AZ5dolf1vT5SoIkpdNR59DR?usp=sharing)
+3) Segmentation and Resynthesis Models: [Link(Segmentation and resynthesis models](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar)
 
 
 ### Datasets 
@@ -38,8 +38,8 @@ For making the data, run the following:
    ```
 
 - This is the link to dataset of full framework (provided in the original author's repo) : [Link(original)](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar)
-- Link to dataset of light data : [Link(light_data)](https://www.kaggle.com/shashwatnaidu07/light-data-synboost)
-- Link to dataset of w/o data generator: [Link(without_datagenerator)](https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator)
+- Link to dataset of light data : [Link(light data)](https://www.kaggle.com/shashwatnaidu07/light-data-synboost)
+- Link to dataset of w/o data generator: [Link(without datagenerator)](https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator)
 
 (For main model and light framework you can find labels in the Dataset)
 
@@ -54,7 +54,7 @@ refer to the Dataset section. Also add the deatils of wandb in the configuration
    cd image_dissimilarity
    train.py --config configs/train/default_configuration.yaml
    ```
-3)The following file can be run to train the model in kaggle : [Link](https://www.kaggle.com/cshanmukhsivasai/synboost-pytorch/edit)
+3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/cshanmukhsivasai/synboost-pytorch/edit)
 
 ### Evaluation
 To Run ensemble(with grid search):
