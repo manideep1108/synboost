@@ -14,7 +14,7 @@ This repository is the PyTorch and PyTorch Lightning implementation of the paper
 ### Pretrained Weights
 
 1) Dissimilarity Module : [Link(dissimilarity models)](https://drive.google.com/drive/folders/16ELWb4Qu0AZ5dolf1vT5SoIkpdNR59DR?usp=sharing)
-3) Segmentation and Resynthesis Models: [Link(Segmentation and resynthesis models](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/models.tar)
+3) Segmentation and Resynthesis Models: [Link(Segmentation and resynthesis models)](https://drive.google.com/drive/folders/1OLsxpM_D6c8kGxikZwlytYDYZtR8S3C-?usp=sharing)
 
 
 ### Datasets 
