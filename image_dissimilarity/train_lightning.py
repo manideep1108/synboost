@@ -34,11 +34,11 @@ parser.add_argument('--config', type=str, help='Path to the config file.')
 parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
 parser.add_argument('--seed', type=str, default='0', help='seed for experiment')
 # parser.add_argument('--wandb_Api_key', type=str, default='None', help='Wandb_API_Key (Environment Variable)')
-parser.add_argument('--wandb_resume', type=bool, default = False, help='Resume Training')
-parser.add_argument('--artifact_path', type=str, default= 's', help='Path of artifact to load weights and Resume Run')
-parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
-parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
-parser.add_argument('--max_epoch', type=int, default=13, help="Number of epochs u want to run")
+#parser.add_argument('--wandb_resume', type=bool, default = False, help='Resume Training')
+#parser.add_argument('--artifact_path', type=str, default= 's', help='Path of artifact to load weights and Resume Run')
+#parser.add_argument('--wandb_run_id', type=str, default=None, help='Previous Run ID for Resuming')
+#parser.add_argument('--wandb_run', type=str, default=None, help='Name of wandb run')
+#parser.add_argument('--max_epoch', type=int, default=13, help="Number of epochs u want to run")
 # parser.add_argument('--wandb_project', type=str, default="MLRC_Synboost", help='wandb project name')
 # parser.add_argument('--wandb', type=bool, default=True, help='Log to wandb')
 # parser.add_argument('--pre_epoch', type=int, default=0, help='Previous epoch Number to resume training')
@@ -51,6 +51,16 @@ cudnn.benchmark = True
 with open(opts.config, 'r') as stream:
     config = yaml.load(stream, Loader=yaml.FullLoader)
 
+#get wandb information
+wandb_Api_key = config["wandb_config"]['wandb_Api_key']
+wandb_resume = config["wandb_config"]['wandb_resume']
+wandb_run_id = config["wandb_config"]['wandb_run_id']
+wandb_run = config["wandb_config"]['wandb_run']
+max_epoch = config["wandb_config"]['max_epoch']
+artifact_path = config["wandb_config"]['artifact_path']
+
+#logs into wandb with given api key
+os.environ["WANDB_API_KEY"] = wandb_Api_key
 
 exp_name = config['experiment_name'] + opts.seed
 
@@ -64,13 +74,13 @@ best_val_loss = float('inf')
 best_map_metric = 0
 iter = 0
 
-print(opts.wandb_resume)
+print(wandb_resume)
 
-if opts.wandb_resume:
-    wandb_logger = WandbLogger(project='MLRC_Synboost',name = opts.wandb_run ,log_model='all', resume='allow', id=opts.wandb_run_id) # log all new checkpoints during training
+if wandb_resume:
+    wandb_logger = WandbLogger(project='MLRC_Synboost',name = wandb_run ,log_model='all', resume='allow', id=wandb_run_id) # log all new checkpoints during training
 
 else:
-    wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = opts.wandb_run, resume=None) # log all new checkpoints during training
+    wandb_logger = WandbLogger(project='MLRC_Synboost', log_model='all',name = wandb_run, resume=None) # log all new checkpoints during training
 
 
 checkpoint_callback = ModelCheckpoint(
@@ -93,18 +103,18 @@ datamodule = SynboostDataModule(config)
 model = Synboost_trainer(config)
 wandb_logger.watch(model,log='all')  # logs histogram of gradients and parameters
 
-print(opts.wandb_resume)
+print(wandb_resume)
 resume_path = None
 
-if opts.wandb_resume:
+if wandb_resume:
     run = wandb.init()  
-    artifact = run.use_artifact(opts.artifact_path, type='model')
+    artifact = run.use_artifact(artifact_path, type='model')
     artifact_dir = artifact.download()  #should change these lines so that user can specify path (now just for testing)
     model =Synboost_trainer.load_from_checkpoint(Path(artifact_dir)/'model.ckpt', config=config )
-    resume_path = "artifacts/" + opts.artifact_path + "/model.ckpt"
+    resume_path = "artifacts/" + artifact_path + "/model.ckpt"
 
 
-trainer = Trainer(max_epochs=opts.max_epoch, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, lr_monitor],resume_from_checkpoint=resume_path)
+trainer = Trainer(max_epochs=max_epoch, gpus=1, log_every_n_steps=1, logger=wandb_logger,  callbacks=[checkpoint_callback, lr_monitor],resume_from_checkpoint=resume_path)
 trainer.fit(model, datamodule=datamodule)                                                                                                            
 print("Calling finish")
 wandb.finish()
