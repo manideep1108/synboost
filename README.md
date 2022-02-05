@@ -29,7 +29,7 @@ In order to train the dissimilarity network, we have to do the following:
 1) Modify the necessary parameters in the configuration file `configs/train/default_configuration.yaml`. 
 More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, also add the deatils of wandb in the configuration file.
 2) ```
-   python train.py --config configs/train/default_configuration.yaml
+   python train_lightning.py --config configs/train/default_configuration.yaml
    ```
 3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch)
 
@@ -37,25 +37,24 @@ More importanly, modify the folder paths for each dataset to your local path. In
 To Run ensemble(with grid search):
 1) For FS Static: 
 ```
-python test_ensemble.py --config configs/test/fs_static_configuration.yaml 
-python test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_lightning_ensemble.py --config configs/test/fs_static_configuration.yaml 
 ```
 
 2) For Lost and Found : 
 ```
-python test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_lightning_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
 
 To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented, for this the model path base in wandb must be provided):
 1) For FS Static: 
 ```
 
-python test.py --config configs/test/fs_static_configuration.yaml 
+python test_lightning.py --config configs/test/fs_static_configuration.yaml 
 ``` 
 2) For Lost and Found : 
 ```
 
-python test.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_lightning.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
    
 ### Results
