@@ -21,7 +21,7 @@ model:
   prior: True
   spade: 'decoder' #[options: 'encoder', 'decoder', 'both', '']
   num_semantic_classes: 19 # Actual training labels
-  endtoend : False
+  endtoend : True
 diss_pretrained:
   load: False
   experiment_name: spade_both_instance_8_final # where checkpoints are stored
