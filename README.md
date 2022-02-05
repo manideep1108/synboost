@@ -1,5 +1,5 @@
 # Pixel-wise Anomaly Detection in Complex Driving Scenes
-This repository is PyTorch Lightning implementation of the paper for["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
+This repository is PyTorch Lightning implementation of the paper, ["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
