@@ -9,7 +9,7 @@ from util.load import load_ckp
 import sys
 sys.path.append("..")
 from image_dissimilarity.util import trainer_util
-from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior, ResNet18DissimNet, ResNet18DissimNetPrior, ResNet101DissimNetPrior
+from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior, DissimNetPriorEndtoEnd, ResNet18DissimNet, ResNet18DissimNetPrior, ResNet101DissimNetPrior
 
 class DissimilarityTrainer:
     """
@@ -34,7 +34,10 @@ class DissimilarityTrainer:
         # Added functionality to access vgg16, resnet18, resnet101 encoders
         if 'vgg' in config['model']['architecture']:
             if config['model']['prior']:
-                self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
+                if config['model']['endtoend']:
+                    self.diss_model = DissimNetPriorEndtoEnd(**config['model']).cuda(self.gpu)
+                else:
+                    self.diss_model = DissimNetPrior(**config['model']).cuda(self.gpu)
             else:
                 self.diss_model = DissimNet(**config['model']).cuda(self.gpu)
                 
