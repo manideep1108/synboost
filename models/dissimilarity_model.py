@@ -5,10 +5,10 @@ import pytorch_lightning as pl
 
 import sys
 sys.path.append("..")
-from image_dissimilarity.models.semantic_encoder import SemanticEncoder, ResNetSemanticEncoder
-from image_dissimilarity.models.vgg_features import VGGFeatures, VGGSPADE
-from image_dissimilarity.models.resnet_features import resnet
-from image_dissimilarity.models.normalization import SPADE, FILM, GuideCorrelation, GuideNormalization
+from models.semantic_encoder import SemanticEncoder, ResNetSemanticEncoder
+from models.vgg_features import VGGFeatures, VGGSPADE
+from models.resnet_features import resnet
+from models.normalization import SPADE, FILM, GuideCorrelation, GuideNormalization
 
 class DissimNet(pl.LightningModule):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, prior = False, spade='',
