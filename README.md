@@ -1,5 +1,5 @@
 # Pixel-wise Anomaly Detection in Complex Driving Scenes
-This repository is the PyTorch and PyTorch Lightning implementation of the paper for["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
+This repository is the PyTorch implementation of the paper, ["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
@@ -122,14 +122,6 @@ The above image compares author's final predictions (2nd column from right) with
 
 
 
-### Framework Light Version 
-The original paper discussed the implementation of a lighter version in order to demostrate the generalization ability of the network to different
-synthesis and segmentation networks (even with lower performance).
-
-In the repository, we include the code and pre-trained model used for this lighter version. However, compatiblity with `demo.py` is still not supported. 
-We have also provided link to light version's dataset (refer to dataset section).
-
-
 ### Google Colab Demo Notebook
 A demo of the anomaly detection pipeline can be found here: https://colab.research.google.com/drive/1HQheunEWYHvOJhQQiWbQ9oHXCNi9Frfl?usp=sharing#scrollTo=gC-ViJmm23eM
 
@@ -141,13 +133,6 @@ which is neccesary for the synthesis model.
 
 Simply copy the `symbolic_opset11.py` from this repository and replace the one from the torch module inside your project environment. 
 The file is located `/Path/To/Enviroment/lib/python3.7/site-packages/torch/onnx`
-
-### Notes 
-
-- The branch `fishyscapes_package` includes the code as a package specifically made for Fishyscapes submission.
-In ther to get the class for the detector simply `from test_fishy_torch import AnomalyDetector`.
-
-- The branch 'pytorch_lightning' includes the code for the dissimilarity model inpytorch lightning.
 
 
 
