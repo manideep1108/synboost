@@ -1,5 +1,5 @@
 # Pixel-wise Anomaly Detection in Complex Driving Scenes
-This repository is the paper implementation for Pixel-wise Anomaly Detection in Complex Driving Scenes ([Link](https://arxiv.org/abs/2103.05445)). 
+This repository is the PyTorch implementation for the paper, Pixel-wise Anomaly Detection in Complex Driving Scenes ([Link](https://arxiv.org/abs/2103.05445)). 
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
