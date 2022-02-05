@@ -33,7 +33,7 @@ In order to train the dissimilarity network, we have to do the following:
    - For running with different encoders change the architecture in config
    - Also add the deatils of wandb in the configuration file.
    - In order to get the required data for training, please refer to the Dataset section. 
-3) ```
+2) ```
    python train_lightning.py --config configs/train/default_configuration.yaml
    ```
 The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch-lightning)
