@@ -84,6 +84,11 @@ The above image compares author's final predictions (2nd column from right) with
   The above table shows the results of Light version 
 </p>
 
+<iframe
+  src="https://wandb.ai/dl-segmentation/MLRC_Synboost/reports/Synboost-MLRC-2021--VmlldzoxNTIyNDk2?accessToken=uevcwtv10q3bwg40rr4zbd3l5rxt4crs3bys6z6zf375xa123qusncm4cv38n95l"
+  style="width:100%; height:300px;"
+></iframe>
+
 
 ## References
 [1] Learning to Predict Layout-to-image Conditional Convolutions for Semantic Image Synthesis.
