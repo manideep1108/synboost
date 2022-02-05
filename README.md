@@ -54,7 +54,7 @@ refer to the Dataset section. Also add the deatils of wandb in the configuration
    cd image_dissimilarity
    python train.py --config configs/train/default_configuration.yaml
    ```
-3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/cshanmukhsivasai/synboost-pytorch/edit)
+3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch)
 
 ### Evaluation
 To Run ensemble(with grid search):
