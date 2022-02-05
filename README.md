@@ -1,5 +1,5 @@
 # Pixel-wise Anomaly Detection in Complex Driving Scenes
-This repository is the PyTorch and PyTorch Lightning implementation of the paper for["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
+This repository is PyTorch Lightning implementation of the paper for["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
@@ -84,24 +84,6 @@ The above image compares author's final predictions (2nd column from right) with
 <p align="center">
   The above table shows the results of Light version 
 </p>
-
-
-### Google Colab Demo Notebook
-A demo of the anomaly detection pipeline can be found here: https://colab.research.google.com/drive/1HQheunEWYHvOJhQQiWbQ9oHXCNi9Frfl?usp=sharing#scrollTo=gC-ViJmm23eM
-
-### ONNX Conversion 
-
-In order to convert all three models into `.onnx`, it is neccesary to update the `symbolic_opset11.py` file from the
-original `torch` module installation. The reason for this is that `torch==1.4.0` does not have compatibility for `im2col`
-which is neccesary for the synthesis model. 
-
-Simply copy the `symbolic_opset11.py` from this repository and replace the one from the torch module inside your project environment. 
-The file is located `/Path/To/Enviroment/lib/python3.7/site-packages/torch/onnx`
-
-### Notes 
-
-- This branch 'pytorch_lightning' includes the code for the dissimilarity model in pytorch lightning.
-
 
 
 ## References
