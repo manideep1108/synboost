@@ -1,6 +1,6 @@
-from image_dissimilarity.data.cityscapes_dataset import CityscapesDataset
+from data.cityscapes_dataset import CityscapesDataset
 from torch.utils.data import DataLoader
-from image_dissimilarity.models.dissimilarity_model import DissimNet, DissimNetPrior
+from models.dissimilarity_model import DissimNet, DissimNetPrior
 import torch.nn as nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch
@@ -56,10 +56,13 @@ class Synboost_trainer(pl.LightningModule):
         self.flat_pred = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
         self.flat_labels = [torch.zeros(h*w*self.test_loader1_size).cuda(),torch.zeros(h*w*self.test_loader2_size).cuda(),torch.zeros(h*w*self.test_loader3_size).cuda()]
         
-        if self.config['model']['prior']:
-            self.diss_model = DissimNetPrior(**self.config['model'])
-        elif 'vgg' in self.config['model']['architecture']:
-            self.diss_model = DissimNet(**self.config['model'])
+        if config['model']['prior']:
+            if config['model']['endtoend']:
+                self.diss_model = DissimNetPriorEndtoEnd(**config['model'])
+            else:
+                self.diss_model = DissimNetPrior(**config['model'])
+        else:
+            self.diss_model = DissimNet(**config['model'])
 
         if self.config['training_strategy']['class_weight']:
             if not self.config['training_strategy']['class_weight_cityscapes']:
