@@ -9,8 +9,8 @@ import torch
 
 import sys
 sys.path.append("../..")
-import image_dissimilarity.data.cityscapes_labels as cityscapes_labels
-from image_dissimilarity.data.augmentations import get_transform
+import data.cityscapes_labels as cityscapes_labels
+from data.augmentations import get_transform
 
 trainid_to_name = cityscapes_labels.trainId2name
 id_to_trainid = cityscapes_labels.label2trainid
