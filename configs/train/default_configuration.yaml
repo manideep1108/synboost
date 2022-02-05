@@ -18,10 +18,10 @@ model:
   semantic: True
   pretrained: True
   correlation: True
-  prior: True
+  prior: True  #make it false to run without uncertainity maps
   spade: 'decoder' #[options: 'encoder', 'decoder', 'both', '']
   num_semantic_classes: 19 # Actual training labels
-  endtoend : True
+  endtoend: False   #make it true for having an endtoend ensemble setup
 diss_pretrained:
   load: False
   experiment_name: spade_both_instance_8_final # where checkpoints are stored
