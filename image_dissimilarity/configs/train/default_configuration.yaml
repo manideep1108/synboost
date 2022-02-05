@@ -147,8 +147,8 @@ test_dataloader4:
     shuffle: False
 wandb_config:
   wandb_Api_key: "10989cf7d666f7d3bfcc31c6185448bda1a19767" #Wandb_API_Key (Environment Variable)
-  wandb_resume: True   #Resume Training
-  wandb_run_id: "34cf117d"  #Previous Run ID for Resuming , None if starting new run
+  wandb_resume: False   #Resume Training
+  wandb_run_id: None  #Previous Run ID for Resuming , None if starting new run
   wandb_run: "Light data (Shashwat Trial 1)"   #Name of wandb run
   wandb_project: "MLRC_Synboost"  #wandb project name
   pre_epoch: 0    #Previous epoch Number to resume training
