@@ -36,7 +36,7 @@ In order to train the dissimilarity network, we have to do the following:
 3) ```
    python train_lightning.py --config configs/train/default_configuration.yaml
    ```
-3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch)
+The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch)
 
 ### Evaluation
 To Run ensemble(with grid search):
