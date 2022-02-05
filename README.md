@@ -99,6 +99,9 @@ test_without_wandb.py --config configs/test/fs_static_configuration.yaml
 ![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/Comapring%20oututs%20of%20ours%20and%20authors.jpeg?raw=true)
 The above image compares author's final predictions (2nd column from right) with our predictions(last column).
 
+![alt text](https://github.com/manideep1108/synboost/blob/master/display_images/main%20results.png?raw=true)
+The above table shows the results on the the Fishyscapes private test data
+
 
 ### Framework Light Version 
 The original paper discussed the implementation of a lighter version in order to demostrate the generalization ability of the network to different
