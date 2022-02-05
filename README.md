@@ -39,8 +39,9 @@ In order to train the dissimilarity network, we have to do the following:
 The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch-lightning)
 
 ### Evaluation
-To Run ensemble(with grid search):
 Firstly Update artifact path in config to desired run.
+
+To Run ensemble(with grid search):
 
 1) For FS Static: 
 ```
