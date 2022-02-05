@@ -48,8 +48,11 @@ For making the data, run the following:
 In order to train the dissimilarity network, we have to do the following:
 
 1) Modify the necessary parameters in the configuration file `image_dissimilarity/configs/train/default_configuration.yaml`. 
-More importanly, modify the folder paths for each dataset to your local path. In order to get the required data for training, please 
-refer to the Dataset section. Also add the deatils of wandb in the configuration file.
+   For w/o uncertainty maps make prior = false
+   For w/o data generator + w/o uncertainty maps make prior = false, use the data provided in the dataset section
+   For end to end ensemble make endtoend = True
+   For running with different encoders change the architecture in config
+In order to get the required data for training, please refer to the Dataset section. Also add the deatils of wandb in the configuration file.
 2) ```
    cd image_dissimilarity
    python train.py --config configs/train/default_configuration.yaml
