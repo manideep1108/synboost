@@ -96,6 +96,8 @@ The above image compares author's final predictions (2nd column from right) with
   The above table shows the results of Light version 
 </p>
 
+##Weights & Biases
+[Report: All ExperimentsLink](https://wandb.ai/dl-segmentation/MLRC_Synboost/reports/Synboost-MLRC-2021--VmlldzoxNTIyNDk2?accessToken=uevcwtv10q3bwg40rr4zbd3l5rxt4crs3bys6z6zf375xa123qusncm4cv38n95l)
 
 
 ## References
