@@ -102,8 +102,25 @@ The above image compares author's final predictions (2nd column from right) with
 
 <p align="center">
   <img src="https://github.com/manideep1108/synboost/blob/master/display_images/main%20results.png?raw=true" alt="Sublime's custom image"/>
-   The above table shows the results on the the Fishyscapes private test data
 </p>
+<p align="center">
+  The above table shows the results on the the Fishyscapes private test data
+</p>
+
+<p align="center">
+  <img src="https://github.com/manideep1108/synboost/blob/master/display_images/table%202.png?raw=true" alt="Sublime's custom image"/>
+</p>
+<p align="center">
+  The above table shows the results on the Fishyscapes Validation datasets
+</p>
+
+<p align="center">
+  <img src="https://github.com/manideep1108/synboost/blob/master/display_images/light.png?raw=true" alt="Sublime's custom image"/>
+</p>
+<p align="center">
+  The above table shows the results of Light version 
+</p>
+
 
 
 ### Framework Light Version 
