@@ -327,8 +327,8 @@ class DissimNetPrior(nn.Module):
         return logits
     
 class DissimNetPriorEndtoEnd(nn.Module):
-    def _init_(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
-                 num_semantic_classes=19,endtoend = True):
+    def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
+                 num_semantic_classes=19,endtoend = True)
         super(DissimNetPrior, self)._init_()
 
         # get initialization parameters
