@@ -1,6 +1,6 @@
 from data.cityscapes_dataset import CityscapesDataset
 from torch.utils.data import DataLoader
-from models.dissimilarity_model import DissimNet, DissimNetPrior
+from models.dissimilarity_model import DissimNet, DissimNetPrior, DissimNetPriorEndtoEnd
 import torch.nn as nn
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch
