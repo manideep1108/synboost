@@ -89,12 +89,12 @@ To run testing directly without wandb ( for this to run the path to .pth file of
 1) For FS Static:
 ```
 cd image_dissimilarity
-python test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+python test_without_wandb.py --config configs/test/fs_static_configuration.yaml --load_path <Path to .pth file>
 ```
 2) For FS Lost and Found:
 ```
 cd image_dissimilarity
-python test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+python test_without_wandb.py --config configs/test/fs_static_configuration.yaml --load_path <Path to .pth file>
 ```
    
 ### Results
