@@ -1,5 +1,5 @@
 # Pixel-wise Anomaly Detection in Complex Driving Scenes
-This repository is PyTorch Lightning implementation of the paper, ["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). It is well documented version of the original repository with the code flow available [here](https://github.com/giandbt/synboost). The paper address the problem of anomaly segmentation.
+This repository is PyTorch Lightning implementation of the paper, ["Pixel-wise Anomaly Detection in Complex Driving Scenes"](https://arxiv.org/abs/2103.05445). The paper address the problem of anomaly segmentation.
 
 ![Alt text](display_images/methodology.png?raw=true "Methodology")
 
@@ -36,10 +36,12 @@ In order to train the dissimilarity network, we have to do the following:
 3) ```
    python train_lightning.py --config configs/train/default_configuration.yaml
    ```
-The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch)
+The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch-lightning)
 
 ### Evaluation
 To Run ensemble(with grid search):
+Firstly Update artifact path in config to desired run.
+
 1) For FS Static: 
 ```
 python test_lightning_ensemble.py --config configs/test/fs_static_configuration.yaml 
