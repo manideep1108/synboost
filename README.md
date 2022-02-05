@@ -83,6 +83,12 @@ The above image compares author's final predictions (2nd column from right) with
 <p align="center">
   The above table shows the results of Light version 
 </p>
+<p align="center">
+  <img src="https://github.com/manideep1108/synboost/blob/master/display_images/ensemble.png?raw=true" alt="Sublime's custom image"/>
+</p>
+<p align="center">
+  The above table shows the results of Light version 
+</p>
 
 
 
