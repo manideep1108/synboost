@@ -11,7 +11,7 @@ from image_dissimilarity.models.normalization import SPADE, FILM, GuideCorrelati
 
 class DissimNet(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, prior = False, spade='',
-                 num_semantic_classes = 19):
+                 num_semantic_classes = 19,endtoend = False):
         super(DissimNet, self).__init__()
         
         #get initialization parameters
@@ -165,7 +165,7 @@ class DissimNet(nn.Module):
 
 class DissimNetPrior(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
-                 num_semantic_classes=19):
+                 num_semantic_classes=19,endtoend = False):
         super(DissimNetPrior, self).__init__()
 
         # get initialization parameters
@@ -328,7 +328,7 @@ class DissimNetPrior(nn.Module):
     
 class DissimNetPriorEndtoEnd(nn.Module):
     def _init_(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, prior=False, spade='',
-                 num_semantic_classes=19):
+                 num_semantic_classes=19,endtoend = True):
         super(DissimNetPrior, self)._init_()
 
         # get initialization parameters
@@ -500,7 +500,7 @@ class DissimNetPriorEndtoEnd(nn.Module):
 
 class ResNet18DissimNet(nn.Module):
     def __init__(self, architecture='resnet18', semantic=True, pretrained=True, correlation=True, prior = False, spade='',
-                 num_semantic_classes = 19):
+                 num_semantic_classes = 19, endtoend = False):
         super(ResNetDissimNet, self).__init__()
 
         # get initialization parameters
@@ -662,7 +662,7 @@ class ResNet18DissimNet(nn.Module):
 
 class ResNet18DissimNetPrior(nn.Module):
     def __init__(self, architecture='resnet18', semantic=True, pretrained=True, correlation=True, prior = False, spade='',
-                 num_semantic_classes = 19):
+                 num_semantic_classes = 19, endtoend = False):
         super(ResNetDissimNetPrior, self).__init__()
 
         # get initialization parameters
@@ -837,7 +837,7 @@ class ResNet18DissimNetPrior(nn.Module):
 
 class ResNet101DissimNetPrior(nn.Module):
     def __init__(self, architecture='resnet101', semantic=True, pretrained=True, correlation=True, prior = False, spade='',
-                 num_semantic_classes = 19):
+                 num_semantic_classes = 19, endtoend = False):
         super(ResNetDissimNetPrior, self).__init__()
 
         # get initialization parameters
@@ -1012,7 +1012,7 @@ class ResNet101DissimNetPrior(nn.Module):
     
 class GuidedDissimNet(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation = True, spade=True,
-                 num_semantic_classes = 19):
+                 num_semantic_classes = 19, endtoend = False):
         super(GuidedDissimNet, self).__init__()
         
         vgg_pretrained_features = torchvision.models.vgg16_bn(pretrained=pretrained).features
@@ -1251,7 +1251,7 @@ class GuidedDissimNet(nn.Module):
 
 class CorrelatedDissimNet(nn.Module):
     def __init__(self, architecture='vgg16', semantic=True, pretrained=True, correlation=True, spade=True,
-                 num_semantic_classes = 19):
+                 num_semantic_classes = 19, endtoend = False):
         super(CorrelatedDissimNet, self).__init__()
 
         self.spade = spade
