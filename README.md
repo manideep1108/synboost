@@ -102,8 +102,8 @@ The above image compares author's final predictions (2nd column from right) with
 
 <p align="center">
   <img src="https://github.com/manideep1108/synboost/blob/master/display_images/main%20results.png?raw=true" alt="Sublime's custom image"/>
+   The above table shows the results on the the Fishyscapes private test data
 </p>
-    The above table shows the results on the the Fishyscapes private test data
 
 
 ### Framework Light Version 
