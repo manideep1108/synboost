@@ -29,12 +29,12 @@ For making the data, run the following:
 
 1) For making the known data (i.e. data made using semantic predictions).
    ```
-   create_known_data.py --results_dir <path to results directory> --demo-folder <path to original images>
+   python create_known_data.py --results_dir <path to results directory> --demo-folder <path to original images>
    ```
 
 2) For making the unknown data (i.e. data that uses the ground truth semantic maps).
    ```
-   create_unknown_data.py --results_dir <path to results directory> --demo-folder <path to original images> --instances_og <path to original instance ids> --semantic_og <path to ground truth semantic maps>
+   python create_unknown_data.py --results_dir <path to results directory> --demo-folder <path to original images> --instances_og <path to original instance ids> --semantic_og <path to ground truth semantic maps>
    ```
 
 - This is the link to dataset of full framework (provided in the original author's repo) : [Link(original)](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar)
@@ -52,7 +52,7 @@ More importanly, modify the folder paths for each dataset to your local path. In
 refer to the Dataset section. Also add the deatils of wandb in the configuration file.
 2) ```
    cd image_dissimilarity
-   train.py --config configs/train/default_configuration.yaml
+   python train.py --config configs/train/default_configuration.yaml
    ```
 3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/cshanmukhsivasai/synboost-pytorch/edit)
 
@@ -61,37 +61,36 @@ To Run ensemble(with grid search):
 1) For FS Static: 
 ```
 cd image_dissimilarity
-test_ensemble.py --config configs/test/fs_static_configuration.yaml 
-test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_ensemble.py --config configs/test/fs_static_configuration.yaml 
 ```
 
 2) For Lost and Found : 
 ```
 cd image_dissimilarity
-test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
+python test_ensemble.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
 
 To Run testing directly with fixed weights(this also saves the final prediction images where the anomaly has been segmented, for this the model path base in wandb must be provided):
 1) For FS Static: 
 ```
 cd image_dissimilarity
-test.py --config configs/test/fs_static_configuration.yaml 
+python test.py --config configs/test/fs_static_configuration.yaml 
 ``` 
 2) For Lost and Found : 
 ```
 cd image_dissimilarity
-test.py --config configs/test/fs_lost_found_configuration.yaml 
+python test.py --config configs/test/fs_lost_found_configuration.yaml 
 ```
 To run testing directly without wandb ( for this to run the path to .pth file of the model must be provided, this also saves the final predictions)
 1) For FS Static:
 ```
 cd image_dissimilarity
-test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+python test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
 ```
 2) For FS Lost and Found:
 ```
 cd image_dissimilarity
-test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
+python test_without_wandb.py --config configs/test/fs_static_configuration.yaml 
 ```
    
 ### Results
