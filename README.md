@@ -19,8 +19,8 @@ This repository is PyTorch Lightning implementation of the paper, ["Pixel-wise A
 ### Datasets 
 
 - This is the link to dataset of full framework (provided in the original author's repo) : [Link(original)](http://robotics.ethz.ch/~asl-datasets/Dissimilarity/data_processed.tar)
-- Link to dataset of light data : [Link(light data)](https://www.kaggle.com/shashwatnaidu07/light-data-synboost)
-- Link to dataset of w/o data generator: [Link(without datagenerator)](https://www.kaggle.com/shashwatnaidu/synboostwo-data-generator)
+- Link to dataset of light data : [Link(light data)](https://www.kaggle.com/mlrc2021anonymous/synboost-light-data)
+- Link to dataset of w/o data generator: [Link(without datagenerator)](https://www.kaggle.com/mlrc2021anonymous/synboost-without-data-generator)
 
 
 ### Training 
@@ -31,7 +31,7 @@ More importanly, modify the folder paths for each dataset to your local path. In
 2) ```
    python train.py --config configs/train/default_configuration.yaml
    ```
-3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/crackcode466/synboost-pytorch-lightning)
+3)The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch)
 
 ### Evaluation
 To Run ensemble(with grid search):
