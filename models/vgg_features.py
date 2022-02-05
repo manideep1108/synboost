@@ -5,7 +5,7 @@ import sys
 from torch.nn.modules.upsampling import Upsample
 import pytorch_lightning as pl
 sys.path.append("..")
-from image_dissimilarity.models.normalization import SPADE
+from models.normalization import SPADE
 
 class VGGFeatures(pl.LightningModule):
 
