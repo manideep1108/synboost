@@ -15,6 +15,7 @@ model:
   prior: True
   spade: 'decoder' #[options: 'encoder', 'decoder', 'both', '']
   num_semantic_classes: 19 # Actual training labels
+  endtoend: False   #make it true for having an endtoend ensemble setup
 
 # parameters for dataset
 dataset:
