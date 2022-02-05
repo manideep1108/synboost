@@ -14,7 +14,7 @@ This repository is the PyTorch implementation of the paper, ["Pixel-wise Anomaly
 ### Pretrained Weights
 
 1) Dissimilarity Module : [Link(dissimilarity models)](https://drive.google.com/drive/folders/16ELWb4Qu0AZ5dolf1vT5SoIkpdNR59DR?usp=sharing)
-3) Segmentation and Resynthesis Models: [Link(Segmentation and resynthesis models)](https://drive.google.com/drive/folders/1OLsxpM_D6c8kGxikZwlytYDYZtR8S3C-?usp=sharing)
+2) Segmentation and Resynthesis Models: [Link(Segmentation and resynthesis models)](https://drive.google.com/drive/folders/1OLsxpM_D6c8kGxikZwlytYDYZtR8S3C-?usp=sharing)
 
 
 ### Datasets 
