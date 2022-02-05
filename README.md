@@ -64,12 +64,26 @@ python test.py --config configs/test/fs_lost_found_configuration.yaml
 The above image compares author's final predictions (2nd column from right) with our predictions(last column).
 
 
-### Framework Light Version 
-The original paper discussed the implementation of a lighter version in order to demostrate the generalization ability of the network to different
-synthesis and segmentation networks (even with lower performance).
+<p align="center">
+  <img src="https://github.com/manideep1108/synboost/blob/master/display_images/main%20results.png?raw=true" alt="Sublime's custom image"/>
+</p>
+<p align="center">
+  The above table shows the results on the the Fishyscapes private test data
+</p>
 
-In the repository, we include the code and pre-trained model used for this lighter version. However, compatiblity with `demo.py` is still not supported. 
-We have also provided link to light version's dataset (refer to dataset section).
+<p align="center">
+  <img src="https://github.com/manideep1108/synboost/blob/master/display_images/table%202.png?raw=true" alt="Sublime's custom image"/>
+</p>
+<p align="center">
+  The above table shows the results on the Fishyscapes Validation datasets
+</p>
+
+<p align="center">
+  <img src="https://github.com/manideep1108/synboost/blob/master/display_images/light.png?raw=true" alt="Sublime's custom image"/>
+</p>
+<p align="center">
+  The above table shows the results of Light version 
+</p>
 
 
 ### Google Colab Demo Notebook
