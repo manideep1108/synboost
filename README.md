@@ -24,18 +24,16 @@ This repository is PyTorch Lightning implementation of the paper, ["Pixel-wise A
 
 
 ### Training 
-In order to train the dissimilarity network, we have to do the following:
-
-1) Modify the necessary parameters in the configuration file `configs/train/default_configuration.yaml`. 
+In order to train the dissimilarity network modify the necessary parameters in the configuration file `configs/train/default_configuration.yaml`. 
    - For w/o uncertainty maps make prior = false
    - For w/o data generator + w/o uncertainty maps make prior = false, use the data provided in the dataset section
    - For end to end ensemble make endtoend = True
    - For running with different encoders change the architecture in config
    - Also add the deatils of wandb in the configuration file.
    - In order to get the required data for training, please refer to the Dataset section. 
-3) ```
-   python train_lightning.py --config configs/train/default_configuration.yaml
-   ```
+```
+python train_lightning.py --config configs/train/default_configuration.yaml
+```
 The following file can be run to train the model in kaggle : [Link(kaggle notebook)](https://www.kaggle.com/mlrc2021anonymous/synboost-pytorch-lightning)
 
 ### Evaluation
@@ -98,6 +96,8 @@ The above image compares author's final predictions (2nd column from right) with
   The above table shows the results of Light version 
 </p>
 
+## Weights & Biases
+[Report: All Experiments (Link)](https://wandb.ai/dl-segmentation/MLRC_Synboost/reports/Synboost-MLRC-2021--VmlldzoxNTIyNDk2?accessToken=uevcwtv10q3bwg40rr4zbd3l5rxt4crs3bys6z6zf375xa123qusncm4cv38n95l)
 
 
 ## References
